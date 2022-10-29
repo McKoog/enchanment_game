@@ -12,7 +12,9 @@ class ScrollEnchantSlot extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return DragTarget<Item>(
       onAccept: (value){
-        ref.read(scrollEnchantSlotItem.notifier).update((state) => value);
+        if(value.type == ItemType.weapon) {
+          ref.read(scrollEnchantSlotItem.notifier).update((state) => value);
+        }
       },
       builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
         return Container(
