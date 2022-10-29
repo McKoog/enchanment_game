@@ -1,5 +1,10 @@
+enum ItemType{
+  weapon,
+  scroll
+}
+
 class Item{
   Item({required this.type,required this.image});
-  String type;
+  ItemType type;
   String image;
 }

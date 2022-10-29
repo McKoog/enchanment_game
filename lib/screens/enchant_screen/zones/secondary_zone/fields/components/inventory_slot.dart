@@ -24,7 +24,7 @@ class InventorySlot extends ConsumerWidget {
           child: InkWell(
             onTap: item != null
                 ?(){
-              if(item!.type == "Scroll") {
+              if(item!.type == ItemType.scroll) {
                 ref.read(showEnchantmentScreen.notifier).update((state) => !state);
               }
               ref.read(currentScroll.notifier).update((state) => item);

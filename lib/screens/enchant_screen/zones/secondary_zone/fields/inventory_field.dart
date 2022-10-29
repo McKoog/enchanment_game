@@ -22,7 +22,7 @@ class InventoryField extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, mainAxisSpacing: 5,crossAxisSpacing: 5),
             itemBuilder: (BuildContext context,int index){
-              return InventorySlot(index: index, item: index == 0 ? Item(type: "Sword", image: "assets/sword.svg"): index == 1 ?Item(type: "Scroll", image: "assets/enchant_scroll.svg"):null);
+              return InventorySlot(index: index, item: index == 0 ? Item(type: ItemType.weapon, image: "assets/sword.svg"): index == 1 ?Item(type: ItemType.scroll, image: "assets/enchant_scroll.svg"):null);
             })
     );
   }
