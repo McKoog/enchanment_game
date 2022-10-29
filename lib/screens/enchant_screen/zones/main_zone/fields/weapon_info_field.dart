@@ -15,9 +15,9 @@ class WeaponInfoField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(weapon.enchantLevel >0 ?"${weapon.name} +${weapon.enchantLevel}":weapon.name, style: itemNameDecoration),
+          Text(weapon.enchantLevel >0 ?"${weapon.name} +${weapon.enchantLevel}":weapon.name, style: weaponNameDecoration),
           const SizedBox(height: 16,),
-          Text("Урон: ${weapon.lowerDamage}-${weapon.higherDamage}",style: weaponInfoTextDecoration,),
+          Text("Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",style: weaponInfoTextDecoration,),
         ],
       ),
     );

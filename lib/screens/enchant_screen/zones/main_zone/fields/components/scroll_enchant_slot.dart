@@ -20,6 +20,7 @@ class ScrollEnchantSlot extends ConsumerWidget {
       },
       builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
         return Container(
+          padding: EdgeInsets.all(4),
             decoration: scrollEnchantSlotDecoration,
             height: sideSize,
             width: sideSize,
