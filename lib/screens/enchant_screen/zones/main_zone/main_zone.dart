@@ -1,6 +1,7 @@
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/base_main_zone_field.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/scroll_field.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/weapon_info_field.dart';
@@ -27,7 +28,7 @@ class MainZone extends ConsumerWidget {
             ?BaseMainZoneField(
               sideSize: height,
               backgroundItem: currScroll ?? currWeapon,
-              child: currScroll != null ? ScrollField(sideSize: height):WeaponInfoField(sideSize: height),
+              child: currScroll != null ? ScrollField(sideSize: height):WeaponInfoField(sideSize: height, weapon: currWeapon! as Weapon),
         )
             :const SizedBox()
       ),

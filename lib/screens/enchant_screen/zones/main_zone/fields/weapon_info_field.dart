@@ -1,17 +1,25 @@
-import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/decorations/fields_decoration.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/base_main_zone_field.dart';
+import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WeaponInfoField extends StatelessWidget {
-  const WeaponInfoField({Key? key,required this.sideSize}) : super(key: key);
+  const WeaponInfoField({Key? key,required this.sideSize,required this.weapon}) : super(key: key);
   final double sideSize;
+  final Weapon weapon;
+
   @override
   Widget build(BuildContext context) {
-    return const Align(
-      alignment: Alignment.center,
-      child: Text("HELLO"),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(weapon.enchantLevel >0 ?"${weapon.name} +${weapon.enchantLevel}":weapon.name, style: itemNameDecoration),
+          const SizedBox(height: 16,),
+          Text("Урон: ${weapon.lowerDamage}-${weapon.higherDamage}",style: weaponInfoTextDecoration,),
+        ],
+      ),
     );
   }
 }
