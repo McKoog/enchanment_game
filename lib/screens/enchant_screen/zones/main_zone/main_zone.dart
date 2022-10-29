@@ -1,5 +1,9 @@
+import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
+import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/base_main_zone_field.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/scroll_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/weapon_info_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,14 +14,23 @@ class MainZone extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
+    Item? currScroll = ref.watch(currentScroll);
+    Item? currWeapon = ref.watch(currentWeapon);
+    bool showScroll = ref.watch(showScrollField);
+    bool showWeapon = ref.watch(showWeaponInfoField);
     return SizedBox(
       height: height,
       width: width,
       child: Align(
         alignment: Alignment.center,
-        child: ref.watch(showEnchantmentScreen)
-            ?ScrollField(sideSize: height)
-            :const SizedBox(),),
+        child: (showWeapon || showScroll)
+            ?BaseMainZoneField(
+              sideSize: height,
+              backgroundItem: currScroll ?? currWeapon,
+              child: currScroll != null ? ScrollField(sideSize: height):WeaponInfoField(sideSize: height),
+        )
+            :const SizedBox()
+      ),
     );
   }
 }

@@ -25,10 +25,19 @@ class InventorySlot extends ConsumerWidget {
             onTap: item != null
                 ?(){
               if(item!.type == ItemType.scroll) {
-                ref.read(showEnchantmentScreen.notifier).update((state) => !state);
+                ref.read(showWeaponInfoField.notifier).update((state) => false);
+                ref.read(currentWeapon.notifier).update((state) => null);
+                ref.read(showScrollField.notifier).update((state) => !state);
+                ref.read(currentScroll.notifier).update((state) => item);
+                if(ref.read(showScrollField) == false)ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
               }
-              ref.read(currentScroll.notifier).update((state) => item);
-              if(ref.read(showEnchantmentScreen) == false)ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
+              else if (item!.type == ItemType.weapon){
+                ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
+                ref.read(showScrollField.notifier).update((state) => false);
+                ref.read(currentScroll.notifier).update((state) => null);
+                ref.read(showWeaponInfoField.notifier).update((state) => !state);
+                ref.read(currentWeapon.notifier).update((state) => item);
+              }
             }
                 :null,
             child: SvgPicture.asset(item!.image),

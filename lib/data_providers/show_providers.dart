@@ -1,3 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final showEnchantmentScreen = StateProvider<bool>((ref) => false);
+final showScrollField = StateProvider<bool>((ref) => false);
+
+final showWeaponInfoField = StateProvider<bool>((ref) => false);

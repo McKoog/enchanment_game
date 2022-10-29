@@ -1,7 +1,9 @@
 import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -21,7 +23,9 @@ class ScrollEnchantSlot extends ConsumerWidget {
             decoration: scrollEnchantSlotDecoration,
             height: sideSize,
             width: sideSize,
-            child: ref.watch(scrollEnchantSlotItem) != null ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image) :null
+            child: ref.watch(scrollEnchantSlotItem) != null
+                ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
+                :null
         );
       },
     );
