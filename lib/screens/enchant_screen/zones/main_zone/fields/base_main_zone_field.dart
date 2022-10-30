@@ -3,6 +3,7 @@ import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class BaseMainZoneField extends ConsumerWidget {
   const BaseMainZoneField({Key? key,required this.sideSize,this.backgroundItem,required this.child}) : super(key: key);
@@ -21,7 +22,10 @@ class BaseMainZoneField extends ConsumerWidget {
                     alignment: Alignment.center,
                     fit: StackFit.expand,
                     children: [
-                        Opacity(opacity:0.1,child: InventorySlot(index: 0,item: backgroundItem,)),
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Opacity(opacity:0.2,child: SvgPicture.asset(backgroundItem!.image)),
+                        ),
                         child
                     ],
                 )

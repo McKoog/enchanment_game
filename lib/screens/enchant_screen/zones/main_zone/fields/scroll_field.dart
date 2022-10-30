@@ -100,12 +100,14 @@ class ScrollField extends ConsumerWidget {
                             parentSize: sideSize,
                             caption: "Enchant",
                             onPressed: () {
-                              ref
-                                  .read(showScrollProgressBar.notifier)
-                                  .update((state) => true);
-                              ref
-                                  .read(startProgressBarAnimation.notifier)
-                                  .update((state) => true);
+                              if(ref.read(scrollEnchantSlotItem) != null) {
+                                ref
+                                    .read(showScrollProgressBar.notifier)
+                                    .update((state) => true);
+                                ref
+                                    .read(startProgressBarAnimation.notifier)
+                                    .update((state) => true);
+                              }
                             }),
                       ],
                     )

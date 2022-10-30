@@ -33,6 +33,7 @@ class InventorySlot extends ConsumerWidget {
                 if(ref.read(showScrollField) == false)ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
                 ref.read(startProgressBarAnimation.notifier).update((state) => false);
                 ref.read(finishedProgressBarAnimation.notifier).update((state) => false);
+                ref.read(showScrollProgressBar.notifier).update((state) => false);
               }
               else if (item!.type == ItemType.weapon){
                 ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
@@ -42,6 +43,7 @@ class InventorySlot extends ConsumerWidget {
                 ref.read(currentWeapon.notifier).update((state) => item);
                 ref.read(startProgressBarAnimation.notifier).update((state) => false);
                 ref.read(finishedProgressBarAnimation.notifier).update((state) => false);
+                ref.read(showScrollProgressBar.notifier).update((state) => false);
               }
             }
                 :null,

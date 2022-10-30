@@ -26,13 +26,16 @@ class MainZone extends ConsumerWidget {
       child: Align(
         alignment: Alignment.center,
         child: (showWeapon || showScroll)
-            ?BaseMainZoneField(
-              sideSize: height,
-              backgroundItem: currScroll ?? currWeapon,
-              child: currScroll != null
-                  ?ScrollField(sideSize: height, scroll: currScroll as Scroll)
-                  :WeaponInfoField(sideSize: height, weapon: currWeapon! as Weapon),
-        )
+            ?Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BaseMainZoneField(
+                sideSize: height,
+                backgroundItem: currScroll ?? currWeapon,
+                child: currScroll != null
+                    ?ScrollField(sideSize: height, scroll: currScroll as Scroll)
+                    :WeaponInfoField(sideSize: height, weapon: currWeapon! as Weapon),
+        ),
+            )
             :const SizedBox()
       ),
     );
