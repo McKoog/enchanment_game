@@ -1,3 +1,4 @@
+import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
@@ -21,10 +22,10 @@ class ScrollEnchantSlot extends ConsumerWidget {
       builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
         return AnimatedContainer(
           padding: const EdgeInsets.all(4),
-            decoration: scrollEnchantSlotDecoration,
+            decoration: ref.watch(finishedProgressBarAnimation)?scrollEnchantSlotSuccessDecoration:scrollEnchantSlotDecoration,
             height: sideSize,
             width: sideSize,
-            duration: const Duration(milliseconds: 500),
+            duration: Duration(milliseconds: ref.watch(startProgressBarAnimation) ? ref.watch(finishedProgressBarAnimation) ?500:1200:500),
             child: ref.watch(scrollEnchantSlotItem) != null
                 ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
                 :null
