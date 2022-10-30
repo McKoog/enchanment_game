@@ -1,7 +1,7 @@
 import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,15 +15,16 @@ class ScrollEnchantSlot extends ConsumerWidget {
     return DragTarget<Item>(
       onAccept: (value){
         if(value.type == ItemType.weapon) {
-          ref.read(scrollEnchantSlotItem.notifier).update((state) => value);
+          ref.read(scrollEnchantSlotItem.notifier).update((state) => value as Weapon);
         }
       },
       builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
-        return Container(
-          padding: EdgeInsets.all(4),
+        return AnimatedContainer(
+          padding: const EdgeInsets.all(4),
             decoration: scrollEnchantSlotDecoration,
             height: sideSize,
             width: sideSize,
+            duration: const Duration(milliseconds: 500),
             child: ref.watch(scrollEnchantSlotItem) != null
                 ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
                 :null

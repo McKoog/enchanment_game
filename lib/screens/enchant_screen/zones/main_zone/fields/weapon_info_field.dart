@@ -1,5 +1,4 @@
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 

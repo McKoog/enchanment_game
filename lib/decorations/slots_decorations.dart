@@ -18,5 +18,5 @@ Decoration scrollEnchantSlotDecoration = BoxDecoration(
             width: 2)
     ),
     borderRadius: BorderRadius.circular(15),
-    boxShadow: const [BoxShadow(blurRadius: 10,spreadRadius: 10,color:Color.fromRGBO(70, 70, 70, 1))]
+    boxShadow: const [BoxShadow(blurRadius: 20,spreadRadius: 1,color:Color.fromRGBO(70, 70, 70, 1))]
 );

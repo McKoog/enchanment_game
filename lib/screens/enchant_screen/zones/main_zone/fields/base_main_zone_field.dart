@@ -1,7 +1,5 @@
-import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/decorations/fields_decoration.dart';
 import 'package:enchantment_game/models/item.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_enchant_slot.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
