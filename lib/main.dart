@@ -1,3 +1,7 @@
+import 'package:enchantment_game/models/Inventory.dart';
+import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/scroll.dart';
+import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

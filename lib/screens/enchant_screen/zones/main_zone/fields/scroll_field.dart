@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_button.dart';
@@ -17,6 +21,16 @@ class ScrollField extends ConsumerWidget {
   final double sideSize;
   final Scroll scroll;
 
+  bool checkIsEnchantSuccess(){
+    int rand = Random().nextInt(100);
+    if(rand <= 75){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Weapon? weaponInSlot = ref.read(scrollEnchantSlotItem);
@@ -28,11 +42,10 @@ class ScrollField extends ConsumerWidget {
           SizedBox(
               height: ref.watch(scrollEnchantSlotItem) != null ? sideSize / 14 : 0,
               child: AutoSizeText(
-                weaponInSlot?.name ?? "",
-                style: weaponNameDecoration,
+                weaponInSlot == null ?"":weaponInSlot.enchantLevel >0 ?"${weaponInSlot.name} +${weaponInSlot.enchantLevel}":weaponInSlot.name, style: weaponNameDecoration,
               )),
           SizedBox(
-              height: ref.watch(scrollEnchantSlotItem) == null ? null : 0,
+              height: ref.watch(scrollEnchantSlotItem) == null && ref.watch(currentEnchantSuccess) == null ? null : 0,
               child: AutoSizeText(
                 scroll.name,
                 style: scrollNameDecoration,
@@ -40,7 +53,7 @@ class ScrollField extends ConsumerWidget {
                 maxLines: 1,
               )),
           SizedBox(
-              height: ref.watch(scrollEnchantSlotItem) == null ? null : 0,
+              height: ref.watch(scrollEnchantSlotItem) == null && ref.watch(currentEnchantSuccess) == null ? null : 0,
               child: AutoSizeText(
                 "Put your weapon in the slot",
                 style: scrollHintDecoration,
@@ -58,22 +71,45 @@ class ScrollField extends ConsumerWidget {
             ),
           ),
           SizedBox(
-              height: ref.watch(scrollEnchantSlotItem) == null ? null : 0,
+              height: ref.watch(scrollEnchantSlotItem) == null && ref.watch(currentEnchantSuccess) == null ? null : 0,
               child: AutoSizeText(
                 scroll.description,
                 style: scrollInfoTextDecoration,
                 textAlign: TextAlign.center,
                 maxLines: 2,
               )),
-          SizedBox(
-              height: ref.watch(finishedProgressBarAnimation) ? null : 0,
-              child: Text("Success", style: weaponNameDecoration)),
+          /*SizedBox(
+              height: ref.watch(finishedProgressBarAnimation) && ref.watch(currentEnchantSuccess) != null
+                  ? null
+                  : 0,
+              child: Text(
+                  (ref.read(currentEnchantSuccess) != null) && ref.read(currentEnchantSuccess)!
+                      ?"Success"
+                      :"Failed",
+                  style: (ref.read(currentEnchantSuccess) != null) && ref.read(currentEnchantSuccess)!
+                      ?enchantSuccessTextDecoration
+                      :enchantFailTextDecoration)
+          ),*/
+
           ref.watch(showScrollProgressBar)
               ? EnchantProgressBar(
                   parentSize: sideSize,
                 )
               : ref.watch(finishedProgressBarAnimation)
-                  ? const SizedBox()
+                  ? SizedBox(
+                      height: ref.watch(currentEnchantSuccess) != null
+                        ? null
+                        : null,
+                    child: Text(
+                    (ref.read(currentEnchantSuccess) == null)
+                      ?"Wait"
+                    :ref.read(currentEnchantSuccess)!
+                      ?"Success"
+                      :"Failed",
+                    style: (ref.read(currentEnchantSuccess) != null) && ref.read(currentEnchantSuccess)!
+                      ?enchantSuccessTextDecoration
+                      :enchantFailTextDecoration)
+          )
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -107,6 +143,22 @@ class ScrollField extends ConsumerWidget {
                                 ref
                                     .read(startProgressBarAnimation.notifier)
                                     .update((state) => true);
+
+                                Future.delayed(Duration(milliseconds: 1200),(){
+                                  if(checkIsEnchantSuccess()){
+                                    ref.read(currentEnchantSuccess.notifier).update((state) => true);
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..enchantLevel += 1;
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..lowerDamage += 1;
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..higherDamage += 2;
+                                  }
+                                  else{
+                                    ref.read(currentEnchantSuccess.notifier).update((state) => false);
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..enchantLevel = 0;
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..lowerDamage = 2;
+                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..higherDamage = 3;
+                                    ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
+                                  }
+                                });
                               }
                             }),
                       ],

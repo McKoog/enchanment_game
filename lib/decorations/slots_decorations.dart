@@ -32,3 +32,14 @@ Decoration scrollEnchantSlotSuccessDecoration = BoxDecoration(
     borderRadius: BorderRadius.circular(15),
     boxShadow: const [BoxShadow(blurRadius: 40,spreadRadius: 20,color:Colors.yellow)]
 );
+
+Decoration scrollEnchantSlotFailedDecoration = BoxDecoration(
+    color: const Color.fromRGBO(70, 70, 70, 1),
+    border: const Border.fromBorderSide(
+        BorderSide(
+            color: Color.fromRGBO(160, 160, 160, 1),
+            width: 2)
+    ),
+    borderRadius: BorderRadius.circular(15),
+    boxShadow: const [BoxShadow(blurRadius: 40,spreadRadius: 20,color:Colors.black)]
+);
