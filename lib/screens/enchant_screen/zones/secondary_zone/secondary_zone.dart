@@ -12,7 +12,10 @@ class SecondaryZone extends StatelessWidget {
         height: height,
         width: width,
         child: Center(
-            child: InventoryField(sideSize: height-20,capacity: 25,)
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: InventoryField(sideSize: height-20,capacity: 25,),
+            )
         )
     );
   }

@@ -16,8 +16,8 @@ class BaseMainZoneField extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return Container(
         decoration: enchantFieldDecoration,
-        height:sideSize-100,
-        width: sideSize-100,
+        height:sideSize-24,
+        width: sideSize-24,
         child:backgroundItem != null
                 ?Stack(
                     alignment: Alignment.center,

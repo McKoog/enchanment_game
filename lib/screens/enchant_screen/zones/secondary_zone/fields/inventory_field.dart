@@ -39,7 +39,7 @@ class InventoryField extends StatelessWidget {
                           ?Scroll(
                             type: ItemType.scroll,
                             image: "assets/enchant_scroll.svg",
-                            name: "Ancient scroll",
+                            name: "Scroll of enchant",
                             description: "Increase power of the weapon, but be carefull, it's not garanteed"
                           )
                           :null

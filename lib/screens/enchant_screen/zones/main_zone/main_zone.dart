@@ -29,7 +29,9 @@ class MainZone extends ConsumerWidget {
             ?BaseMainZoneField(
               sideSize: height,
               backgroundItem: currScroll ?? currWeapon,
-              child: currScroll != null ? ScrollField(sideSize: height, scroll: currScroll as Scroll):WeaponInfoField(sideSize: height, weapon: currWeapon! as Weapon),
+              child: currScroll != null
+                  ?ScrollField(sideSize: height, scroll: currScroll as Scroll)
+                  :WeaponInfoField(sideSize: height, weapon: currWeapon! as Weapon),
         )
             :const SizedBox()
       ),

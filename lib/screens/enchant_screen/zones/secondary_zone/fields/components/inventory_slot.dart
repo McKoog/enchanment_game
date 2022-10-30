@@ -18,7 +18,7 @@ class InventorySlot extends ConsumerWidget {
         decoration: inventorySlotDecoration,
         child: item != null ?Draggable<Item>(
           data: item,
-          feedback: SvgPicture.asset(item!.image,height: MediaQuery.of(context).size.height/9,width: MediaQuery.of(context).size.height/9,),
+          feedback: SvgPicture.asset(item!.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,),
           childWhenDragging: const SizedBox(),
 
           child: InkWell(
