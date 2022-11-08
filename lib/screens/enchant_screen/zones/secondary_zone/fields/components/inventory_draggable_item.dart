@@ -7,8 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class InventoryDraggableItem extends ConsumerWidget {
-  const InventoryDraggableItem({Key? key,required this.item}) : super(key: key);
+  const InventoryDraggableItem({Key? key,required this.item,required this.inventoryIndex}) : super(key: key);
   final Item item;
+  final int inventoryIndex;
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
@@ -16,10 +17,14 @@ class InventoryDraggableItem extends ConsumerWidget {
       data: item,
       feedback: SvgPicture.asset(item.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,),
       childWhenDragging: const SizedBox(),
-
+      onDragStarted: (){
+        ref.read(currentDragItemInventoryIndex.notifier).update((state) => inventoryIndex);
+      },
+      onDraggableCanceled: (Velocity vel, Offset offset){
+        ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
+      },
       child: InkWell(
-        onTap: item != null
-            ?(){
+        onTap: (){
           if(item.type == ItemType.scroll) {
             ref.read(showWeaponInfoField.notifier).update((state) => false);
             ref.read(currentWeapon.notifier).update((state) => null);
@@ -42,8 +47,7 @@ class InventoryDraggableItem extends ConsumerWidget {
             ref.read(showScrollProgressBar.notifier).update((state) => false);
             ref.read(currentEnchantSuccess.notifier).update((state) => null);
           }
-        }
-            :null,
+        },
         child: SvgPicture.asset(item.image),
       ),
     );

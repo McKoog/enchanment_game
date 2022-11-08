@@ -9,3 +9,5 @@ final currentWeapon = StateProvider<Item?>((ref) => null);
 final scrollEnchantSlotItem = StateProvider<Weapon?>((ref) => null);
 
 final currentEnchantSuccess = StateProvider<bool?>((ref) => null);
+
+final currentDragItemInventoryIndex = StateProvider<int?>((ref) => null);

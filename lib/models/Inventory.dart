@@ -5,4 +5,10 @@ import 'package:enchantment_game/models/item.dart';
 class Inventory{
   Inventory({required this.items});
   List<Item?> items;
+
+  Inventory swapItems(int from, int to){
+    items[to] = items[from];
+    items[from] = null;
+    return Inventory(items: items);
+  }
 }
