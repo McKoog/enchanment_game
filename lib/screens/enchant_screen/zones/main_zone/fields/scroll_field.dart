@@ -21,7 +21,7 @@ class ScrollField extends ConsumerWidget {
 
   bool checkIsEnchantSuccess(){
     int rand = Random().nextInt(100);
-    if(rand <= 75){
+    if(rand <= 100){
       return true;
     }
     else{

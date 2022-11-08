@@ -55,7 +55,8 @@ class InventoryDraggableItem extends ConsumerWidget {
             ref.read(currentEnchantSuccess.notifier).update((state) => null);
           }
         },
-        child: SvgPicture.asset(item.image),
+          child:SvgPicture.asset(item.image)
+        //child: Container(decoration: BoxDecoration(borderRadius:BorderRadius.circular(15),boxShadow: [BoxShadow(color:Colors.red.withOpacity(0.9),blurRadius: 0,spreadRadius: 6)]),child: SvgPicture.asset(item.image)),
       ),
     );
   }

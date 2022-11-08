@@ -1,4 +1,5 @@
 import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -23,7 +24,18 @@ class InventorySlot extends ConsumerWidget {
       children: [
         Container(
             padding: const EdgeInsets.all(5),
-            decoration: inventorySlotDecoration,
+            decoration: weapon != null
+                ?BoxDecoration(
+                color: const Color.fromRGBO(85, 85, 85, 1),
+                border: Border.fromBorderSide(
+                    BorderSide(
+                        color: weapon.enchantLevel <=15 ?Color.fromRGBO(130, 130, 130, 1):weapon.enchantLevel <= 20?enchantedWeaponsGlowColors[weapon.enchantLevel].withOpacity(0.6):Color.fromRGBO(130, 130, 130, 1),
+                        width: 2)
+                ),
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: weapon.enchantLevel == 0 ?null:weapon.enchantLevel >20?[BoxShadow(color:enchantedWeaponsGlowColors[21],spreadRadius: 2)]:[BoxShadow(color:enchantedWeaponsGlowColors[weapon.enchantLevel],spreadRadius: 2)]
+            )
+                :inventorySlotDecoration,
             child: item != null
                 ?InventoryDraggableItem(item: item!,inventoryIndex: index,)
                 :InventoryEmptyDragTarget(inventoryIndex: index,)
