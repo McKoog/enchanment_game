@@ -1,9 +1,6 @@
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/zone_decorations.dart';
 import 'package:enchantment_game/models/Inventory.dart';
-import 'package:enchantment_game/models/item.dart';
-import 'package:enchantment_game/models/scroll.dart';
-import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

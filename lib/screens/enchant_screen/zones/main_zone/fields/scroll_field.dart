@@ -1,12 +1,10 @@
 import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_button.dart';
@@ -78,18 +76,6 @@ class ScrollField extends ConsumerWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
               )),
-          /*SizedBox(
-              height: ref.watch(finishedProgressBarAnimation) && ref.watch(currentEnchantSuccess) != null
-                  ? null
-                  : 0,
-              child: Text(
-                  (ref.read(currentEnchantSuccess) != null) && ref.read(currentEnchantSuccess)!
-                      ?"Success"
-                      :"Failed",
-                  style: (ref.read(currentEnchantSuccess) != null) && ref.read(currentEnchantSuccess)!
-                      ?enchantSuccessTextDecoration
-                      :enchantFailTextDecoration)
-          ),*/
 
           ref.watch(showScrollProgressBar)
               ? EnchantProgressBar(
@@ -144,18 +130,19 @@ class ScrollField extends ConsumerWidget {
                                     .read(startProgressBarAnimation.notifier)
                                     .update((state) => true);
 
-                                Future.delayed(Duration(milliseconds: 1200),(){
+                                Future.delayed(const Duration(milliseconds: 1200),(){
+                                  Weapon enchantingWeapon = ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon;
                                   if(checkIsEnchantSuccess()){
                                     ref.read(currentEnchantSuccess.notifier).update((state) => true);
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..enchantLevel += 1;
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..lowerDamage += 1;
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..higherDamage += 2;
+                                    enchantingWeapon.enchantLevel += 1;
+                                    enchantingWeapon.lowerDamage += 1;
+                                    enchantingWeapon.higherDamage += 2;
                                   }
                                   else{
                                     ref.read(currentEnchantSuccess.notifier).update((state) => false);
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..enchantLevel = 0;
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..lowerDamage = 2;
-                                    ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon..higherDamage = 3;
+                                    enchantingWeapon.enchantLevel = 0;
+                                    enchantingWeapon.lowerDamage = 2;
+                                    enchantingWeapon.higherDamage = 3;
                                     ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
                                   }
                                 });

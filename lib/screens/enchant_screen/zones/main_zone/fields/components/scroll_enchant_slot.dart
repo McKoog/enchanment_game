@@ -30,7 +30,12 @@ class ScrollEnchantSlot extends ConsumerWidget {
                 :scrollEnchantSlotDecoration,
             height: sideSize,
             width: sideSize,
-            duration: Duration(milliseconds: ref.watch(startProgressBarAnimation) ? ref.watch(finishedProgressBarAnimation) ?500:1200:200),
+            duration: Duration(
+                milliseconds: ref.watch(startProgressBarAnimation)
+                                  ?ref.watch(finishedProgressBarAnimation)
+                                      ?500
+                                      :1200
+                                  :200),
             child: ref.watch(scrollEnchantSlotItem) != null
                 ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
                 :null

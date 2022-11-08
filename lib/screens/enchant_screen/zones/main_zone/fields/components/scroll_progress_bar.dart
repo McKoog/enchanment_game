@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
-import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +22,7 @@ class _EnchantProgressBarState extends ConsumerState<EnchantProgressBar> with Ti
   }
   @override
   void initState() {
-    controller = AnimationController(vsync: this, lowerBound: 0, upperBound: 1,duration: Duration(milliseconds: 1200));
+    controller = AnimationController(vsync: this, lowerBound: 0, upperBound: 1,duration: const Duration(milliseconds: 1200));
     controller.addListener(() {
       if(controller.value == 1){
         ref.read(finishedProgressBarAnimation.notifier).update((state) => true);
