@@ -28,7 +28,7 @@ class InventorySlot extends ConsumerWidget {
                 ?InventoryDraggableItem(item: item!,inventoryIndex: index,)
                 :InventoryEmptyDragTarget(inventoryIndex: index,)
         ),
-        if(weapon != null)Positioned(right:8,bottom:8,child: Text(weapon.enchantLevel > 0 ?"+${weapon.enchantLevel}":"",style: const TextStyle(fontSize: 10,color: Colors.yellow),))
+        if(weapon != null && ref.watch(currentDragItemInventoryIndex) == null)Positioned(right:8,bottom:8,child: Text(weapon.enchantLevel > 0 ?"+${weapon.enchantLevel}":"",style: const TextStyle(fontSize: 10,color: Colors.yellow),))
       ],
     );
   }

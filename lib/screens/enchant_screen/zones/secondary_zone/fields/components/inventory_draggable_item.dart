@@ -23,6 +23,9 @@ class InventoryDraggableItem extends ConsumerWidget {
       onDraggableCanceled: (Velocity vel, Offset offset){
         ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
       },
+      onDragEnd: (DraggableDetails details){
+        ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
+      },
       child: InkWell(
         onTap: (){
           if(item.type == ItemType.scroll) {
