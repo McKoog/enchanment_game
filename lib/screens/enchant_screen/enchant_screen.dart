@@ -9,7 +9,7 @@ class EnchantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Container(
-        color: const Color.fromRGBO(78, 78, 78, 1),
+        //color: const Color.fromRGBO(78, 78, 78, 1),
         child: SafeArea(
             child: LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {

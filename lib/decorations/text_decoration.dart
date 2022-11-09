@@ -17,3 +17,13 @@ TextStyle scrollBottonsTextDecoration = const TextStyle(fontSize: 16,color: Colo
 TextStyle enchantSuccessTextDecoration = const TextStyle(fontSize: 26,color: Colors.yellow,fontFamily: "PT Sans");
 
 TextStyle enchantFailTextDecoration = const TextStyle(fontSize: 26,color: Colors.black,fontFamily: "PT Sans");
+
+TextStyle huntFieldNameTextDecoration = const TextStyle(fontSize: 26,color: Colors.white,fontFamily: "PT Sans");
+
+TextStyle huntFieldHeaderTextDecoration = const TextStyle(fontSize: 26,color: Colors.grey,fontFamily: "PT Sans");
+
+TextStyle huntFieldDescriptionTextDecoration = const TextStyle(fontSize: 22,color: Colors.grey,fontFamily: "PT Sans");
+
+TextStyle huntFieldSelectedWeaponTextDecoration = const TextStyle(fontSize: 22,color: Colors.white,fontFamily: "PT Sans");
+
+TextStyle mobNameTextDecoration = const TextStyle(fontSize: 15,color: Colors.white,fontFamily: "PT Sans");

@@ -11,3 +11,5 @@ final scrollEnchantSlotItem = StateProvider<Weapon?>((ref) => null);
 final currentEnchantSuccess = StateProvider<bool?>((ref) => null);
 
 final currentDragItemInventoryIndex = StateProvider<int?>((ref) => null);
+
+final currentSelectedWeaponHuntingField = StateProvider<Weapon?>((ref) => Weapon(type: ItemType.weapon,isSvgAsset: false, image: "assets/fist.png", name: "Fists", lowerDamage: 1, higherDamage: 1, enchantLevel: 0));

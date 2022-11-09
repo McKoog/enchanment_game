@@ -15,7 +15,9 @@ class InventoryDraggableItem extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return Draggable<Item>(
       data: item,
-      feedback: SvgPicture.asset(item.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,),
+      feedback: item.isSvgAsset
+          ?SvgPicture.asset(item.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,)
+          :Image.asset(item.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,),
       childWhenDragging: const SizedBox(),
       onDragStarted: (){
         ref.read(currentDragItemInventoryIndex.notifier).update((state) => inventoryIndex);
@@ -55,7 +57,7 @@ class InventoryDraggableItem extends ConsumerWidget {
             ref.read(currentEnchantSuccess.notifier).update((state) => null);
           }
         },
-          child:SvgPicture.asset(item.image)
+          child:item.isSvgAsset?SvgPicture.asset(item.image):Image.asset(item.image)
         //child: Container(decoration: BoxDecoration(borderRadius:BorderRadius.circular(15),boxShadow: [BoxShadow(color:Colors.red.withOpacity(0.9),blurRadius: 0,spreadRadius: 6)]),child: SvgPicture.asset(item.image)),
       ),
     );

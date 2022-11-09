@@ -15,7 +15,7 @@ class InventoryField extends ConsumerWidget {
     return Container(
         height: sideSize,
         width: sideSize,
-        decoration: inventoryZoneDecoration,
+        //decoration: inventoryZoneDecoration,
         child: GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
             itemCount: capacity,

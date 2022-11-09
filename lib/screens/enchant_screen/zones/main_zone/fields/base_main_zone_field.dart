@@ -13,7 +13,7 @@ class BaseMainZoneField extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     return Container(
-        decoration: enchantFieldDecoration,
+        //decoration: enchantFieldDecoration,
         height:sideSize-24,
         width: sideSize-24,
         child:backgroundItem != null

@@ -1,4 +1,5 @@
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,8 +18,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Scaffold(
-        body: ProviderScope(child: EnchantScreen()),
+      home: Scaffold(
+        body: ProviderScope(
+          child: Container(
+            color: const Color.fromRGBO(78, 78, 78, 1),
+            child: PageView(
+              children: const [
+                EnchantScreen(),
+                HuntingFieldScreen()
+              ],
+            ),
+          ),
+            //child: EnchantScreen()
+        ),
       ),
     );
   }

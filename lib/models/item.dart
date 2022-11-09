@@ -4,7 +4,8 @@ enum ItemType{
 }
 
 class Item{
-  Item({required this.type,required this.image});
+  Item({required this.type,this.isSvgAsset = true,required this.image});
   ItemType type;
+  bool isSvgAsset;
   String image;
 }
