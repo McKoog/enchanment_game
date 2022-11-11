@@ -5,3 +5,5 @@ final showScrollField = StateProvider<bool>((ref) => false);
 final showWeaponInfoField = StateProvider<bool>((ref) => false);
 
 final showScrollProgressBar = StateProvider<bool>((ref) => false);
+
+final showHuntMonsterPage = StateProvider<bool>((ref) => false);

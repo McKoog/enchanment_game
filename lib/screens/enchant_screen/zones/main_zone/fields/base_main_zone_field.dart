@@ -23,7 +23,7 @@ class BaseMainZoneField extends ConsumerWidget {
                     children: [
                         Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Opacity(opacity:0.2,child: SvgPicture.asset(backgroundItem!.image)),
+                          child: Opacity(opacity:0.2,child: backgroundItem!.isSvgAsset?SvgPicture.asset(backgroundItem!.image):Image.asset(backgroundItem!.image)),
                         ),
                         child
                     ],

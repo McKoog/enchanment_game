@@ -12,8 +12,8 @@ final inventory = StateProvider<Inventory>((ref) => Inventory(
                 :index == 1
                 ?Scroll(type: ItemType.scroll, image: "assets/enchant_scroll.svg", name: "Scroll of enchant", description: "Increase power of the weapon, but be carefull, it's not garanteed")
                 :index == 3
-                ?Weapon(type: ItemType.weapon, image: "assets/sword.svg", name: "Basic Sword", lowerDamage: 2, higherDamage: 3, enchantLevel: 10)
-                :index == 4
                 ?Weapon(type: ItemType.weapon, image: "assets/sword.svg", name: "Basic Sword", lowerDamage: 2, higherDamage: 3, enchantLevel: 20)
+                :index == 4
+                ?Weapon(type: ItemType.weapon, image: "assets/sword.svg", name: "Basic Sword", lowerDamage: 2, higherDamage: 3, enchantLevel: 21)
                 :null
     )));

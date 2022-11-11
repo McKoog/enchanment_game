@@ -13,12 +13,12 @@ Decoration enchantFieldDecoration =  BoxDecoration(
 );
 
 Decoration attackFieldDecoration =  BoxDecoration(
-    color: const Color.fromRGBO(78, 78, 78, 1),
+    color: const Color.fromRGBO(100, 100, 100, 1),
     /*border: const Border.fromBorderSide(
         BorderSide(
             color: Color.fromRGBO(130, 130, 130, 1),
             width: 5)
     ),*/
     shape: BoxShape.circle,
-    boxShadow: const [BoxShadow(blurRadius: 30,spreadRadius: 15,color: Colors.grey)]
+    boxShadow: const [BoxShadow(blurRadius: 30,spreadRadius: 15,color: Color.fromRGBO(90, 90, 90, 1))]
 );
