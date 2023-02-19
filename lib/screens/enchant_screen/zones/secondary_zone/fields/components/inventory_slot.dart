@@ -1,4 +1,5 @@
 import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
@@ -18,6 +19,16 @@ class InventorySlot extends ConsumerWidget {
     ref.watch(currentEnchantSuccess);
     Weapon? weapon;
     if(item != null && item!.type == ItemType.weapon)weapon = item as Weapon;
+
+    var invItems = ref.watch(inventory).items;
+    int? currentDrag = ref.watch(currentDragItemInventoryIndex);
+    bool isDragged = currentDrag != null;
+    var draggedItem = isDragged ?invItems[currentDrag]:null;
+    bool thisItemDragged = isDragged && draggedItem != null && draggedItem.id == item?.id;
+
+    bool enchantVisible = item != null && !thisItemDragged;
+        //ref.watch(currentDragItemInventoryIndex) != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!] != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!]!.id != item!.id;
+
     return Stack(
       alignment: Alignment.bottomRight,
       fit: StackFit.expand,
@@ -40,7 +51,7 @@ class InventorySlot extends ConsumerWidget {
                 ?InventoryDraggableItem(item: item!,inventoryIndex: index,)
                 :InventoryEmptyDragTarget(inventoryIndex: index,)
         ),
-        if(weapon != null && ref.watch(currentDragItemInventoryIndex) == null)Positioned(right:8,bottom:8,child: Text(weapon.enchantLevel > 0 ?"+${weapon.enchantLevel}":"",style: const TextStyle(fontSize: 10,color: Colors.yellow),))
+        if(weapon != null && enchantVisible)Positioned(right:8,bottom:8,child: Text(weapon.enchantLevel > 0 ?"+${weapon.enchantLevel}":"",style: const TextStyle(fontSize: 10,color: Colors.yellow),))
       ],
     );
   }

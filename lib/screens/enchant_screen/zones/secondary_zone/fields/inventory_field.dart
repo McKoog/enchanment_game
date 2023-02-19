@@ -12,6 +12,7 @@ class InventoryField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
+    Inventory invent = ref.watch(inventory);
     return Container(
         height: sideSize,
         width: sideSize,
@@ -22,7 +23,7 @@ class InventoryField extends ConsumerWidget {
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, mainAxisSpacing: 5,crossAxisSpacing: 5),
             itemBuilder: (BuildContext context,int index){
-              Inventory invent = ref.watch(inventory);
+              //Inventory invent = ref.watch(inventory);
               return InventorySlot(
                   index: index,
                   item: invent.items[index]

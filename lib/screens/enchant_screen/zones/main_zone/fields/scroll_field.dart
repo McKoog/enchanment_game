@@ -5,6 +5,7 @@ import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_button.dart';
@@ -21,7 +22,7 @@ class ScrollField extends ConsumerWidget {
 
   bool checkIsEnchantSuccess(){
     int rand = Random().nextInt(100);
-    if(rand <= 80){
+    if(rand <= 75){
       return true;
     }
     else{
@@ -133,17 +134,24 @@ class ScrollField extends ConsumerWidget {
                                 Future.delayed(const Duration(milliseconds: 1200),(){
                                   Weapon enchantingWeapon = ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon;
                                   if(checkIsEnchantSuccess()){
+                                    print(ref.read(inventory).items);
                                     ref.read(currentEnchantSuccess.notifier).update((state) => true);
                                     enchantingWeapon.enchantLevel += 1;
                                     enchantingWeapon.lowerDamage += 1;
                                     enchantingWeapon.higherDamage += 2;
+                                    ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(scroll));
                                   }
                                   else{
+                                    print(ref.read(inventory).items);
+                                    if(ref.read(currentSelectedWeaponHuntingField) != null && ref.read(currentSelectedWeaponHuntingField)!.id == enchantingWeapon.id)
+                                      ref.read(currentSelectedWeaponHuntingField.notifier).update((state) => Weapon(id:"fist",type: ItemType.weapon,isSvgAsset: false, image: "assets/fist.png", name: "Fists", lowerDamage: 1, higherDamage: 1, enchantLevel: 0));
                                     ref.read(currentEnchantSuccess.notifier).update((state) => false);
-                                    enchantingWeapon.enchantLevel = 0;
+                                    /*enchantingWeapon.enchantLevel = 0;
                                     enchantingWeapon.lowerDamage = 2;
-                                    enchantingWeapon.higherDamage = 3;
+                                    enchantingWeapon.higherDamage = 3;*/
                                     ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
+                                    ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(enchantingWeapon));
+                                    ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(scroll));
                                   }
                                 });
                               }
