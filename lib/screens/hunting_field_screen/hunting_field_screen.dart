@@ -14,8 +14,6 @@ class HuntingFieldScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      print(ref.read(currentSelectedWeaponHuntingField));
-      print(ref.read(currentSelectedMonsterHuntingField));
       return ref.watch(showHuntMonsterPage)
           ? MonsterPage(
               width: width,

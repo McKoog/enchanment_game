@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
+import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
 import 'package:enchantment_game/models/scroll.dart';
@@ -39,32 +40,21 @@ class _AttackFieldState extends ConsumerState<AttackField> {
       widget.monster.dropList.forEach((element) {
         int rand = Random().nextInt(100);
         if (rand <= element.chance) {
-          Item item = element.item.type == ItemType.weapon
-              ? Weapon(
-                  id: const Uuid().v1().toString(),
-                  type: ItemType.weapon,
-                  image: "assets/sword.svg",
-                  name: "Basic Sword",
-                  lowerDamage: 2,
-                  higherDamage: 3,
-                  enchantLevel: 0)
-              : Scroll(
-                  id: const Uuid().v1().toString(),
-                  type: ItemType.scroll,
-                  image: "assets/enchant_scroll.svg",
-                  name: "Scroll of enchant",
-                  description:
-                      "Increase power of the weapon, but be carefull, it's not garanteed");
-          if (ref.read(inventory).isLastFiveSlots()) {
-            if (item.type == ItemType.scroll) {
+          Item? item = element.item.type == ItemType.weapon
+              ? getNewStockItem(ItemType.weapon)
+              : getNewStockItem(ItemType.scroll);
+          if (item != null) {
+            if (ref.read(inventory).isLastFiveSlots()) {
+              if (item.type == ItemType.scroll) {
+                ref
+                    .read(inventory.notifier)
+                    .update((state) => ref.read(inventory).putItem(item));
+              }
+            } else {
               ref
                   .read(inventory.notifier)
                   .update((state) => ref.read(inventory).putItem(item));
             }
-          } else {
-            ref
-                .read(inventory.notifier)
-                .update((state) => ref.read(inventory).putItem(item));
           }
         }
       });

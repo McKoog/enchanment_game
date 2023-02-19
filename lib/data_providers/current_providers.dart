@@ -1,3 +1,4 @@
+import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/dropItem.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
@@ -25,21 +26,8 @@ final currentSelectedMonsterHuntingField = StateProvider<Monster?>((ref) =>
         dropList: [
           DropItem(
               chance: 25,
-              item: Weapon(
-                  id: "0",
-                  type: ItemType.weapon,
-                  image: "assets/sword.svg",
-                  name: "Basic Sword",
-                  lowerDamage: 2,
-                  higherDamage: 3,
-                  enchantLevel: 0)),
+              item: stockBasicSword),
           DropItem(
               chance: 50,
-              item: Scroll(
-                  id: "0",
-                  type: ItemType.scroll,
-                  image: "assets/enchant_scroll.svg",
-                  name: "Scroll of enchant",
-                  description:
-                      "Increase power of the weapon, but be carefull, it's not garanteed"))
+              item: stockScroll)
         ]));

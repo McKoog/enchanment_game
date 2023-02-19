@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
@@ -15,7 +16,7 @@ class Inventory{
 
   List<Weapon> getAllMyWeapons(bool includingFist){
     List<Weapon> weapons = [];
-    if(includingFist)weapons.add(Weapon(id:"fist",type: ItemType.weapon,isSvgAsset: false, image: "assets/fist.png", name: "Fists", lowerDamage: 1, higherDamage: 1, enchantLevel: 0));
+    if(includingFist)weapons.add(stockFist);
     items.forEach((element) {
       if(element != null && element.type == ItemType.weapon) weapons.add(element as Weapon);
     });

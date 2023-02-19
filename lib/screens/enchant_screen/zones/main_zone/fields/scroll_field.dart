@@ -5,6 +5,7 @@ import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -134,7 +135,6 @@ class ScrollField extends ConsumerWidget {
                                 Future.delayed(const Duration(milliseconds: 1200),(){
                                   Weapon enchantingWeapon = ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon;
                                   if(checkIsEnchantSuccess()){
-                                    print(ref.read(inventory).items);
                                     ref.read(currentEnchantSuccess.notifier).update((state) => true);
                                     enchantingWeapon.enchantLevel += 1;
                                     enchantingWeapon.lowerDamage += 1;
@@ -142,9 +142,9 @@ class ScrollField extends ConsumerWidget {
                                     ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(scroll));
                                   }
                                   else{
-                                    print(ref.read(inventory).items);
-                                    if(ref.read(currentSelectedWeaponHuntingField) != null && ref.read(currentSelectedWeaponHuntingField)!.id == enchantingWeapon.id)
-                                      ref.read(currentSelectedWeaponHuntingField.notifier).update((state) => Weapon(id:"fist",type: ItemType.weapon,isSvgAsset: false, image: "assets/fist.png", name: "Fists", lowerDamage: 1, higherDamage: 1, enchantLevel: 0));
+                                    if(ref.read(currentSelectedWeaponHuntingField) != null && ref.read(currentSelectedWeaponHuntingField)!.id == enchantingWeapon.id) {
+                                      ref.read(currentSelectedWeaponHuntingField.notifier).update((state) => stockFist);
+                                    }
                                     ref.read(currentEnchantSuccess.notifier).update((state) => false);
                                     /*enchantingWeapon.enchantLevel = 0;
                                     enchantingWeapon.lowerDamage = 2;

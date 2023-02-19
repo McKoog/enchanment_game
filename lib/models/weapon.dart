@@ -8,4 +8,8 @@ class Weapon extends Item{
   int higherDamage;
   int enchantLevel;
 
+  static Weapon copyWith(Weapon weapon){
+    return Weapon(id: weapon.id, type: weapon.type, image: weapon.image, name: weapon.name, lowerDamage: weapon.lowerDamage, higherDamage: weapon.higherDamage, enchantLevel: weapon.enchantLevel);
+  }
+
 }

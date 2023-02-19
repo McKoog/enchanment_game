@@ -1,3 +1,4 @@
+import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/dropItem.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
@@ -10,13 +11,8 @@ final allMonstersList = StateProvider<List<Monster>>((ref) => List.generate(
         (index) => Monster(name: 'Werewolf', image: "assets/lvl_1_werewolf.png", hp:100, dropList: [
           DropItem(
               chance: 25,
-              item:Weapon(id:"",type: ItemType.weapon, image: "assets/sword.svg", name: "Basic Sword", lowerDamage: 2, higherDamage: 3, enchantLevel: 0)),
+              item:stockBasicSword),
 
-          DropItem(chance: 50, item: Scroll(
-              id: "",
-              type: ItemType.scroll,
-              image: "assets/enchant_scroll.svg",
-              name: "Scroll of enchant",
-              description: "Increase power of the weapon, but be carefull, it's not garanteed"))
+          DropItem(chance: 50, item: stockScroll)
         ])
 ));
