@@ -24,6 +24,54 @@ class Weapon extends Item {
   int critPower;
   int enchantLevel;
 
+  Map toJson() => {
+    'id': id,
+    'type': type.name,
+    'isSvgAsset': isSvgAsset,
+    'image': image,
+    'name' : name,
+    'weaponType' : weaponType.name,
+    'lowerDamage' : lowerDamage,
+    'higherDamage' : higherDamage,
+    'critRate' : critRate,
+    'critPower' : critPower,
+    'enchantLevel' : enchantLevel
+  };
+
+  factory Weapon.fromJson(Map<String, dynamic> json) {
+    ItemType? itemType;
+    String? jsonTypeItem = json["type"];
+    if(jsonTypeItem == "weapon"){
+      itemType = ItemType.weapon;
+    }else{
+      itemType = ItemType.scroll;
+    }
+
+    WeaponType weaponType;
+    String? jsonTypeWeapon = json["weaponType"];
+    if(jsonTypeWeapon == "sword"){
+      weaponType = WeaponType.sword;
+    }else if(jsonTypeWeapon == "bow"){
+      weaponType = WeaponType.bow;
+    }else{
+      weaponType = WeaponType.dagger;
+    }
+
+    return Weapon(
+      id: json['id'],
+      type: itemType,
+      isSvgAsset: json['isSvgAsset'],
+      image: json['image'],
+      name: json['name'],
+      weaponType: weaponType,
+      lowerDamage: json['lowerDamage'],
+      higherDamage: json['higherDamage'],
+      critRate: json['critRate'],
+      critPower: json['critPower'],
+      enchantLevel: json['enchantLevel'],
+    );
+  }
+
   static Weapon copyWith(Weapon weapon) {
     return Weapon(
         id: weapon.id,
@@ -37,5 +85,10 @@ class Weapon extends Item {
         critRate: weapon.critRate,
         critPower: weapon.critPower,
         enchantLevel: weapon.enchantLevel);
+  }
+
+  @override
+  String toString() {
+    return "id: $id, type: $type, image $image, isSvgAsset: $isSvgAsset, name: $name, weaponType: $weaponType, lowerDamage: $lowerDamage, higherDamage: $higherDamage, critRate: $critRate, critPower: $critPower, enchantLevel: $enchantLevel";
   }
 }

@@ -1,12 +1,67 @@
 // ignore_for_file: file_names
 
+import 'dart:convert';
+
 import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
 class Inventory{
   Inventory({required this.items});
   List<Item?> items;
+
+  Map toJson(){
+    List<Map?> mapItems = [];// = this.items.map((i) => i?.toJson()).toList();
+    items.forEach((element) {
+      if(element == null) {
+        mapItems.add(null);
+      }
+      else{
+        if(element.type == ItemType.weapon){
+          Weapon weapon = element as Weapon;
+          mapItems.add(weapon.toJson());
+        }
+        else{
+          Scroll scroll = element as Scroll;
+          mapItems.add(scroll.toJson());
+        }
+      }
+    });
+    return {
+      'items': mapItems
+    };
+  }
+
+  factory Inventory.fromJson(Map<String, dynamic> json) {
+
+    List<Item?> items = [];
+
+    var x = json['items'] as List;
+
+    /*List<Item?> items = (json['items'] as List).map((i) =>
+        i == null?null:Item.fromJson(i)).toList();*/
+
+    x.forEach((element) {
+      if(element == null){
+        items.add(null);
+      }
+      else {
+        if (element['type'] == 'weapon') {
+          Weapon weapon = Weapon.fromJson(element);
+          items.add(weapon);
+        }
+        else {
+          Scroll scroll = Scroll.fromJson(element);
+          items.add(scroll);
+        }
+      }
+    });
+
+    return Inventory(
+      items: items,
+    );
+  }
 
   Inventory swapItems(int from, int to){
     items[to] = items[from];

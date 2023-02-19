@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
 import 'package:enchantment_game/screens/shop_screen/shop_screen.dart';
+import 'package:enchantment_game/startapp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -49,27 +53,29 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         body: ProviderScope(
-          child: Stack(
-            children: [
+          child: StartApp(
+            child: Stack(
+              children: [
 
-              Container(
-                color: const Color.fromRGBO(78, 78, 78, 1),
-                child: isMobile
-                    ?PageView(
-                  children: [
-                    EnchantScreen(width: screenSize.width,),
-                    HuntingFieldScreen(width: screenSize.width,)],
-                )
-                    :Row(
-                      children: [
-                        ShopScreen(width: screenSize.width/3),
-                        EnchantScreen(width:screenSize.width/3),
-                        HuntingFieldScreen(width: screenSize.width/3,),
-                      ],
-                    ),
-              ),
-              Positioned(top:8,left:8,child: Text("v.$appVersion",style: const TextStyle(fontSize: 18,color: Colors.yellow),)),
-            ],
+                Container(
+                  color: const Color.fromRGBO(78, 78, 78, 1),
+                  child: isMobile
+                      ?PageView(
+                    children: [
+                      EnchantScreen(width: screenSize.width,),
+                      HuntingFieldScreen(width: screenSize.width,)],
+                  )
+                      :Row(
+                        children: [
+                          ShopScreen(width: screenSize.width/3),
+                          EnchantScreen(width:screenSize.width/3),
+                          HuntingFieldScreen(width: screenSize.width/3,),
+                        ],
+                      ),
+                ),
+                Positioned(top:8,left:8,child: Text("v.$appVersion",style: const TextStyle(fontSize: 18,color: Colors.yellow),)),
+              ],
+            ),
           ),
             //child: EnchantScreen()
         ),
