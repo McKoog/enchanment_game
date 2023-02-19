@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
+import 'package:enchantment_game/data_providers/shared_pref_provider.dart';
 import 'package:enchantment_game/decorations/zone_decorations.dart';
 import 'package:enchantment_game/models/Inventory.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InventoryField extends ConsumerWidget {
   const InventoryField({Key? key, required this.sideSize,required this.capacity}) : super(key: key);
@@ -13,6 +17,10 @@ class InventoryField extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     Inventory invent = ref.watch(inventory);
+    SharedPreferences? pref = ref.read(sharedPrefProvider);
+    if(pref != null){
+      pref.setString("inventory", jsonEncode(invent.toJson()));
+    }
     return Container(
         height: sideSize,
         width: sideSize,
