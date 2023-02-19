@@ -38,7 +38,7 @@ class MonsterHpBar extends StatelessWidget {
               Container(
                   alignment: Alignment.center,
                   height: 35,
-                  width: widthOfOneHP * 100,
+                  width: widthOfOneHP * monster.hp,
                   decoration: monsterHpBarDecoration,
                   child: Text(
                     "$currentHP / ${monster.hp}",

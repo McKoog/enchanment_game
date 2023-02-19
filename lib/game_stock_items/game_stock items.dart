@@ -9,8 +9,11 @@ Weapon stockFist = Weapon(
     isSvgAsset: false,
     image: "assets/fist.png",
     name: "Fists",
+    weaponType: WeaponType.fist,
     lowerDamage: 1,
     higherDamage: 1,
+    critRate: 0,
+    critPower: 0,
     enchantLevel: 0);
 
 Weapon stockBasicSword = Weapon(
@@ -18,8 +21,37 @@ Weapon stockBasicSword = Weapon(
     type: ItemType.weapon,
     image: "assets/sword.svg",
     name: "Basic Sword",
-    lowerDamage: 50,
+    weaponType: WeaponType.sword,
+    lowerDamage: 2,
     higherDamage: 3,
+    critRate: 15,
+    critPower: 50,
+    enchantLevel: 0);
+
+Weapon stockBow = Weapon(
+    id: "Bow",
+    type: ItemType.weapon,
+    isSvgAsset: false,
+    image: "assets/bow.png",
+    name: "Long Bow",
+    weaponType: WeaponType.bow,
+    lowerDamage: 1,
+    higherDamage: 5,
+    critRate: 10,
+    critPower: 75,
+    enchantLevel: 0);
+
+Weapon stockDagger = Weapon(
+    id: "Dagger",
+    type: ItemType.weapon,
+    isSvgAsset: false,
+    image: "assets/dagger.png",
+    name: "Dagger",
+    weaponType: WeaponType.dagger,
+    lowerDamage: 1,
+    higherDamage: 2,
+    critRate: 40,
+    critPower: 100,
     enchantLevel: 0);
 
 Scroll stockScroll = Scroll(
@@ -30,7 +62,7 @@ Scroll stockScroll = Scroll(
     description:
         "Increase power of the weapon, but be carefull, it's not garanteed");
 
-Item? getNewStockItem(ItemType type,[String? id]) {
+Item? getNewStockItem(ItemType type,[WeaponType? weaponType,String? id]) {
   Item? newItem;
   String uuid = Uuid().v1().toString();
   if(type == ItemType.scroll){
@@ -38,8 +70,18 @@ Item? getNewStockItem(ItemType type,[String? id]) {
     newItem.id = uuid;
   }
   else if(type == ItemType.weapon){
-    newItem = Weapon.copyWith(stockBasicSword);
-    newItem.id = uuid;
+    if(weaponType == WeaponType.sword || weaponType == null) {
+      newItem = Weapon.copyWith(stockBasicSword);
+      newItem.id = uuid;
+    }
+    else if(weaponType == WeaponType.bow){
+      newItem = Weapon.copyWith(stockBow);
+      newItem.id = uuid;
+    }
+    else if(weaponType == WeaponType.dagger) {
+      newItem = Weapon.copyWith(stockDagger);
+      newItem.id = uuid;
+    }
   }
   return newItem;
 }

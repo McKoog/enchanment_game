@@ -22,12 +22,15 @@ final currentSelectedMonsterHuntingField = StateProvider<Monster?>((ref) =>
     Monster(
         name: "Werewolf",
         image: "assets/lvl_1_werewolf.png",
-        hp: 100,
+        hp: 200,
         dropList: [
           DropItem(
               chance: 25,
               item: stockBasicSword),
           DropItem(
               chance: 50,
-              item: stockScroll)
+              item: stockScroll),
+          DropItem(chance: 5, item: stockDagger),
+          DropItem(chance: 5, item: stockBow)
+
         ]));

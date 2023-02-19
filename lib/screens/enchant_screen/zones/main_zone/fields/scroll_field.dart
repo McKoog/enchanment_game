@@ -22,13 +22,29 @@ class ScrollField extends ConsumerWidget {
   final Scroll scroll;
 
   bool checkIsEnchantSuccess(){
-    int rand = Random().nextInt(100);
+    int rand = Random().nextInt(101);
     if(rand <= 75){
       return true;
     }
     else{
       return false;
     }
+  }
+
+  Weapon enchantWeapon(Weapon weapon){
+    weapon.enchantLevel += 1;
+    if(weapon.weaponType == WeaponType.sword){
+      weapon.lowerDamage += 1;
+      weapon.higherDamage += 2;
+    }
+    else if(weapon.weaponType == WeaponType.bow){
+      weapon.higherDamage += 3;
+    }
+    else if(weapon.weaponType == WeaponType.dagger){
+      weapon.lowerDamage += 1;
+      weapon.higherDamage += 1;
+    }
+    return weapon;
   }
 
   @override
@@ -136,9 +152,10 @@ class ScrollField extends ConsumerWidget {
                                   Weapon enchantingWeapon = ref.read(inventory.notifier).state.items.firstWhere((element) => element == ref.read(scrollEnchantSlotItem)) as Weapon;
                                   if(checkIsEnchantSuccess()){
                                     ref.read(currentEnchantSuccess.notifier).update((state) => true);
-                                    enchantingWeapon.enchantLevel += 1;
-                                    enchantingWeapon.lowerDamage += 1;
-                                    enchantingWeapon.higherDamage += 2;
+                                    enchantWeapon(enchantingWeapon);
+                                    //enchantingWeapon.enchantLevel += 1;
+                                    // enchantingWeapon.lowerDamage += 1;
+                                    // enchantingWeapon.higherDamage += 2;
                                     if(ref.read(currentSelectedWeaponHuntingField) != null && ref.read(currentSelectedWeaponHuntingField)!.id == enchantingWeapon.id) {
                                       Weapon weapon = Weapon.copyWith(enchantingWeapon);
                                       ref.read(currentSelectedWeaponHuntingField.notifier).update((state) => weapon);

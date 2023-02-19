@@ -31,12 +31,55 @@ class _AttackFieldState extends ConsumerState<AttackField> {
 
   void onTapAttack() {
     if (currentHP > widget.weapon.lowerDamage) {
-      currentHP = currentHP - widget.weapon.lowerDamage;
-      setState(() {});
+      int randDamage = Random().nextInt(widget.weapon.higherDamage+1);
+      if(randDamage < widget.weapon.lowerDamage){
+        randDamage = widget.weapon.lowerDamage;
+      }
+      int randCrit = Random().nextInt(101);
+      bool isCrit = randCrit <= widget.weapon.critRate;
+      if(isCrit){
+        double additionalCritDamageAmount = randDamage * (widget.weapon.critPower/100);
+        randDamage += additionalCritDamageAmount.toInt();
+      }
+      currentHP = currentHP - randDamage;
+      if(currentHP > 0) {
+        setState(() {});
+      }
+      else{
+        currentHP = widget.monster.hp;
+        widget.monster.dropList.forEach((element) {
+          int rand = Random().nextInt(101);
+          if (rand <= element.chance) {
+            Item? item;
+            bool isWeapon = element.item.type == ItemType.weapon;
+            if(isWeapon){
+              Weapon elementWeapon = element.item as Weapon;
+              item = getNewStockItem(ItemType.weapon,elementWeapon.weaponType);
+            }
+            else{
+              item = getNewStockItem(ItemType.scroll);
+            }
+            if (item != null) {
+              if (ref.read(inventory).isLastFiveSlots()) {
+                if (item.type == ItemType.scroll) {
+                  ref
+                      .read(inventory.notifier)
+                      .update((state) => ref.read(inventory).putItem(item!));
+                }
+              } else {
+                ref
+                    .read(inventory.notifier)
+                    .update((state) => ref.read(inventory).putItem(item!));
+              }
+            }
+          }
+        });
+        setState(() {});
+      }
     } else {
       currentHP = widget.monster.hp;
       widget.monster.dropList.forEach((element) {
-        int rand = Random().nextInt(100);
+        int rand = Random().nextInt(101);
         if (rand <= element.chance) {
           Item? item = element.item.type == ItemType.weapon
               ? getNewStockItem(ItemType.weapon)
@@ -63,7 +106,7 @@ class _AttackFieldState extends ConsumerState<AttackField> {
   @override
   void initState() {
     currentHP = widget.monster.hp;
-    widthOfOneHP = (widget.width - 160) / 100;
+    widthOfOneHP = (widget.width - 160) / widget.monster.hp;
     super.initState();
   }
 

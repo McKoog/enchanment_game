@@ -37,7 +37,9 @@ class ScrollEnchantSlot extends ConsumerWidget {
                                       :1200
                                   :200),
             child: ref.watch(scrollEnchantSlotItem) != null
+                ?ref.read(scrollEnchantSlotItem)!.isSvgAsset
                 ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
+                :Image.asset(ref.read(scrollEnchantSlotItem)!.image)
                 :null
         );
       },

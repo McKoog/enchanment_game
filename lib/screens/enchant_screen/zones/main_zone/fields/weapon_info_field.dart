@@ -17,6 +17,10 @@ class WeaponInfoField extends StatelessWidget {
           Text(weapon.enchantLevel >0 ?"${weapon.name} +${weapon.enchantLevel}":weapon.name, style: weaponNameDecoration),
           const SizedBox(height: 16,),
           Text("Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",style: weaponInfoTextDecoration,),
+          const SizedBox(height: 16,),
+          Text("Critical hit chance: ${weapon.critRate}%",style: weaponInfoTextDecoration,),
+          const SizedBox(height: 16,),
+          Text("Critical hit power: ${weapon.critPower}%",style: weaponInfoTextDecoration,)
         ],
       ),
     );

@@ -12,7 +12,9 @@ class WeaponField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+        alignment: Alignment.center,
         margin: const EdgeInsets.all(50),
+        padding: const EdgeInsets.all(27),
         decoration: weapon.enchantLevel < 1
             ? attackFieldDecoration
             : BoxDecoration(
@@ -42,16 +44,14 @@ class WeaponField extends StatelessWidget {
                                 blurRadius: 30,
                                 spreadRadius: 15)
                           ]),
-        child: Transform.scale(
-            scale: 0.7,
-            child: weapon.isSvgAsset
-                ? SvgPicture.asset(
-                    weapon.image,
-                    fit: BoxFit.fitHeight,
-                  )
-                : Image.asset(
-                    weapon.image,
-                    fit: BoxFit.scaleDown,
-                  )));
+        child: weapon.isSvgAsset
+            ? SvgPicture.asset(
+                weapon.image,
+                fit: BoxFit.fitHeight,
+              )
+            : Image.asset(
+                weapon.image,
+                //fit: BoxFit.scaleDown,
+              ));
   }
 }

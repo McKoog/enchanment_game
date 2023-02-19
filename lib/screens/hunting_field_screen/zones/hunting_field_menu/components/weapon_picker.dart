@@ -15,7 +15,7 @@ class WeaponPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
 
-    var inv = ref.read(inventory);
+    var inv = ref.watch(inventory);
     List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
 
     return Row(
