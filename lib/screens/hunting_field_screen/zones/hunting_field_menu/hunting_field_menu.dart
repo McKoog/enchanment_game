@@ -37,8 +37,10 @@ class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
   void initState() {
     var inv = ref.read(inventory);
     List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
+    int currSelectedWeaponIndex = myWeapons.indexOf(ref.read(currentSelectedWeaponHuntingField));
     controllerWeapon =
-        FixedExtentScrollController(initialItem: myWeapons.length > 2 ? 1 : 0);
+        FixedExtentScrollController(initialItem: ref.read(currentSelectedWeaponHuntingField) != null ?currSelectedWeaponIndex:myWeapons.length > 2 ? 1 : 0);
+
     controllerMonster = FixedExtentScrollController(initialItem: 0);
     super.initState();
   }

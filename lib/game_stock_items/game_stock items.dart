@@ -18,7 +18,7 @@ Weapon stockBasicSword = Weapon(
     type: ItemType.weapon,
     image: "assets/sword.svg",
     name: "Basic Sword",
-    lowerDamage: 2,
+    lowerDamage: 50,
     higherDamage: 3,
     enchantLevel: 0);
 

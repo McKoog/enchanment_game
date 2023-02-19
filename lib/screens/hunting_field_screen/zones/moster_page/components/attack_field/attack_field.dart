@@ -3,13 +3,11 @@ import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
-import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/monster_hp_bar.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/weapon_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
 
 class AttackField extends ConsumerStatefulWidget {
   const AttackField(

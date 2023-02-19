@@ -139,6 +139,10 @@ class ScrollField extends ConsumerWidget {
                                     enchantingWeapon.enchantLevel += 1;
                                     enchantingWeapon.lowerDamage += 1;
                                     enchantingWeapon.higherDamage += 2;
+                                    if(ref.read(currentSelectedWeaponHuntingField) != null && ref.read(currentSelectedWeaponHuntingField)!.id == enchantingWeapon.id) {
+                                      Weapon weapon = Weapon.copyWith(enchantingWeapon);
+                                      ref.read(currentSelectedWeaponHuntingField.notifier).update((state) => weapon);
+                                    }
                                     ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(scroll));
                                   }
                                   else{
