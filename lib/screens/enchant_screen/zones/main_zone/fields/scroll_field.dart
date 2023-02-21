@@ -173,6 +173,7 @@ class ScrollField extends ConsumerWidget {
                                     ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
                                     ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(enchantingWeapon));
                                     ref.read(inventory.notifier).update((state) => ref.read(inventory).removeItem(scroll));
+                                    ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
                                   }
                                 });
                               }

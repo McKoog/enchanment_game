@@ -13,8 +13,8 @@ class InventoryEmptyDragTarget extends ConsumerWidget {
   Widget build(BuildContext context,WidgetRef ref) {
     return DragTarget<Item>(
         onAccept: (value){
-          int indexDragFrom = ref.read(currentDragItemInventoryIndex)!;
-          ref.read(inventory.notifier).update((state) => state.swapItems(indexDragFrom, inventoryIndex));
+          int? indexDragFrom = ref.read(currentDragItemInventoryIndex);
+          if(indexDragFrom != null)ref.read(inventory.notifier).update((state) => state.swapItems(indexDragFrom, inventoryIndex));
           ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
         },
         builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData){
