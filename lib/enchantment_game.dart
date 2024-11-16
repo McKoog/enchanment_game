@@ -1,7 +1,8 @@
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
 import 'package:enchantment_game/screens/shop_screen/shop_screen.dart';
-import 'package:enchantment_game/shared_variables.dart';
+import 'package:enchantment_game/shared_blocs_provider.dart';
+import 'package:enchantment_game/version_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,9 +19,9 @@ class EnchantmentGame extends StatelessWidget {
       theme: ThemeData.dark(useMaterial3: true),
       home: ProviderScope(
         child: Scaffold(
-          body: Stack(
-            children: [
-              Container(
+          body: SharedBlocsProvider(
+            child: VersionWrapper(
+              child: ColoredBox(
                 color: const Color.fromRGBO(78, 78, 78, 1),
                 child: Row(
                   children: [
@@ -32,14 +33,7 @@ class EnchantmentGame extends StatelessWidget {
                   ],
                 ),
               ),
-              Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Text(
-                    "v.$appVersion",
-                    style: const TextStyle(fontSize: 18, color: Colors.yellow),
-                  )),
-            ],
+            ),
           ),
         ),
       ),

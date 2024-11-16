@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class InventorySlot extends ConsumerWidget {
-  const InventorySlot({Key? key,required this.index,this.item}) : super(key: key);
+  const InventorySlot({super.key,required this.index,this.item});
   final int index;
   final Item? item;
 

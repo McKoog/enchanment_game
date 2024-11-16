@@ -3,14 +3,14 @@ import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/base_main_zone_field.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/scroll_field.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/weapon_info_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/base_main_zone_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/scroll_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/weapon_info_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MainZone extends ConsumerWidget {
-  const MainZone({Key? key, required this.height,required this.width}) : super(key: key);
+class EnchantZone extends ConsumerWidget {
+  const EnchantZone({Key? key, required this.height,required this.width}) : super(key: key);
   final double height;
   final double width;
 
@@ -28,7 +28,7 @@ class MainZone extends ConsumerWidget {
         child: (showWeapon || showScroll)
             ?Padding(
               padding: const EdgeInsets.all(8.0),
-              child: BaseMainZoneField(
+              child: BaseEnchantZoneField(
                 sideSize: height,
                 backgroundItem: currScroll ?? currWeapon,
                 child: currScroll != null

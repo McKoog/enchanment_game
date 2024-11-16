@@ -1,4 +1,4 @@
-import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
+import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/dropItem.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';

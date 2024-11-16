@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BaseMainZoneField extends ConsumerWidget {
-  const BaseMainZoneField({Key? key,required this.sideSize,this.backgroundItem,required this.child}) : super(key: key);
+class BaseEnchantZoneField extends ConsumerWidget {
+  const BaseEnchantZoneField({Key? key,required this.sideSize,this.backgroundItem,required this.child}) : super(key: key);
   final double sideSize;
   final Widget child;
   final Item? backgroundItem;

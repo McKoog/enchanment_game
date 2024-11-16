@@ -1,8 +1,8 @@
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/inventory_field.dart';
 import 'package:flutter/cupertino.dart';
 
-class SecondaryZone extends StatelessWidget {
-  const SecondaryZone({Key? key,required this.height,required this.width}) : super(key: key);
+class InventoryZone extends StatelessWidget {
+  const InventoryZone({super.key,required this.height,required this.width});
   final double height;
   final double width;
 

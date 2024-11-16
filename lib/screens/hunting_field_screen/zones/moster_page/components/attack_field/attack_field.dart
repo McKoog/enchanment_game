@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
-import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
+import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
 import 'package:enchantment_game/models/weapon.dart';

@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
+import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -13,7 +13,7 @@ class Inventory{
 
   Map toJson(){
     List<Map?> mapItems = [];// = this.items.map((i) => i?.toJson()).toList();
-    items.forEach((element) {
+    for (var element in items) {
       if(element == null) {
         mapItems.add(null);
       }
@@ -27,7 +27,7 @@ class Inventory{
           mapItems.add(scroll.toJson());
         }
       }
-    });
+    }
     return {
       'items': mapItems
     };
@@ -42,7 +42,7 @@ class Inventory{
     /*List<Item?> items = (json['items'] as List).map((i) =>
         i == null?null:Item.fromJson(i)).toList();*/
 
-    x.forEach((element) {
+    for (var element in x) {
       if(element == null){
         items.add(null);
       }
@@ -56,7 +56,7 @@ class Inventory{
           items.add(scroll);
         }
       }
-    });
+    }
 
     return Inventory(
       items: items,
@@ -72,9 +72,9 @@ class Inventory{
   List<Weapon> getAllMyWeapons(bool includingFist){
     List<Weapon> weapons = [];
     if(includingFist)weapons.add(stockFist);
-    items.forEach((element) {
+    for (var element in items) {
       if(element != null && element.type == ItemType.weapon) weapons.add(element as Weapon);
-    });
+    }
     return weapons;
   }
 
@@ -102,11 +102,11 @@ class Inventory{
 
   bool isLastFiveSlots(){
     int emptySlots = 0;
-    items.forEach((element) {
+    for (var element in items) {
       if(element == null){
         emptySlots++;
       }
-    });
+    }
     return emptySlots <= 5;
   }
 }

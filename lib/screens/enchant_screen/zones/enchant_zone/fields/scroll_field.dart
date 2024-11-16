@@ -5,13 +5,12 @@ import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/game_stock_items/game_stock%20items.dart';
-import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_button.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_enchant_slot.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/main_zone/fields/components/scroll_progress_bar.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_button.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_enchant_slot.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

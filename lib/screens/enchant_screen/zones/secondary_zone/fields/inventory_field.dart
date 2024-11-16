@@ -1,43 +1,74 @@
 import 'dart:convert';
 
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/shared_pref_provider.dart';
 import 'package:enchantment_game/decorations/zone_decorations.dart';
 import 'package:enchantment_game/models/Inventory.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class InventoryField extends ConsumerWidget {
-  const InventoryField({Key? key, required this.sideSize,required this.capacity}) : super(key: key);
+  const InventoryField(
+      {super.key, required this.sideSize, required this.capacity});
+
   final double sideSize;
   final int capacity;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
-    Inventory invent = ref.watch(inventory);
-    SharedPreferences? pref = ref.read(sharedPrefProvider);
-    if(pref != null){
-      pref.setString("inventory", jsonEncode(invent.toJson()));
-    }
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SizedBox(
         height: sideSize,
         width: sideSize,
         //decoration: inventoryZoneDecoration,
-        child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: capacity,
-            padding: const EdgeInsets.all(10),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, mainAxisSpacing: 5,crossAxisSpacing: 5),
-            itemBuilder: (BuildContext context,int index){
-              //Inventory invent = ref.watch(inventory);
-              return InventorySlot(
-                  index: index,
-                  item: invent.items[index]
-              );
+        child: BlocBuilder<InventoryBloc, InventoryState>(
+          bloc: context.read<InventoryBloc>(),
+          builder: (BuildContext context, state) {
+            switch (state) {
+              case InventoryState$Initial():
+                return Center(
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              case InventoryState$Loading():
+                return Center(
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  ),
+                );
+              case InventoryState$Ready():
+                return GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: capacity,
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 5,
+                            mainAxisSpacing: 5,
+                            crossAxisSpacing: 5),
+                    itemBuilder: (BuildContext context, int index) {
+                      return InventorySlot(
+                        index: index,
+                        item: state.inventory.items[index],
+                      );
+                    });
             }
-            )
-    );
+          },
+        ));
   }
 }

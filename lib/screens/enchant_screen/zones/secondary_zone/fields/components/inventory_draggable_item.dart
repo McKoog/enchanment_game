@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class InventoryDraggableItem extends ConsumerWidget {
-  const InventoryDraggableItem({Key? key,required this.item,required this.inventoryIndex}) : super(key: key);
+  const InventoryDraggableItem({super.key,required this.item,required this.inventoryIndex});
   final Item item;
   final int inventoryIndex;
 
