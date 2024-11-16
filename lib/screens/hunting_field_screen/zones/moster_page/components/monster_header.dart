@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MonsterHeader extends ConsumerWidget {
-  const MonsterHeader({Key? key,required this.width, required this.monster}) : super(key: key);
+  const MonsterHeader({super.key,required this.width, required this.monster});
 
   final double width;
   final Monster monster;
@@ -42,7 +42,7 @@ class MonsterHeader extends ConsumerWidget {
               Expanded(
                   child: Container(
                       alignment: Alignment.center,
-                      height: 50,
+                      height: 53,
                       decoration: monsterNameFieldDecoration,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

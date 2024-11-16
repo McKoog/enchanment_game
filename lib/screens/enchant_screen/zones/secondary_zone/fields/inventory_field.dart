@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
+import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_event.dart';
+import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
@@ -52,21 +55,26 @@ class InventoryField extends ConsumerWidget {
                   ),
                 );
               case InventoryState$Ready():
-                return GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: capacity,
-                    padding: const EdgeInsets.all(10),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 5,
-                            mainAxisSpacing: 5,
-                            crossAxisSpacing: 5),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InventorySlot(
-                        index: index,
-                        item: state.inventory.items[index],
-                      );
-                    });
+                return BlocBuilder<DraggableItemsBloc,DraggableItemsState>(
+                  bloc: context.read<DraggableItemsBloc>(),
+                  builder: (context,dragState) {
+                    return GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: capacity,
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 5,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InventorySlot(
+                            index: index,
+                            item: state.inventory.items[index],
+                          );
+                        });
+                  }
+                );
             }
           },
         ));

@@ -52,7 +52,7 @@ class WeaponPicker extends ConsumerWidget {
                 return Container(
                     margin: const EdgeInsets.all(16),
                     child: InventorySlot(
-                        index: 1000, item: myWeapons[index]));
+                        index: 1000, item: myWeapons[index], isDraggable: false,));
               },
             ),
           ),

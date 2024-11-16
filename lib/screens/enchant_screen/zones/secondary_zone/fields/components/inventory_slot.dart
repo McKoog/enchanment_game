@@ -9,25 +9,31 @@ import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fie
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO: Переписать на дженерик
 class InventorySlot extends ConsumerWidget {
-  const InventorySlot({super.key,required this.index,this.item});
+  const InventorySlot(
+      {super.key, required this.index, this.item, this.isDraggable = true});
+
   final int index;
   final Item? item;
 
+  final bool isDraggable;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(currentEnchantSuccess);
+    // ref.watch(currentEnchantSuccess);
     Weapon? weapon;
-    if(item != null && item!.type == ItemType.weapon)weapon = item as Weapon;
+    if (item != null && item!.type == ItemType.weapon) weapon = item as Weapon;
 
-    var invItems = ref.watch(inventory).items;
-    int? currentDrag = ref.watch(currentDragItemInventoryIndex);
-    bool isDragged = currentDrag != null;
-    var draggedItem = isDragged ?invItems[currentDrag]:null;
-    bool thisItemDragged = isDragged && draggedItem != null && draggedItem.id == item?.id;
-
-    bool enchantVisible = item != null && !thisItemDragged;
-        //ref.watch(currentDragItemInventoryIndex) != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!] != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!]!.id != item!.id;
+    // var invItems = ref.watch(inventory).items;
+    // int? currentDrag = ref.watch(currentDragItemInventoryIndex);
+    // bool isDragged = currentDrag != null;
+    // var draggedItem = isDragged ? invItems[currentDrag] : null;
+    // bool thisItemDragged =
+    //     isDragged && draggedItem != null && draggedItem.id == item?.id;
+    //
+    // bool enchantVisible = item != null && !thisItemDragged;
+    //ref.watch(currentDragItemInventoryIndex) != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!] != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!]!.id != item!.id;
 
     return Stack(
       alignment: Alignment.bottomRight,
@@ -36,22 +42,52 @@ class InventorySlot extends ConsumerWidget {
         Container(
             padding: const EdgeInsets.all(5),
             decoration: weapon != null
-                ?BoxDecoration(
-                color: const Color.fromRGBO(85, 85, 85, 1),
-                border: Border.fromBorderSide(
-                    BorderSide(
-                        color: weapon.enchantLevel <=15 ?Color.fromRGBO(130, 130, 130, 1):weapon.enchantLevel <= 20?enchantedWeaponsGlowColors[weapon.enchantLevel].withOpacity(0.6):Color.fromRGBO(130, 130, 130, 1),
-                        width: 2)
-                ),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: weapon.enchantLevel == 0 ?null:weapon.enchantLevel >20?[BoxShadow(color:enchantedWeaponsGlowColors[21],spreadRadius: 2)]:[BoxShadow(color:enchantedWeaponsGlowColors[weapon.enchantLevel],spreadRadius: 2)]
-            )
-                :inventorySlotDecoration,
+                ? BoxDecoration(
+                    color: const Color.fromRGBO(85, 85, 85, 1),
+                    border: Border.fromBorderSide(BorderSide(
+                        color: weapon.enchantLevel <= 15
+                            ? Color.fromRGBO(130, 130, 130, 1)
+                            : weapon.enchantLevel <= 20
+                                ? enchantedWeaponsGlowColors[
+                                        weapon.enchantLevel]
+                                    .withOpacity(0.6)
+                                : Color.fromRGBO(130, 130, 130, 1),
+                        width: 2)),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: weapon.enchantLevel == 0
+                        ? null
+                        : weapon.enchantLevel > 20
+                            ? [
+                                BoxShadow(
+                                    color: enchantedWeaponsGlowColors[21],
+                                    spreadRadius: 2)
+                              ]
+                            : [
+                                BoxShadow(
+                                    color: enchantedWeaponsGlowColors[
+                                        weapon.enchantLevel],
+                                    spreadRadius: 2)
+                              ])
+                : inventorySlotDecoration,
             child: item != null
-                ?InventoryDraggableItem(item: item!,inventoryIndex: index,)
-                :InventoryEmptyDragTarget(inventoryIndex: index,)
-        ),
-        if(weapon != null && enchantVisible)Positioned(right:8,bottom:8,child: Text(weapon.enchantLevel > 0 ?"+${weapon.enchantLevel}":"",style: const TextStyle(fontSize: 10,color: Colors.yellow),))
+                ? InventoryDraggableItem(
+                    item: item!,
+                    inventoryIndex: index,
+                    // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
+                    isDraggable: isDraggable,
+                  )
+                : InventoryEmptyDragTarget(
+                    inventoryIndex: index,
+                  )),
+        // TODO: добавить проверку видимости зачарования
+        if (weapon != null /*&& enchantVisible*/)
+          Positioned(
+              right: 8,
+              bottom: 8,
+              child: Text(
+                weapon.enchantLevel > 0 ? "+${weapon.enchantLevel}" : "",
+                style: const TextStyle(fontSize: 10, color: Colors.yellow),
+              ))
       ],
     );
   }

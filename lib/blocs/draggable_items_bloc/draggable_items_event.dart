@@ -1,5 +1,9 @@
-sealed class DraggableItemState{}
+sealed class DraggableItemsEvent{}
 
-class ItemState$Idle extends DraggableItemState{}
+class DraggableItemsEvent$StartDragging extends DraggableItemsEvent{
+  DraggableItemsEvent$StartDragging({required this.itemInventoryIndex});
 
-class ItemState$Dragged extends DraggableItemState{}
+  final int itemInventoryIndex;
+}
+
+class DraggableItemsEvent$StopDragging extends DraggableItemsEvent{}
