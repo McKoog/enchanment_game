@@ -12,12 +12,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // TODO: Переписать на дженерик
 class InventorySlot extends ConsumerWidget {
   const InventorySlot(
-      {super.key, required this.index, this.item, this.isDraggable = true});
+      {super.key, required this.index, this.item, this.canBeDragged = true, this.canBeDragTarget = true});
 
   final int index;
   final Item? item;
 
-  final bool isDraggable;
+  final bool canBeDragged;
+  final bool canBeDragTarget;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,18 +72,17 @@ class InventorySlot extends ConsumerWidget {
                 : inventorySlotDecoration,
             child: item != null
                 ? InventoryDragTarget(
-              inventoryIndex: index,
-                  // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
-                  isDraggable: isDraggable,
-                  child: InventoryDraggableItem(
+                    inventoryIndex: index,
+                    canBeDragTarget: canBeDragTarget,
+                    child: InventoryDraggableItem(
                       item: item!,
                       inventoryIndex: index,
-                      // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
-                      isDraggable: isDraggable,
+                      isDraggable: canBeDragged,
                     ),
-                )
+                  )
                 : InventoryDragTarget(
                     inventoryIndex: index,
+                    canBeDragTarget: canBeDragTarget,
                   )),
         // TODO: добавить проверку видимости зачарования
         if (weapon != null /*&& enchantVisible*/)

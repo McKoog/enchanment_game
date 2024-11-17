@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HuntingFieldScreen extends ConsumerWidget {
-  const HuntingFieldScreen({Key? key, required this.width}) : super(key: key);
+  const HuntingFieldScreen({super.key, required this.width});
 
   final double width;
 

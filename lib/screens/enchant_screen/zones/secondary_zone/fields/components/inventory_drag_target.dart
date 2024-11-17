@@ -10,15 +10,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class InventoryDragTarget extends ConsumerWidget {
-  const InventoryDragTarget({super.key,required this.inventoryIndex, this.child = const SizedBox.shrink(), this.isDraggable = true});
+  const InventoryDragTarget({super.key,required this.inventoryIndex, this.child = const SizedBox.shrink(), this.canBeDragTarget = true});
   final int inventoryIndex;
   final Widget child;
-  final bool isDraggable;
+  final bool canBeDragTarget;
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
 
-    if(!isDraggable){
+    if(!canBeDragTarget){
       return child;
     }
     final draggableBloc = context.read<DraggableItemsBloc>();

@@ -1,3 +1,5 @@
+import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
@@ -7,6 +9,7 @@ import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_fiel
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_weapon_field.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/weapon_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HuntingFieldsMenu extends ConsumerStatefulWidget {
@@ -29,7 +32,7 @@ class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
 
   @override
   void initState() {
-    var inv = ref.read(inventory);
+    var inv = context.read<InventoryBloc>().state.inventory; //ref.read(inventory);
     List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
     int currSelectedWeaponIndex = myWeapons.indexOf(ref.read(currentSelectedWeaponHuntingField));
     controllerWeapon =

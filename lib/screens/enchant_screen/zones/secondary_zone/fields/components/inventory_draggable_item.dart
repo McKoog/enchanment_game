@@ -18,7 +18,11 @@ class InventoryDraggableItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
 
-    final draggableBloc = isDraggable?context.read<DraggableItemsBloc>():null;
+    if(!isDraggable){
+      return item.isSvgAsset?SvgPicture.asset(item.image):Image.asset(item.image);
+    }
+
+    final draggableBloc = context.read<DraggableItemsBloc>();
 
     return Draggable<Item>(
       data: item,
@@ -27,15 +31,15 @@ class InventoryDraggableItem extends ConsumerWidget {
           :Image.asset(item.image,height: MediaQuery.of(context).size.height/12,width: MediaQuery.of(context).size.height/12,),
       childWhenDragging: const SizedBox(),
       onDragStarted: (){
-        draggableBloc?.add(DraggableItemsEvent$StartDragging(itemInventoryIndex: inventoryIndex));
+        draggableBloc.add(DraggableItemsEvent$StartDragging(itemInventoryIndex: inventoryIndex));
         // ref.read(currentDragItemInventoryIndex.notifier).update((state) => inventoryIndex);
       },
       onDraggableCanceled: (Velocity vel, Offset offset){
-        draggableBloc?.add(DraggableItemsEvent$StopDragging());
+        draggableBloc.add(DraggableItemsEvent$StopDragging());
         // ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
       },
       onDragEnd: (DraggableDetails details){
-        draggableBloc?.add(DraggableItemsEvent$StopDragging());
+        draggableBloc.add(DraggableItemsEvent$StopDragging());
         // ref.read(currentDragItemInventoryIndex.notifier).update((state) => null);
       },
       child: InkWell(

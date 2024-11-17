@@ -1,13 +1,14 @@
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WeaponPicker extends ConsumerWidget {
-  const WeaponPicker({Key? key,required this.controllerWeapon,required this.constraints}) : super(key: key);
+  const WeaponPicker({super.key,required this.controllerWeapon,required this.constraints});
 
   final FixedExtentScrollController controllerWeapon;
   final BoxConstraints constraints;
@@ -15,8 +16,7 @@ class WeaponPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
 
-    var inv = ref.watch(inventory);
-    List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
+    List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
 
     return Row(
       children: [
@@ -52,7 +52,7 @@ class WeaponPicker extends ConsumerWidget {
                 return Container(
                     margin: const EdgeInsets.all(16),
                     child: InventorySlot(
-                        index: 1000, item: myWeapons[index], isDraggable: false,));
+                        index: 1000, item: myWeapons[index], canBeDragged: false, canBeDragTarget: false,));
               },
             ),
           ),
