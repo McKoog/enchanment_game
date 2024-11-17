@@ -1,47 +1,65 @@
-import 'package:enchantment_game/data_providers/animation_providers.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ScrollEnchantSlot extends ConsumerWidget {
-  const ScrollEnchantSlot({Key? key,required this.sideSize}) : super(key: key);
+class ScrollEnchantSlot extends StatelessWidget {
+  const ScrollEnchantSlot(
+      {super.key,
+      required this.sideSize,
+      this.insertedWeapon,
+      required this.currentEnchantState});
+
   final double sideSize;
+  final Weapon? insertedWeapon;
+  final EnchantState currentEnchantState;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final enchantBloc = context.read<EnchantBloc>();
+
+    final currentSideSize = insertedWeapon == null
+        ? (sideSize - 50) / 4
+        : currentEnchantState is EnchantState$EnchantmentInProgress
+            ? (sideSize - 50) / 4
+            : (sideSize - 50) / 1.6;
+
     return DragTarget<Item>(
-      onAccept: (value){
-        if(value.type == ItemType.weapon && ref.read(currentEnchantSuccess) == null && ref.read(scrollEnchantSlotItem) == null) {
-          ref.read(scrollEnchantSlotItem.notifier).update((state) => value as Weapon);
+      onAcceptWithDetails: (details) {
+        if (details.data.type == ItemType.weapon && insertedWeapon == null) {
+          enchantBloc
+              .add(EnchantEvent$InsertWeapon(weapon: details.data as Weapon));
         }
       },
-      builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
+      builder: (BuildContext context, List<Item?> candidateData,
+          List<dynamic> rejectedData) {
         return AnimatedContainer(
-          padding: const EdgeInsets.all(4),
-            decoration: ref.watch(finishedProgressBarAnimation)
-                ?(ref.watch(currentEnchantSuccess) != null) && ref.watch(currentEnchantSuccess)!
-                    ?scrollEnchantSlotSuccessDecoration
-                    :scrollEnchantSlotFailedDecoration
-                :scrollEnchantSlotDecoration,
-            height: sideSize,
-            width: sideSize,
+            decoration: switch (currentEnchantState) {
+              EnchantState$Result result => result.isSuccess
+                  ? scrollEnchantSlotSuccessDecoration
+                  : scrollEnchantSlotFailedDecoration,
+              _ => scrollEnchantSlotDecoration
+            },
+            height: currentSideSize,
+            width: currentSideSize,
             duration: Duration(
-                milliseconds: ref.watch(startProgressBarAnimation)
-                                  ?ref.watch(finishedProgressBarAnimation)
-                                      ?500
-                                      :1200
-                                  :200),
-            child: ref.watch(scrollEnchantSlotItem) != null
-                ?ref.read(scrollEnchantSlotItem)!.isSvgAsset
-                ?SvgPicture.asset(ref.read(scrollEnchantSlotItem)!.image)
-                :Image.asset(ref.read(scrollEnchantSlotItem)!.image)
-                :null
-        );
+              milliseconds: switch (currentEnchantState) {
+                EnchantState$Idle() => 200,
+                EnchantState$EnchantmentInProgress() => 1200,
+                EnchantState$Result() => 500,
+              },
+            ),
+            child: insertedWeapon != null
+                ? insertedWeapon!.isSvgAsset
+                    ? SvgPicture.asset(insertedWeapon!.image)
+                    : Image.asset(insertedWeapon!.image)
+                : null);
       },
     );
   }
