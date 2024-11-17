@@ -3,7 +3,7 @@ import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:uuid/uuid.dart';
 
-Weapon stockFist = Weapon(
+final Weapon stockFist = Weapon(
     id: "Fist",
     type: ItemType.weapon,
     isSvgAsset: false,
@@ -16,7 +16,7 @@ Weapon stockFist = Weapon(
     critPower: 0,
     enchantLevel: 0);
 
-Weapon stockBasicSword = Weapon(
+final Weapon stockBasicSword = Weapon(
     id: "BasicSword",
     type: ItemType.weapon,
     image: "assets/sword.svg",
@@ -28,7 +28,7 @@ Weapon stockBasicSword = Weapon(
     critPower: 50,
     enchantLevel: 0);
 
-Weapon stockBow = Weapon(
+final Weapon stockBow = Weapon(
     id: "Bow",
     type: ItemType.weapon,
     isSvgAsset: false,
@@ -41,7 +41,7 @@ Weapon stockBow = Weapon(
     critPower: 75,
     enchantLevel: 0);
 
-Weapon stockDagger = Weapon(
+final Weapon stockDagger = Weapon(
     id: "Dagger",
     type: ItemType.weapon,
     isSvgAsset: false,
@@ -54,7 +54,7 @@ Weapon stockDagger = Weapon(
     critPower: 100,
     enchantLevel: 0);
 
-Scroll stockScroll = Scroll(
+final Scroll stockScroll = Scroll(
     id: "Scroll",
     type: ItemType.scroll,
     image: "assets/enchant_scroll.svg",

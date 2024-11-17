@@ -4,7 +4,8 @@ import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/data_providers/show_providers.dart';
+import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
+import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -25,12 +26,14 @@ class ScrollField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final enchantBloc = context.read<EnchantBloc>();
     final inventoryBloc = context.read<InventoryBloc>();
+    final itemInfoBloc = context.read<ItemInfoBloc>();
 
-    return BlocListener<EnchantBloc,EnchantState>(
-      listenWhen: (oldState,newState){
-        return oldState is EnchantState$EnchantmentInProgress && newState is EnchantState$Result;
+    return BlocListener<EnchantBloc, EnchantState>(
+      listenWhen: (oldState, newState) {
+        return oldState is EnchantState$EnchantmentInProgress &&
+            newState is EnchantState$Result;
       },
-      listener: (context,state){
+      listener: (context, state) {
         if (state is EnchantState$Result) {
           if (state.isSuccess) {
             inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
@@ -48,7 +51,7 @@ class ScrollField extends ConsumerWidget {
             Weapon? insertedWeapon = state.insertedWeapon;
 
             if (state is EnchantState$Result && !state.isSuccess) {
-                insertedWeapon = null;
+              insertedWeapon = null;
             }
 
             return Padding(
@@ -79,14 +82,7 @@ class ScrollField extends ConsumerWidget {
                             weapon: state.insertedWeapon!));
                       }
                     },
-                    onCancel: () {
-                      ref
-                          .read(showWeaponInfoField.notifier)
-                          .update((state) => false);
-                      ref
-                          .read(showScrollField.notifier)
-                          .update((state) => !state);
-                    },
+                    onCancel: () => itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
                   ),
                 ],
               ),

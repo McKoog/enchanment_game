@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class HorizontalListWheelScrollView extends StatelessWidget {
   final int? childCount;
@@ -10,7 +9,7 @@ class HorizontalListWheelScrollView extends StatelessWidget {
   final double diameterRatio;
   final void Function(int)? onSelectedItemChanged;
   const HorizontalListWheelScrollView({
-    Key? key,
+    super.key,
     this.childCount,
     required this.builder,
     required this.itemExtent,
@@ -18,7 +17,7 @@ class HorizontalListWheelScrollView extends StatelessWidget {
     this.onSelectedItemChanged,
     this.scrollDirection = Axis.vertical,
     this.diameterRatio = 2,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
