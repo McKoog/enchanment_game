@@ -33,28 +33,6 @@ class InventoryField extends ConsumerWidget {
         child: BlocBuilder<InventoryBloc, InventoryState>(
           bloc: context.read<InventoryBloc>(),
           builder: (BuildContext context, state) {
-            switch (state) {
-              case InventoryState$Initial():
-                return Center(
-                  child: SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              case InventoryState$Loading():
-                return Center(
-                  child: SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  ),
-                );
-              case InventoryState$Ready():
                 return BlocBuilder<DraggableItemsBloc,DraggableItemsState>(
                   bloc: context.read<DraggableItemsBloc>(),
                   builder: (context,dragState) {
@@ -76,7 +54,6 @@ class InventoryField extends ConsumerWidget {
                   }
                 );
             }
-          },
         ));
   }
 }

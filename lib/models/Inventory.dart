@@ -63,12 +63,12 @@ class Inventory{
     );
   }
 
-  Inventory swapItems(int from, int to){
-    items[to] = items[from];
-    items[from] = null;
-    return Inventory(items: items);
-  }
-
+  // Inventory swapItems(int from, int to){
+  //   items[to] = items[from];
+  //   items[from] = null;
+  //   return Inventory(items: items);
+  // }
+  //
   List<Weapon> getAllMyWeapons(bool includingFist){
     List<Weapon> weapons = [];
     if(includingFist)weapons.add(stockFist);
@@ -77,29 +77,29 @@ class Inventory{
     }
     return weapons;
   }
-
-  Inventory putItem(Item item){
-    bool added = false;
-    for(int i = 0; i < items.length; i++){
-      if(items[i] == null && !added){
-        items[i] = item;
-        added = true;
-      }
-    }
-      return Inventory(items: items);
-  }
-
-  Inventory removeItem(Item item){
-    bool removed = false;
-    for(int i = 0; i < items.length; i++){
-      if(items[i] != null && items[i]!.id == item.id && !removed){
-        items[i] = null;
-        removed = true;
-      }
-    }
-    return Inventory(items: items);
-  }
-
+  //
+  // Inventory putItem(Item item){
+  //   bool added = false;
+  //   for(int i = 0; i < items.length; i++){
+  //     if(items[i] == null && !added){
+  //       items[i] = item;
+  //       added = true;
+  //     }
+  //   }
+  //     return Inventory(items: items);
+  // }
+  //
+  // Inventory removeItem(Item item){
+  //   bool removed = false;
+  //   for(int i = 0; i < items.length; i++){
+  //     if(items[i] != null && items[i]!.id == item.id && !removed){
+  //       items[i] = null;
+  //       removed = true;
+  //     }
+  //   }
+  //   return Inventory(items: items);
+  // }
+  //
   bool isLastFiveSlots(){
     int emptySlots = 0;
     for (var element in items) {

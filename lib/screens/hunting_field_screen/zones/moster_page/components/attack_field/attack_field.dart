@@ -11,11 +11,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AttackField extends ConsumerStatefulWidget {
   const AttackField(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.monster,
-      required this.weapon})
-      : super(key: key);
+      required this.weapon});
 
   final double width;
   final Monster monster;
@@ -62,14 +61,14 @@ class _AttackFieldState extends ConsumerState<AttackField> {
             if (item != null) {
               if (ref.read(inventory).isLastFiveSlots()) {
                 if (item.type == ItemType.scroll) {
-                  ref
-                      .read(inventory.notifier)
-                      .update((state) => ref.read(inventory).putItem(item!));
+                  // ref
+                  //     .read(inventory.notifier)
+                  //     .update((state) => ref.read(inventory).putItem(item!));
                 }
               } else {
-                ref
-                    .read(inventory.notifier)
-                    .update((state) => ref.read(inventory).putItem(item!));
+                // ref
+                //     .read(inventory.notifier)
+                //     .update((state) => ref.read(inventory).putItem(item!));
               }
             }
           }
@@ -87,14 +86,14 @@ class _AttackFieldState extends ConsumerState<AttackField> {
           if (item != null) {
             if (ref.read(inventory).isLastFiveSlots()) {
               if (item.type == ItemType.scroll) {
-                ref
-                    .read(inventory.notifier)
-                    .update((state) => ref.read(inventory).putItem(item));
+                // ref
+                //     .read(inventory.notifier)
+                //     .update((state) => ref.read(inventory).putItem(item));
               }
             } else {
-              ref
-                  .read(inventory.notifier)
-                  .update((state) => ref.read(inventory).putItem(item));
+              // ref
+              //     .read(inventory.notifier)
+              //     .update((state) => ref.read(inventory).putItem(item));
             }
           }
         }

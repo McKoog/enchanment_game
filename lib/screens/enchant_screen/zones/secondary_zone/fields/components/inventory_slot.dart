@@ -5,7 +5,7 @@ import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_draggable_item.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_emptyDragTarget.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_drag_target.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -70,13 +70,18 @@ class InventorySlot extends ConsumerWidget {
                               ])
                 : inventorySlotDecoration,
             child: item != null
-                ? InventoryDraggableItem(
-                    item: item!,
-                    inventoryIndex: index,
-                    // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
-                    isDraggable: isDraggable,
-                  )
-                : InventoryEmptyDragTarget(
+                ? InventoryDragTarget(
+              inventoryIndex: index,
+                  // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
+                  isDraggable: isDraggable,
+                  child: InventoryDraggableItem(
+                      item: item!,
+                      inventoryIndex: index,
+                      // TODO: удалить этот параметр, надо в принципе добавить не драгбл предмет
+                      isDraggable: isDraggable,
+                    ),
+                )
+                : InventoryDragTarget(
                     inventoryIndex: index,
                   )),
         // TODO: добавить проверку видимости зачарования
