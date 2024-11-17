@@ -1,6 +1,6 @@
 import 'package:enchantment_game/models/item.dart';
 
-enum WeaponType { fist,sword, bow, dagger }
+enum WeaponType { fist, sword, bow, dagger }
 
 class Weapon extends Item {
   Weapon(
@@ -24,36 +24,37 @@ class Weapon extends Item {
   int critPower;
   int enchantLevel;
 
+  @override
   Map toJson() => {
-    'id': id,
-    'type': type.name,
-    'isSvgAsset': isSvgAsset,
-    'image': image,
-    'name' : name,
-    'weaponType' : weaponType.name,
-    'lowerDamage' : lowerDamage,
-    'higherDamage' : higherDamage,
-    'critRate' : critRate,
-    'critPower' : critPower,
-    'enchantLevel' : enchantLevel
-  };
+        'id': id,
+        'type': type.name,
+        'isSvgAsset': isSvgAsset,
+        'image': image,
+        'name': name,
+        'weaponType': weaponType.name,
+        'lowerDamage': lowerDamage,
+        'higherDamage': higherDamage,
+        'critRate': critRate,
+        'critPower': critPower,
+        'enchantLevel': enchantLevel
+      };
 
   factory Weapon.fromJson(Map<String, dynamic> json) {
     ItemType? itemType;
     String? jsonTypeItem = json["type"];
-    if(jsonTypeItem == "weapon"){
+    if (jsonTypeItem == "weapon") {
       itemType = ItemType.weapon;
-    }else{
+    } else {
       itemType = ItemType.scroll;
     }
 
     WeaponType weaponType;
     String? jsonTypeWeapon = json["weaponType"];
-    if(jsonTypeWeapon == "sword"){
+    if (jsonTypeWeapon == "sword") {
       weaponType = WeaponType.sword;
-    }else if(jsonTypeWeapon == "bow"){
+    } else if (jsonTypeWeapon == "bow") {
       weaponType = WeaponType.bow;
-    }else{
+    } else {
       weaponType = WeaponType.dagger;
     }
 

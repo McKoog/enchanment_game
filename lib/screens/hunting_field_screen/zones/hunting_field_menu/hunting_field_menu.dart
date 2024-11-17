@@ -1,58 +1,55 @@
-import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
-import 'package:enchantment_game/data_providers/show_providers.dart';
-import 'package:enchantment_game/decorations/bottons_decoration.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/monster.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/monster_picker.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_monster_field.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/enemy_picker.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_enemy_field.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_weapon_field.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/weapon_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HuntingFieldsMenu extends ConsumerStatefulWidget {
+class HuntingFieldsMenu extends StatefulWidget {
   const HuntingFieldsMenu(
-      {Key? key, required this.constraints, required this.width})
-      : super(key: key);
+      {super.key, required this.constraints, required this.width});
+
   final BoxConstraints constraints;
   final double width;
 
   @override
-  ConsumerState<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
+  State<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
 }
 
-class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
+class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
   late final FixedExtentScrollController controllerWeapon;
-  late final FixedExtentScrollController controllerMonster;
+  late final FixedExtentScrollController controllerEnemy;
 
   @override
   void initState() {
-    var inv = ref.read(inventory);
-    List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
-    int currSelectedWeaponIndex = myWeapons.indexOf(ref.read(currentSelectedWeaponHuntingField));
+    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
+    var inventory = context.read<InventoryBloc>().state.inventory;
+    List<Weapon?> myWeapons = inventory.getAllMyWeapons(true);
+    int currSelectedWeaponIndex =
+        myWeapons.indexOf(huntingFieldsBloc.state.selectedWeapon);
     controllerWeapon =
-        FixedExtentScrollController(initialItem: ref.read(currentSelectedWeaponHuntingField) != null ?currSelectedWeaponIndex:myWeapons.length > 2 ? 1 : 0);
+        FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
 
-    controllerMonster = FixedExtentScrollController(initialItem: 0);
+    controllerEnemy = FixedExtentScrollController(initialItem: 0);
     super.initState();
   }
 
-  Widget title(String text){
+  Widget title(String text) {
     return Text(
       text,
       style: huntFieldNameTextDecoration,
     );
   }
 
-  Widget descriptionText(String text){
+  Widget descriptionText(String text) {
     return Text(
       text,
       textAlign: TextAlign.center,
@@ -72,12 +69,18 @@ class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             title("HuntingField"),
-            descriptionText("At first, pick avaliable weapon to fight monsters with..."),
-            WeaponPicker(controllerWeapon: controllerWeapon,constraints: widget.constraints,),
+            descriptionText(
+                "At first, pick avaliable weapon to fight enemys with..."),
+            WeaponPicker(
+              controllerWeapon: controllerWeapon,
+              constraints: widget.constraints,
+            ),
             const PickedWeaponField(),
             descriptionText("Then,select your enemy..."),
-            MonsterPicker(controllerMonster: controllerMonster, constraints: widget.constraints),
-            const PickedMonsterField(),
+            EnemyPicker(
+                controllerEnemy: controllerEnemy,
+                constraints: widget.constraints),
+            const PickedEnemyField(),
           ],
         ),
       ),
