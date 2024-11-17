@@ -1,6 +1,6 @@
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
-import 'package:enchantment_game/game_stock_items/stock_inventory.dart';
+import 'package:enchantment_game/game_stock_data/stock_inventory.dart';
 import 'package:enchantment_game/models/Inventory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

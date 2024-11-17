@@ -1,18 +1,21 @@
-import 'package:enchantment_game/data_providers/all_monsters_list.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
+import 'package:enchantment_game/game_stock_data/stock_monsters.dart';
 import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MonsterPicker extends ConsumerWidget {
-  const MonsterPicker({super.key,required this.controllerMonster,required this.constraints});
+class MonsterPicker extends StatelessWidget {
+  const MonsterPicker(
+      {super.key, required this.controllerMonster, required this.constraints});
 
   final FixedExtentScrollController controllerMonster;
   final BoxConstraints constraints;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
 
     return Row(
       children: [
@@ -33,19 +36,15 @@ class MonsterPicker extends ConsumerWidget {
         Expanded(
           child: SizedBox(
             height: constraints.maxHeight / 4,
-            //color: Color.fromRGBO(85, 85, 85, 1).withOpacity(0.5),
             child: HorizontalListWheelScrollView(
               controller: controllerMonster,
               childCount: 3,
-              //ref.read(allMonstersList).length,
               scrollDirection: Axis.horizontal,
               itemExtent: 200,
               onSelectedItemChanged: (index) {
-                ref
-                    .read(currentSelectedMonsterHuntingField.notifier)
-                    .update((state) => index == 0
-                    ? ref.read(allMonstersList)[0]
-                    : null);
+                /// TODO: Надо будет исправить, сейчас всегда только оборотень
+                huntingFieldsBloc.add(
+                    HuntingFieldEvent$SelectMonster(monster: stockWerewolf));
               },
               builder: (BuildContext context, int index) {
                 return Container(
@@ -54,8 +53,8 @@ class MonsterPicker extends ConsumerWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: inventorySlotDecoration,
                     child: index == 0
-                        ? Image.asset(
-                        ref.read(allMonstersList)[index].image)
+                    /// TODO: Надо будет исправить, сейчас всегда только оборотень
+                        ? Image.asset(stockWerewolf.image)
                         : const SizedBox());
               },
             ),

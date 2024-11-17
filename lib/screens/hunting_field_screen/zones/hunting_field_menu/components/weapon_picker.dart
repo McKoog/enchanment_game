@@ -1,5 +1,6 @@
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
@@ -16,7 +17,8 @@ class WeaponPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
 
-    List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
+    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
+    List<Weapon> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
 
     return Row(
       children: [
@@ -44,9 +46,10 @@ class WeaponPicker extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               itemExtent: 200,
               onSelectedItemChanged: (index) {
-                ref
-                    .read(currentSelectedWeaponHuntingField.notifier)
-                    .update((state) => myWeapons[index]);
+                huntingFieldsBloc.add(HuntingFieldEvent$SelectWeapon(weapon: myWeapons[index]));
+                // ref
+                //     .read(currentSelectedWeaponHuntingField.notifier)
+                //     .update((state) => myWeapons[index]);
               },
               builder: (BuildContext context, int index) {
                 return Container(

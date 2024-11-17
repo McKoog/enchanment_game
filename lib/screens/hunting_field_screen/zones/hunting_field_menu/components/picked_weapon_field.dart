@@ -1,10 +1,9 @@
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,17 +13,9 @@ class PickedWeaponField extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
-    Weapon? selectedWeapon = ref.watch(currentSelectedWeaponHuntingField);
-    selectedWeapon ??
-        SchedulerBinding.instance.addPostFrameCallback((_) => ref
-            .read(currentSelectedWeaponHuntingField.notifier)
-            .update((state) => myWeapons.length > 2
-            ? myWeapons[1]
-            : myWeapons[
-        0]));
+    Weapon? selectedWeapon =  context.watch<HuntingFieldsBloc>().state.selectedWeapon;
 
-    return selectedWeapon != null
-        ? SizedBox(
+    return SizedBox(
       height: 80,
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -43,8 +34,6 @@ class PickedWeaponField extends ConsumerWidget {
               )),
         ],
       ),
-    )
-        : SizedBox(
-        height: 80, width: MediaQuery.of(context).size.width - 60);
+    );
   }
 }

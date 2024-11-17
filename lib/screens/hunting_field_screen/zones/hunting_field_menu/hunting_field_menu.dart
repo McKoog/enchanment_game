@@ -1,5 +1,5 @@
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/monster_picker.dart';
@@ -30,11 +30,12 @@ class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
 
   @override
   void initState() {
-    var inv = context.read<InventoryBloc>().state.inventory; //ref.read(inventory);
-    List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
-    int currSelectedWeaponIndex = myWeapons.indexOf(ref.read(currentSelectedWeaponHuntingField));
+    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
+    var inventory = context.read<InventoryBloc>().state.inventory;
+    List<Weapon?> myWeapons = inventory.getAllMyWeapons(true);
+    int currSelectedWeaponIndex = myWeapons.indexOf(huntingFieldsBloc.state.selectedWeapon);
     controllerWeapon =
-        FixedExtentScrollController(initialItem: ref.read(currentSelectedWeaponHuntingField) != null ?currSelectedWeaponIndex:myWeapons.length > 2 ? 1 : 0);
+        FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
 
     controllerMonster = FixedExtentScrollController(initialItem: 0);
     super.initState();

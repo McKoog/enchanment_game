@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
+import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -9,9 +9,8 @@ import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/
 import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/weapon_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AttackField extends ConsumerStatefulWidget {
+class AttackField extends StatefulWidget {
   const AttackField(
       {super.key,
       required this.width,
@@ -23,10 +22,10 @@ class AttackField extends ConsumerStatefulWidget {
   final Weapon weapon;
 
   @override
-  ConsumerState<AttackField> createState() => _AttackFieldState();
+  State<AttackField> createState() => _AttackFieldState();
 }
 
-class _AttackFieldState extends ConsumerState<AttackField> {
+class _AttackFieldState extends State<AttackField> {
   late int currentHP;
   late double widthOfOneHP;
 
