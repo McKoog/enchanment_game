@@ -54,8 +54,8 @@ TextStyle mobNameTextDecoration =
 TextStyle huntingBeginButtonTextDecoration =
     TextStyle(fontSize: 30, color: Colors.yellow, fontFamily: "PT Sans");
 
-TextStyle FarmEnemyNameTextDecoration =
+TextStyle farmEnemyNameTextDecoration =
     TextStyle(fontSize: 22, color: Colors.yellow, fontFamily: "PT Sans");
 
-TextStyle FarmEnemyHpTextDecoration =
+TextStyle farmEnemyHpTextDecoration =
     TextStyle(fontSize: 22, color: Colors.black, fontFamily: "PT Sans");

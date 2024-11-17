@@ -1,5 +1,5 @@
-import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
-import 'package:enchantment_game/models/Inventory.dart';
+import 'package:enchantment_game/game_stock_data/stock_items.dart';
+import 'package:enchantment_game/models/inventory.dart';
 import 'package:enchantment_game/models/item.dart';
 
 final Inventory stockInventory = Inventory(

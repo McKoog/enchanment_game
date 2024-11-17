@@ -27,7 +27,7 @@ class PickedEnemyField extends StatelessWidget {
             SvgPicture.asset(
               "assets/hunt_button_icon.svg",
               height: 50,
-              color: Colors.yellow,
+              colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
             ),
             Expanded(
                 child: Container(
@@ -41,7 +41,7 @@ class PickedEnemyField extends StatelessWidget {
             SvgPicture.asset(
               "assets/hunt_button_icon.svg",
               height: 50,
-              color: Colors.yellow,
+              colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
             ),
           ],
         ),

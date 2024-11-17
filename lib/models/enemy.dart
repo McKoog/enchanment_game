@@ -1,4 +1,4 @@
-import 'package:enchantment_game/models/dropItem.dart';
+import 'package:enchantment_game/models/drop_item.dart';
 
 class Enemy {
   Enemy(

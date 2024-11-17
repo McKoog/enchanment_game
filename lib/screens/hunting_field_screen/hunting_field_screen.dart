@@ -1,6 +1,6 @@
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_state.dart';
-import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
+import 'package:enchantment_game/game_stock_data/stock_items.dart';
 import 'package:enchantment_game/game_stock_data/stock_enemies.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/hunting_field_menu.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/enemy_page.dart';

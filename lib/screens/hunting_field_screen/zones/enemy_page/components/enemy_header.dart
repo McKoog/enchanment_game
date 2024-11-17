@@ -38,7 +38,7 @@ class EnemyHeader extends StatelessWidget {
               SvgPicture.asset(
                 "assets/hunt_button_icon.svg",
                 height: 50,
-                color: Colors.yellow,
+                colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
               ),
               Expanded(
                   child: Container(
@@ -50,7 +50,7 @@ class EnemyHeader extends StatelessWidget {
                         children: [
                           Text(
                             enemy.name,
-                            style: FarmEnemyNameTextDecoration,
+                            style: farmEnemyNameTextDecoration,
                           ),
                           const Text(
                             "show droplist",
@@ -59,7 +59,7 @@ class EnemyHeader extends StatelessWidget {
                         ],
                       ))),
               SvgPicture.asset("assets/hunt_button_icon.svg",
-                  height: 50, color: Colors.yellow),
+                  height: 50, colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),),
             ],
           ),
         ),

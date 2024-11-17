@@ -1,4 +1,4 @@
-import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
+import 'package:enchantment_game/game_stock_data/stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -63,8 +63,9 @@ class Inventory {
     List<Weapon> weapons = [];
     if (includingFist) weapons.add(stockFist);
     for (var element in items) {
-      if (element != null && element.type == ItemType.weapon)
+      if (element != null && element.type == ItemType.weapon) {
         weapons.add(element as Weapon);
+      }
     }
     return weapons;
   }

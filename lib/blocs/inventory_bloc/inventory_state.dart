@@ -1,4 +1,4 @@
-import 'package:enchantment_game/models/Inventory.dart';
+import 'package:enchantment_game/models/inventory.dart';
 
 class InventoryState {
   InventoryState({required this.inventory});

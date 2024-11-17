@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
+import 'package:enchantment_game/game_stock_data/stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/weapon.dart';

@@ -41,7 +41,7 @@ class EnemyHpBar extends StatelessWidget {
                   decoration: enemyHpBarDecoration,
                   child: Text(
                     "$currentHP / ${enemy.hp}",
-                    style: FarmEnemyHpTextDecoration,
+                    style: farmEnemyHpTextDecoration,
                   )),
             ],
           ),
