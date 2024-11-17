@@ -31,47 +31,48 @@ class _AttackFieldState extends State<AttackField> {
 
   void onTapAttack() {
     if (currentHP > widget.weapon.lowerDamage) {
-      int randDamage = Random().nextInt(widget.weapon.higherDamage+1);
-      if(randDamage < widget.weapon.lowerDamage){
+      int randDamage = Random().nextInt(widget.weapon.higherDamage + 1);
+      if (randDamage < widget.weapon.lowerDamage) {
         randDamage = widget.weapon.lowerDamage;
       }
       int randCrit = Random().nextInt(101);
       bool isCrit = randCrit <= widget.weapon.critRate;
-      if(isCrit){
-        double additionalCritDamageAmount = randDamage * (widget.weapon.critPower/100);
+      if (isCrit) {
+        double additionalCritDamageAmount =
+            randDamage * (widget.weapon.critPower / 100);
         randDamage += additionalCritDamageAmount.toInt();
       }
       currentHP = currentHP - randDamage;
-      if(currentHP > 0) {
+      if (currentHP > 0) {
         setState(() {});
-      }
-      else{
+      } else {
         currentHP = widget.monster.hp;
         for (var element in widget.monster.dropList) {
           int rand = Random().nextInt(101);
           if (rand <= element.chance) {
             Item? item;
             bool isWeapon = element.item.type == ItemType.weapon;
-            if(isWeapon){
+            if (isWeapon) {
               Weapon elementWeapon = element.item as Weapon;
-              item = getNewStockItem(ItemType.weapon,elementWeapon.weaponType);
-            }
-            else{
+              item = getNewStockItem(ItemType.weapon, elementWeapon.weaponType);
+            } else {
               item = getNewStockItem(ItemType.scroll);
             }
             if (item != null) {
-              if (context.read<InventoryBloc>().state.inventory.isLastFiveSlots()) {
+              if (context
+                  .read<InventoryBloc>()
+                  .state
+                  .inventory
+                  .isLastFiveSlots()) {
                 if (item.type == ItemType.scroll) {
-                  context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
-                  // ref
-                  //     .read(inventory.notifier)
-                  //     .update((state) => ref.read(inventory).putItem(item!));
+                  context
+                      .read<InventoryBloc>()
+                      .add(InventoryEvent$AddItem(item: item));
                 }
               } else {
-                context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
-                // ref
-                //     .read(inventory.notifier)
-                //     .update((state) => ref.read(inventory).putItem(item!));
+                context
+                    .read<InventoryBloc>()
+                    .add(InventoryEvent$AddItem(item: item));
               }
             }
           }
@@ -87,18 +88,20 @@ class _AttackFieldState extends State<AttackField> {
               ? getNewStockItem(ItemType.weapon)
               : getNewStockItem(ItemType.scroll);
           if (item != null) {
-            if (context.read<InventoryBloc>().state.inventory.isLastFiveSlots()) {
+            if (context
+                .read<InventoryBloc>()
+                .state
+                .inventory
+                .isLastFiveSlots()) {
               if (item.type == ItemType.scroll) {
-                context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
-                // ref
-                //     .read(inventory.notifier)
-                //     .update((state) => ref.read(inventory).putItem(item));
+                context
+                    .read<InventoryBloc>()
+                    .add(InventoryEvent$AddItem(item: item));
               }
             } else {
-              context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
-              // ref
-              //     .read(inventory.notifier)
-              //     .update((state) => ref.read(inventory).putItem(item));
+              context
+                  .read<InventoryBloc>()
+                  .add(InventoryEvent$AddItem(item: item));
             }
           }
         }

@@ -1,24 +1,26 @@
-enum ItemType{
-  weapon,
-  scroll
-}
+enum ItemType { weapon, scroll }
 
-class Item{
-  Item({required this.id,required this.type,this.isSvgAsset = true,required this.image});
+class Item {
+  Item(
+      {required this.id,
+      required this.type,
+      this.isSvgAsset = true,
+      required this.image});
+
   String id;
   ItemType type;
   bool isSvgAsset;
   String image;
 
   Map toJson() => {
-    'id': id,
-    'type': type.name,
-    'isSvgAsset': isSvgAsset,
-    'image': image,
-  };
-  
-  checkItemType(String type){
-    switch(type){
+        'id': id,
+        'type': type.name,
+        'isSvgAsset': isSvgAsset,
+        'image': image,
+      };
+
+  checkItemType(String type) {
+    switch (type) {
       case "weapon":
         return ItemType.weapon;
       case "scroll":
@@ -27,12 +29,11 @@ class Item{
   }
 
   factory Item.fromJson(Map<String, dynamic> json) {
-
     ItemType? type;
     String jsonType = json["type"];
-    if(jsonType == "weapon"){
+    if (jsonType == "weapon") {
       type = ItemType.weapon;
-    }else{
+    } else {
       type = ItemType.scroll;
     }
 

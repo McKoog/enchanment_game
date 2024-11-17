@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MonsterHeader extends StatelessWidget {
-  const MonsterHeader({super.key,required this.width, required this.monster});
+  const MonsterHeader({super.key, required this.width, required this.monster});
 
   final double width;
   final Monster monster;
@@ -21,7 +21,9 @@ class MonsterHeader extends StatelessWidget {
       children: [
         InkWell(
             onTap: () {
-              context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+              context
+                  .read<HuntingFieldsBloc>()
+                  .add(HuntingFieldEvent$StopHunting());
             },
             child: const Icon(
               Icons.arrow_back,
@@ -30,7 +32,7 @@ class MonsterHeader extends StatelessWidget {
             )),
         SizedBox(
           height: 80,
-          width:width - 100,
+          width: width - 100,
           child: Row(
             children: [
               SvgPicture.asset(

@@ -11,7 +11,8 @@ class SharedBlocsProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
-      BlocProvider(create: (context) => InventoryBloc(initialInventory: stockInventory)),
+      BlocProvider(
+          create: (context) => InventoryBloc(initialInventory: stockInventory)),
     ], child: child);
   }
 }

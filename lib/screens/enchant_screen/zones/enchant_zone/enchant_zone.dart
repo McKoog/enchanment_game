@@ -9,7 +9,6 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class EnchantZone extends StatelessWidget {
   const EnchantZone({super.key, required this.height, required this.width});
 

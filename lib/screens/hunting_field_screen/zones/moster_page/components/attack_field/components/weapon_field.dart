@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class WeaponField extends StatelessWidget {
-  const WeaponField({Key? key, required this.weapon}) : super(key: key);
+  const WeaponField({super.key, required this.weapon});
 
   final Weapon weapon;
 

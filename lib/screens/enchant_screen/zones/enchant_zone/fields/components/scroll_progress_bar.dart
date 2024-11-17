@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class EnchantProgressBar extends StatefulWidget {
   const EnchantProgressBar({super.key, required this.parentSize});
 

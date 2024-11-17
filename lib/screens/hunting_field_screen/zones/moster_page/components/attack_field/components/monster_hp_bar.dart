@@ -6,12 +6,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class MonsterHpBar extends StatelessWidget {
   const MonsterHpBar(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.monster,
       required this.widthOfOneHP,
-      required this.currentHP})
-      : super(key: key);
+      required this.currentHP});
 
   final double width;
   final Monster monster;

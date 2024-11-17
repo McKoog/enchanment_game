@@ -7,18 +7,18 @@ import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fie
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class WeaponPicker extends StatelessWidget {
-  const WeaponPicker({super.key,required this.controllerWeapon,required this.constraints});
+  const WeaponPicker(
+      {super.key, required this.controllerWeapon, required this.constraints});
 
   final FixedExtentScrollController controllerWeapon;
   final BoxConstraints constraints;
 
   @override
   Widget build(BuildContext context) {
-
     final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
-    List<Weapon> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
+    List<Weapon> myWeapons =
+        context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
 
     return Row(
       children: [
@@ -46,7 +46,8 @@ class WeaponPicker extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemExtent: 200,
               onSelectedItemChanged: (index) {
-                huntingFieldsBloc.add(HuntingFieldEvent$SelectWeapon(weapon: myWeapons[index]));
+                huntingFieldsBloc.add(
+                    HuntingFieldEvent$SelectWeapon(weapon: myWeapons[index]));
                 // ref
                 //     .read(currentSelectedWeaponHuntingField.notifier)
                 //     .update((state) => myWeapons[index]);
@@ -55,15 +56,18 @@ class WeaponPicker extends StatelessWidget {
                 return Container(
                     margin: const EdgeInsets.all(16),
                     child: InventorySlot(
-                        index: 1000, item: myWeapons[index], canBeDragged: false, canBeDragTarget: false,));
+                      index: 1000,
+                      item: myWeapons[index],
+                      canBeDragged: false,
+                      canBeDragTarget: false,
+                    ));
               },
             ),
           ),
         ),
         InkWell(
             onTap: () {
-              if (controllerWeapon.selectedItem <
-                  myWeapons.length - 1) {
+              if (controllerWeapon.selectedItem < myWeapons.length - 1) {
                 controllerWeapon.animateToItem(
                     controllerWeapon.selectedItem + 1,
                     duration: const Duration(milliseconds: 500),

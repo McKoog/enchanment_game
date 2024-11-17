@@ -1,7 +1,7 @@
 import 'package:enchantment_game/models/monster.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
-sealed class HuntingFieldEvent{}
+sealed class HuntingFieldEvent {}
 
 class HuntingFieldEvent$SelectMonster extends HuntingFieldEvent {
   HuntingFieldEvent$SelectMonster({required this.monster});
@@ -15,6 +15,6 @@ class HuntingFieldEvent$SelectWeapon extends HuntingFieldEvent {
   final Weapon weapon;
 }
 
-class HuntingFieldEvent$StartHunting extends HuntingFieldEvent{}
+class HuntingFieldEvent$StartHunting extends HuntingFieldEvent {}
 
-class HuntingFieldEvent$StopHunting extends HuntingFieldEvent{}
+class HuntingFieldEvent$StopHunting extends HuntingFieldEvent {}

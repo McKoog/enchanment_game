@@ -3,7 +3,9 @@ import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 
 class WeaponInfoField extends StatelessWidget {
-  const WeaponInfoField({Key? key,required this.sideSize,required this.weapon}) : super(key: key);
+  const WeaponInfoField(
+      {super.key, required this.sideSize, required this.weapon});
+
   final double sideSize;
   final Weapon weapon;
 
@@ -14,13 +16,32 @@ class WeaponInfoField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(weapon.enchantLevel >0 ?"${weapon.name} +${weapon.enchantLevel}":weapon.name, style: weaponNameDecoration),
-          const SizedBox(height: 16,),
-          Text("Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",style: weaponInfoTextDecoration,),
-          const SizedBox(height: 16,),
-          Text("Critical hit chance: ${weapon.critRate}%",style: weaponInfoTextDecoration,),
-          const SizedBox(height: 16,),
-          Text("Critical hit power: ${weapon.critPower}%",style: weaponInfoTextDecoration,)
+          Text(
+              weapon.enchantLevel > 0
+                  ? "${weapon.name} +${weapon.enchantLevel}"
+                  : weapon.name,
+              style: weaponNameDecoration),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            "Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",
+            style: weaponInfoTextDecoration,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            "Critical hit chance: ${weapon.critRate}%",
+            style: weaponInfoTextDecoration,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            "Critical hit power: ${weapon.critPower}%",
+            style: weaponInfoTextDecoration,
+          )
         ],
       ),
     );

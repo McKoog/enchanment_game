@@ -17,12 +17,12 @@ class HuntingFieldScreen extends StatelessWidget {
     return SafeArea(child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       return BlocProvider(
-        create: (context) => HuntingFieldsBloc(initialMonster: stockWerewolf,initialWeapon: stockFist),
-        child: Builder(
-          builder: (context) {
-            return BlocBuilder<HuntingFieldsBloc,HuntingFieldState>(
+        create: (context) => HuntingFieldsBloc(
+            initialMonster: stockWerewolf, initialWeapon: stockFist),
+        child: Builder(builder: (context) {
+          return BlocBuilder<HuntingFieldsBloc, HuntingFieldState>(
               bloc: context.read<HuntingFieldsBloc>(),
-              builder: (context,state) {
+              builder: (context, state) {
                 return state is HuntingFieldState$HuntingStarted
                     ? MonsterPage(
                         width: width,
@@ -30,10 +30,8 @@ class HuntingFieldScreen extends StatelessWidget {
                         weapon: state.selectedWeapon,
                       )
                     : HuntingFieldsMenu(constraints: constraints, width: width);
-              }
-            );
-          }
-        ),
+              });
+        }),
       );
     }));
   }

@@ -15,7 +15,6 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class ScrollField extends StatelessWidget {
   const ScrollField({super.key, required this.sideSize, required this.scroll});
 

@@ -62,23 +62,20 @@ final Scroll stockScroll = Scroll(
     description:
         "Increase power of the weapon, but be carefull, it's not garanteed");
 
-Item? getNewStockItem(ItemType type,[WeaponType? weaponType,String? id]) {
+Item? getNewStockItem(ItemType type, [WeaponType? weaponType, String? id]) {
   Item? newItem;
   String uuid = Uuid().v1().toString();
-  if(type == ItemType.scroll){
+  if (type == ItemType.scroll) {
     newItem = Scroll.copyWith(stockScroll);
     newItem.id = uuid;
-  }
-  else if(type == ItemType.weapon){
-    if(weaponType == WeaponType.sword || weaponType == null) {
+  } else if (type == ItemType.weapon) {
+    if (weaponType == WeaponType.sword || weaponType == null) {
       newItem = Weapon.copyWith(stockBasicSword);
       newItem.id = uuid;
-    }
-    else if(weaponType == WeaponType.bow){
+    } else if (weaponType == WeaponType.bow) {
       newItem = Weapon.copyWith(stockBow);
       newItem.id = uuid;
-    }
-    else if(weaponType == WeaponType.dagger) {
+    } else if (weaponType == WeaponType.dagger) {
       newItem = Weapon.copyWith(stockDagger);
       newItem.id = uuid;
     }

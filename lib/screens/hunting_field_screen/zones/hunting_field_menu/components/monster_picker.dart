@@ -53,7 +53,8 @@ class MonsterPicker extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     decoration: inventorySlotDecoration,
                     child: index == 0
-                    /// TODO: Надо будет исправить, сейчас всегда только оборотень
+
+                        /// TODO: Надо будет исправить, сейчас всегда только оборотень
                         ? Image.asset(stockWerewolf.image)
                         : const SizedBox());
               },

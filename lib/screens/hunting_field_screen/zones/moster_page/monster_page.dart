@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 class MonsterPage extends StatelessWidget {
   const MonsterPage(
       {super.key,
-        required this.width,
-        required this.monster,
-        required this.weapon});
+      required this.width,
+      required this.monster,
+      required this.weapon});
 
   final double width;
   final Monster monster;
@@ -21,10 +21,11 @@ class MonsterPage extends StatelessWidget {
     return SizedBox(
       width: width,
       child:
-      Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        MonsterHeader(width: width,monster:monster),
+          Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        MonsterHeader(width: width, monster: monster),
         MonsterField(width: width, assetImageLink: "assets/lvl_1_werewolf.png"),
-        Expanded(child: AttackField(width: width, monster: monster, weapon: weapon)),
+        Expanded(
+            child: AttackField(width: width, monster: monster, weapon: weapon)),
       ]),
     );
   }

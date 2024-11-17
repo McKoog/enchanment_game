@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MonsterField extends StatelessWidget {
-  const MonsterField({Key? key,required this.width,required this.assetImageLink}) : super(key: key);
+  const MonsterField(
+      {super.key, required this.width, required this.assetImageLink});
 
   final double width;
   final String assetImageLink;

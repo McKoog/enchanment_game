@@ -7,8 +7,18 @@ class DraggableItemsBloc
   DraggableItemsBloc({final DraggableItemsState? initialState})
       : super(initialState ?? DraggableItemsState$Idle()) {
     on<DraggableItemsEvent>((event, emitter) => switch (event) {
-          DraggableItemsEvent$StartDragging draggingEvent => emitter(DraggableItemsState$Dragged(draggingEvent.itemInventoryIndex)),
-          DraggableItemsEvent$StopDragging() => emitter(DraggableItemsState$Idle()),
+          DraggableItemsEvent$StartDragging() => _startDragging(event, emitter),
+          DraggableItemsEvent$StopDragging() => _stopDragging(event, emitter),
         });
+  }
+
+  void _startDragging(DraggableItemsEvent$StartDragging event,
+      Emitter<DraggableItemsState> emitter) {
+    emitter(DraggableItemsState$Dragged(event.itemInventoryIndex));
+  }
+
+  void _stopDragging(DraggableItemsEvent$StopDragging event,
+      Emitter<DraggableItemsState> emitter) {
+    emitter(DraggableItemsState$Idle());
   }
 }

@@ -6,11 +6,14 @@ import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fie
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_drag_target.dart';
 import 'package:flutter/material.dart';
 
-
 // TODO: Переписать на дженерик
 class InventorySlot extends StatelessWidget {
   const InventorySlot(
-      {super.key, required this.index, this.item, this.canBeDragged = true, this.canBeDragTarget = true});
+      {super.key,
+      required this.index,
+      this.item,
+      this.canBeDragged = true,
+      this.canBeDragTarget = true});
 
   final int index;
   final Item? item;
@@ -20,19 +23,8 @@ class InventorySlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ref.watch(currentEnchantSuccess);
     Weapon? weapon;
     if (item != null && item!.type == ItemType.weapon) weapon = item as Weapon;
-
-    // var invItems = ref.watch(inventory).items;
-    // int? currentDrag = ref.watch(currentDragItemInventoryIndex);
-    // bool isDragged = currentDrag != null;
-    // var draggedItem = isDragged ? invItems[currentDrag] : null;
-    // bool thisItemDragged =
-    //     isDragged && draggedItem != null && draggedItem.id == item?.id;
-    //
-    // bool enchantVisible = item != null && !thisItemDragged;
-    //ref.watch(currentDragItemInventoryIndex) != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!] != null && ref.read(inventory).items[ref.read(currentDragItemInventoryIndex)!]!.id != item!.id;
 
     return Stack(
       alignment: Alignment.bottomRight,

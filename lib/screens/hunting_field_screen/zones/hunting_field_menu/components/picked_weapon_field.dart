@@ -6,14 +6,14 @@ import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class PickedWeaponField extends StatelessWidget {
   const PickedWeaponField({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
-    Weapon? selectedWeapon =  context.watch<HuntingFieldsBloc>().state.selectedWeapon;
+    context.watch<InventoryBloc>();
+    Weapon? selectedWeapon =
+        context.watch<HuntingFieldsBloc>().state.selectedWeapon;
 
     return SizedBox(
       height: 80,
@@ -22,16 +22,16 @@ class PickedWeaponField extends StatelessWidget {
         children: [
           Expanded(
               child: Container(
-                alignment: Alignment.center,
-                height: 50,
-                decoration: huntBeginButtonDecoration,
-                child: Text(
-                  selectedWeapon.enchantLevel > 0
-                      ? "${selectedWeapon.name} +${selectedWeapon.enchantLevel}"
-                      : selectedWeapon.name,
-                  style: huntFieldSelectedWeaponTextDecoration,
-                ),
-              )),
+            alignment: Alignment.center,
+            height: 50,
+            decoration: huntBeginButtonDecoration,
+            child: Text(
+              selectedWeapon.enchantLevel > 0
+                  ? "${selectedWeapon.name} +${selectedWeapon.enchantLevel}"
+                  : selectedWeapon.name,
+              style: huntFieldSelectedWeaponTextDecoration,
+            ),
+          )),
         ],
       ),
     );

@@ -1,4 +1,3 @@
-
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fie
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class InventoryField extends StatelessWidget {
   const InventoryField(
@@ -23,11 +21,11 @@ class InventoryField extends StatelessWidget {
         width: sideSize,
         //decoration: inventoryZoneDecoration,
         child: BlocBuilder<InventoryBloc, InventoryState>(
-          bloc: context.read<InventoryBloc>(),
-          builder: (BuildContext context, state) {
-                return BlocBuilder<DraggableItemsBloc,DraggableItemsState>(
+            bloc: context.read<InventoryBloc>(),
+            builder: (BuildContext context, state) {
+              return BlocBuilder<DraggableItemsBloc, DraggableItemsState>(
                   bloc: context.read<DraggableItemsBloc>(),
-                  builder: (context,dragState) {
+                  builder: (context, dragState) {
                     return GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: capacity,
@@ -43,9 +41,7 @@ class InventoryField extends StatelessWidget {
                             item: state.inventory.items[index],
                           );
                         });
-                  }
-                );
-            }
-        ));
+                  });
+            }));
   }
 }
