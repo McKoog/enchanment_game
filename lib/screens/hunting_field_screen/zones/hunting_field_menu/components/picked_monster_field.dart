@@ -1,5 +1,5 @@
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
-import 'package:enchantment_game/data_providers/show_providers.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/monster.dart';
@@ -13,12 +13,11 @@ class PickedMonsterField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    Monster? selectedMonster = context.read<HuntingFieldsBloc>().state.selectedMonster;
+    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
+    Monster? selectedMonster = huntingFieldsBloc.state.selectedMonster;
     return InkWell(
       onTap: () {
-        ref
-            .read(showHuntMonsterPage.notifier)
-            .update((state) => true);
+        huntingFieldsBloc.add(HuntingFieldEvent$StartHunting());
       },
       child: SizedBox(
         height: 80,

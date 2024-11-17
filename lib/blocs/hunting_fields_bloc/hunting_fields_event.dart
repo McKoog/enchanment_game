@@ -14,3 +14,7 @@ class HuntingFieldEvent$SelectWeapon extends HuntingFieldEvent {
 
   final Weapon weapon;
 }
+
+class HuntingFieldEvent$StartHunting extends HuntingFieldEvent{}
+
+class HuntingFieldEvent$StopHunting extends HuntingFieldEvent{}

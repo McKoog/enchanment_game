@@ -25,7 +25,7 @@ class HuntingFieldScreen extends ConsumerWidget {
             return BlocBuilder<HuntingFieldsBloc,HuntingFieldState>(
               bloc: context.read<HuntingFieldsBloc>(),
               builder: (context,state) {
-                return ref.watch(showHuntMonsterPage)
+                return state is HuntingFieldState$HuntingStarted
                     ? MonsterPage(
                         width: width,
                         monster: state.selectedMonster,

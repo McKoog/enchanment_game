@@ -1,8 +1,10 @@
-import 'package:enchantment_game/data_providers/show_providers.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/monster.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -19,9 +21,7 @@ class MonsterHeader extends ConsumerWidget {
       children: [
         InkWell(
             onTap: () {
-              ref
-                  .read(showHuntMonsterPage.notifier)
-                  .update((state) => false);
+              context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
             },
             child: const Icon(
               Icons.arrow_back,
@@ -32,7 +32,6 @@ class MonsterHeader extends ConsumerWidget {
           height: 80,
           width:width - 100,
           child: Row(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               SvgPicture.asset(
                 "assets/hunt_button_icon.svg",
