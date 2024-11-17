@@ -26,7 +26,7 @@ class EnchantBloc extends Bloc<EnchantEvent,EnchantState>{
 
         emitter(EnchantState$Result(insertedWeapon: _enchantWeapon(event.weapon),isSuccess: true));
       } else {
-        emitter(EnchantState$Result(isSuccess: false));
+        emitter(EnchantState$Result(insertedWeapon: event.weapon,isSuccess: false));
       }
     });
   }

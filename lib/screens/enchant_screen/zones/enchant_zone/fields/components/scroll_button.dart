@@ -3,7 +3,7 @@ import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:flutter/material.dart';
 
 class ScrollFieldButton extends StatelessWidget {
-  const ScrollFieldButton({Key? key,required this.parentSize,required this.caption,required this.onPressed}) : super(key: key);
+  const ScrollFieldButton({super.key,required this.parentSize,required this.caption,required this.onPressed});
   final double parentSize;
   final Function()? onPressed;
   final String caption;
@@ -22,7 +22,7 @@ class ScrollFieldButton extends StatelessWidget {
             ),
             backgroundColor: const Color.fromRGBO(130, 130, 130, 1)
         ),
-        child: AutoSizeText(caption),),
+        child: AutoSizeText(caption, style: scrollBottonsTextDecoration,),),
     );
   }
 }

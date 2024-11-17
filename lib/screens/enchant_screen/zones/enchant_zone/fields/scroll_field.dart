@@ -3,6 +3,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/inventory_provider.dart';
@@ -27,52 +29,73 @@ class ScrollField extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final enchantBloc = context.read<EnchantBloc>();
+    final inventoryBloc = context.read<InventoryBloc>();
 
-    return BlocBuilder<EnchantBloc, EnchantState>(
-        bloc: enchantBloc,
-        builder: (context, state) {
-          Weapon? insertedWeapon = state.insertedWeapon;
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _ScrollHeader(
-                    insertedWeapon: insertedWeapon,
-                    isEnchantSucceed:
-                        state is EnchantState$Result && state.isSuccess,
+    return BlocListener<EnchantBloc,EnchantState>(
+      listenWhen: (oldState,newState){
+        return oldState is EnchantState$EnchantmentInProgress && newState is EnchantState$Result;
+      },
+      listener: (context,state){
+        if (state is EnchantState$Result) {
+          if (state.isSuccess) {
+            inventoryBloc.add(InventoryEvent$RefreshInventory());
+          } else {
+            inventoryBloc
+                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon));
+          }
+        }
+      },
+      child: BlocBuilder<EnchantBloc, EnchantState>(
+          bloc: enchantBloc,
+          builder: (context, state) {
+            Weapon? insertedWeapon = state.insertedWeapon;
+
+            if (state is EnchantState$Result && !state.isSuccess) {
+                insertedWeapon = null;
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ScrollHeader(
+                      insertedWeapon: insertedWeapon,
+                      isEnchantSucceed:
+                          state is EnchantState$Result && state.isSuccess,
+                      sideSize: sideSize,
+                      scrollName: scroll.name),
+                  Expanded(
+                      child: _ScrollContent(
                     sideSize: sideSize,
-                    scrollName: scroll.name),
-                Expanded(
-                    child: _ScrollContent(
-                  sideSize: sideSize,
-                  enchantState: state,
-                  insertedWeapon: insertedWeapon,
-                  scrollDescription: scroll.description,
-                )),
-                _ScrollControls(
-                  sideSize: sideSize,
-                  enchantState: state,
-                  onEnchant: () {
-                    if (state.insertedWeapon != null) {
-                      enchantBloc.add(EnchantEvent$StartEnchanting(
-                          weapon: state.insertedWeapon!));
-                    }
-                  },
-                  onCancel: () {
-                    ref
-                        .read(showWeaponInfoField.notifier)
-                        .update((state) => false);
-                    ref
-                        .read(showScrollField.notifier)
-                        .update((state) => !state);
-                  },
-                ),
-              ],
-            ),
-          );
-        });
+                    enchantState: state,
+                    insertedWeapon: insertedWeapon,
+                    scrollDescription: scroll.description,
+                  )),
+                  _ScrollControls(
+                    sideSize: sideSize,
+                    enchantState: state,
+                    onEnchant: () {
+                      if (state.insertedWeapon != null) {
+                        enchantBloc.add(EnchantEvent$StartEnchanting(
+                            weapon: state.insertedWeapon!));
+                      }
+                    },
+                    onCancel: () {
+                      ref
+                          .read(showWeaponInfoField.notifier)
+                          .update((state) => false);
+                      ref
+                          .read(showScrollField.notifier)
+                          .update((state) => !state);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }),
+    );
   }
 }
 

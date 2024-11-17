@@ -28,7 +28,7 @@ class InventoryDragTarget extends ConsumerWidget {
       onAcceptWithDetails: (details){
         final dragState = draggableBloc.state;
         if(dragState is DraggableItemsState$Dragged){
-          inventoryBloc.add(InventoryEvent$swapItems(fromIndex: dragState.itemInventoryIndex,toIndex: inventoryIndex));
+          inventoryBloc.add(InventoryEvent$SwapItems(fromIndex: dragState.itemInventoryIndex,toIndex: inventoryIndex));
         }
       },
         // onAccept: (value){

@@ -9,30 +9,37 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       : super(InventoryState(inventory: initialInventory??stockInventory)) {
     on<InventoryEvent>((event, emitter) =>
     switch(event){
-      InventoryEvent$addItem() => _addItem(event, emitter),
-      InventoryEvent$removeEvent() => _removeItem(event, emitter),
-      InventoryEvent$swapItems() => _swapItems(event, emitter),
+      InventoryEvent$AddItem() => _addItem(event, emitter),
+      InventoryEvent$RemoveItem() => _removeItem(event, emitter),
+      InventoryEvent$SwapItems() => _swapItems(event, emitter),
+      InventoryEvent$RefreshInventory() => _refreshInventory(event, emitter),
     });
   }
 
-  void _addItem(InventoryEvent$addItem event, Emitter<InventoryState> emitter){
+  void _addItem(InventoryEvent$AddItem event, Emitter<InventoryState> emitter){
     final invItems = [...state.inventory.items];
     final firstEmptySlotIndex = invItems.indexWhere((item)=> item == null);
     invItems[firstEmptySlotIndex] = event.item;
     emitter(InventoryState(inventory: Inventory(items: invItems)));
   }
 
-  void _removeItem(InventoryEvent$removeEvent event, Emitter<InventoryState> emitter){
+  void _removeItem(InventoryEvent$RemoveItem event, Emitter<InventoryState> emitter){
     final invItems = [...state.inventory.items];
-    invItems.removeWhere((item)=>item?.id == event.item!.id);
+    final removedIndex = invItems.indexWhere((item)=>item?.id == event.item!.id);
+    invItems[removedIndex] = null;
     emitter(InventoryState(inventory: Inventory(items: invItems)));
   }
 
-  void _swapItems(InventoryEvent$swapItems event, Emitter<InventoryState> emitter){
+  void _swapItems(InventoryEvent$SwapItems event, Emitter<InventoryState> emitter){
     final invItems = [...state.inventory.items];
     final changedItem = invItems[event.toIndex];
     invItems[event.toIndex] = invItems[event.fromIndex];
     invItems[event.fromIndex] = changedItem;
+    emitter(InventoryState(inventory: Inventory(items: invItems)));
+  }
+
+  void _refreshInventory(InventoryEvent$RefreshInventory event, Emitter<InventoryState> emitter){
+    final invItems = [...state.inventory.items];
     emitter(InventoryState(inventory: Inventory(items: invItems)));
   }
 }

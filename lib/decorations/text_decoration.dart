@@ -12,7 +12,7 @@ TextStyle scrollHintDecoration = const TextStyle(fontSize: 18,color: Colors.grey
 
 TextStyle scrollWeaponName = const TextStyle(fontSize: 22,color: Colors.yellow,fontFamily: "PT Sans");
 
-TextStyle scrollBottonsTextDecoration = const TextStyle(fontSize: 16,color: Colors.grey,fontFamily: "PT Sans");
+TextStyle scrollBottonsTextDecoration = const TextStyle(fontSize: 16,color: Colors.white,fontFamily: "PT Sans");
 
 TextStyle enchantSuccessTextDecoration = const TextStyle(fontSize: 26,color: Colors.yellow,fontFamily: "PT Sans");
 
