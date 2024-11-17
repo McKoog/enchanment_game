@@ -12,7 +12,7 @@ class ItemInfoBloc extends Bloc<ItemInfoEvent, ItemInfoState> {
 
   void _showInfo(ItemInfoEvent$ShowInfo event, Emitter<ItemInfoState> emitter) {
     if (state is ItemInfoState$Showed &&
-        (state as ItemInfoState$Showed).item.id == event.item.id) {
+        (state as ItemInfoState$Showed).item == event.item) {
       emitter(ItemInfoState$Idle());
     } else {
       emitter(ItemInfoState$Showed(item: event.item));

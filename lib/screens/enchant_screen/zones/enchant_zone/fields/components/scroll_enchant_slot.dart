@@ -32,7 +32,9 @@ class ScrollEnchantSlot extends StatelessWidget {
 
     return DragTarget<Item>(
       onAcceptWithDetails: (details) {
-        if (details.data.type == ItemType.weapon && insertedWeapon == null) {
+        if (details.data.type == ItemType.weapon &&
+            insertedWeapon == null &&
+            currentEnchantState is EnchantState$Idle) {
           enchantBloc
               .add(EnchantEvent$InsertWeapon(weapon: details.data as Weapon));
         }

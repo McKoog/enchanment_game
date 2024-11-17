@@ -54,9 +54,7 @@ class InventoryDraggableItem extends StatelessWidget {
         draggableBloc.add(DraggableItemsEvent$StopDragging());
       },
       child: InkWell(
-          onTap: () {
-            itemInfoBloc.add(ItemInfoEvent$ShowInfo(item: item));
-          },
+          onTap: () => itemInfoBloc.add(ItemInfoEvent$ShowInfo(item: item)),
           child: item.isSvgAsset
               ? SvgPicture.asset(item.image)
               : Image.asset(item.image)),

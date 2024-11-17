@@ -9,7 +9,7 @@ class Inventory {
   List<Item?> items;
 
   Map toJson() {
-    List<Map?> mapItems = []; // = this.items.map((i) => i?.toJson()).toList();
+    List<Map?> mapItems = [];
     for (var element in items) {
       if (element == null) {
         mapItems.add(null);
@@ -31,9 +31,6 @@ class Inventory {
 
     var x = json['items'] as List;
 
-    /*List<Item?> items = (json['items'] as List).map((i) =>
-        i == null?null:Item.fromJson(i)).toList();*/
-
     for (var element in x) {
       if (element == null) {
         items.add(null);
@@ -53,12 +50,6 @@ class Inventory {
     );
   }
 
-  // Inventory swapItems(int from, int to){
-  //   items[to] = items[from];
-  //   items[from] = null;
-  //   return Inventory(items: items);
-  // }
-  //
   List<Weapon> getAllMyWeapons(bool includingFist) {
     List<Weapon> weapons = [];
     if (includingFist) weapons.add(stockFist);
@@ -70,29 +61,6 @@ class Inventory {
     return weapons;
   }
 
-  //
-  // Inventory putItem(Item item){
-  //   bool added = false;
-  //   for(int i = 0; i < items.length; i++){
-  //     if(items[i] == null && !added){
-  //       items[i] = item;
-  //       added = true;
-  //     }
-  //   }
-  //     return Inventory(items: items);
-  // }
-  //
-  // Inventory removeItem(Item item){
-  //   bool removed = false;
-  //   for(int i = 0; i < items.length; i++){
-  //     if(items[i] != null && items[i]!.id == item.id && !removed){
-  //       items[i] = null;
-  //       removed = true;
-  //     }
-  //   }
-  //   return Inventory(items: items);
-  // }
-  //
   bool isLastFiveSlots() {
     int emptySlots = 0;
     for (var element in items) {
