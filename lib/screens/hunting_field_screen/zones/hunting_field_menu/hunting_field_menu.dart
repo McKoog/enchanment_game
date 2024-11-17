@@ -8,19 +8,19 @@ import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_fiel
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/weapon_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HuntingFieldsMenu extends ConsumerStatefulWidget {
+
+class HuntingFieldsMenu extends StatefulWidget {
   const HuntingFieldsMenu(
       {super.key, required this.constraints, required this.width});
   final BoxConstraints constraints;
   final double width;
 
   @override
-  ConsumerState<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
+  State<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
 }
 
-class _HuntingFieldsMenuState extends ConsumerState<HuntingFieldsMenu>
+class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;

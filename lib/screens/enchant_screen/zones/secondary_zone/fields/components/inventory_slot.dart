@@ -5,10 +5,10 @@ import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_draggable_item.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_drag_target.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 // TODO: Переписать на дженерик
-class InventorySlot extends ConsumerWidget {
+class InventorySlot extends StatelessWidget {
   const InventorySlot(
       {super.key, required this.index, this.item, this.canBeDragged = true, this.canBeDragTarget = true});
 
@@ -19,7 +19,7 @@ class InventorySlot extends ConsumerWidget {
   final bool canBeDragTarget;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // ref.watch(currentEnchantSuccess);
     Weapon? weapon;
     if (item != null && item!.type == ItemType.weapon) weapon = item as Weapon;

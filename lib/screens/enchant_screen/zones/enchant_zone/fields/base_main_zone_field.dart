@@ -1,17 +1,17 @@
 import 'package:enchantment_game/decorations/fields_decoration.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BaseEnchantZoneField extends ConsumerWidget {
+class BaseEnchantZoneField extends StatelessWidget {
   const BaseEnchantZoneField({Key? key,required this.sideSize,this.backgroundItem,required this.child}) : super(key: key);
   final double sideSize;
   final Widget child;
   final Item? backgroundItem;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
         //decoration: enchantFieldDecoration,
         height:sideSize-24,

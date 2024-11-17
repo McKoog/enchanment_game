@@ -5,13 +5,13 @@ import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PickedWeaponField extends ConsumerWidget {
+
+class PickedWeaponField extends StatelessWidget {
   const PickedWeaponField({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
     List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
     Weapon? selectedWeapon =  context.watch<HuntingFieldsBloc>().state.selectedWeapon;
 

@@ -7,9 +7,9 @@ import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fie
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InventoryField extends ConsumerWidget {
+
+class InventoryField extends StatelessWidget {
   const InventoryField(
       {super.key, required this.sideSize, required this.capacity});
 
@@ -17,7 +17,7 @@ class InventoryField extends ConsumerWidget {
   final int capacity;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return SizedBox(
         height: sideSize,
         width: sideSize,

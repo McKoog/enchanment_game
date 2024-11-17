@@ -8,16 +8,16 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/weapon_info_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EnchantZone extends ConsumerWidget {
+
+class EnchantZone extends StatelessWidget {
   const EnchantZone({super.key, required this.height, required this.width});
 
   final double height;
   final double width;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return BlocBuilder<ItemInfoBloc, ItemInfoState>(
         bloc: context.read<ItemInfoBloc>(),
         builder: (context, state) {

@@ -7,7 +7,6 @@ import 'package:enchantment_game/shared_blocs_provider.dart';
 import 'package:enchantment_game/version_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EnchantmentGame extends StatelessWidget {
   const EnchantmentGame({super.key});
@@ -20,8 +19,7 @@ class EnchantmentGame extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'EnchantGame',
       theme: ThemeData.dark(useMaterial3: true),
-      home: ProviderScope(
-        child: Scaffold(
+      home: Scaffold(
           body: SharedBlocsProvider(
             child: VersionWrapper(
               child: ColoredBox(
@@ -39,7 +37,6 @@ class EnchantmentGame extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }

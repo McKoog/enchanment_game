@@ -7,16 +7,16 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InventoryDragTarget extends ConsumerWidget {
+
+class InventoryDragTarget extends StatelessWidget {
   const InventoryDragTarget({super.key,required this.inventoryIndex, this.child = const SizedBox.shrink(), this.canBeDragTarget = true});
   final int inventoryIndex;
   final Widget child;
   final bool canBeDragTarget;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
 
     if(!canBeDragTarget){
       return child;

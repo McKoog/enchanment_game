@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class EnchantProgressBar extends ConsumerStatefulWidget {
+
+class EnchantProgressBar extends StatefulWidget {
   const EnchantProgressBar({super.key, required this.parentSize});
 
   final double parentSize;
 
   @override
-  ConsumerState<EnchantProgressBar> createState() => _EnchantProgressBarState();
+  State<EnchantProgressBar> createState() => _EnchantProgressBarState();
 }
 
-class _EnchantProgressBarState extends ConsumerState<EnchantProgressBar>
+class _EnchantProgressBarState extends State<EnchantProgressBar>
     with TickerProviderStateMixin {
   late final AnimationController controller;
 

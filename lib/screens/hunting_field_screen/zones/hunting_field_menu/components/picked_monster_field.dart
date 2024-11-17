@@ -5,14 +5,14 @@ import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/monster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
-class PickedMonsterField extends ConsumerWidget {
+class PickedMonsterField extends StatelessWidget {
   const PickedMonsterField({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
     final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
     Monster? selectedMonster = huntingFieldsBloc.state.selectedMonster;
     return InkWell(

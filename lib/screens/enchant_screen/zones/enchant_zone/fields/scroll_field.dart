@@ -14,16 +14,16 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ScrollField extends ConsumerWidget {
+
+class ScrollField extends StatelessWidget {
   const ScrollField({super.key, required this.sideSize, required this.scroll});
 
   final double sideSize;
   final Scroll scroll;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final enchantBloc = context.read<EnchantBloc>();
     final inventoryBloc = context.read<InventoryBloc>();
     final itemInfoBloc = context.read<ItemInfoBloc>();

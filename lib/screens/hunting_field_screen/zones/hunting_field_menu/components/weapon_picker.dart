@@ -6,16 +6,16 @@ import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart'
 import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WeaponPicker extends ConsumerWidget {
+
+class WeaponPicker extends StatelessWidget {
   const WeaponPicker({super.key,required this.controllerWeapon,required this.constraints});
 
   final FixedExtentScrollController controllerWeapon;
   final BoxConstraints constraints;
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context) {
 
     final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
     List<Weapon> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
