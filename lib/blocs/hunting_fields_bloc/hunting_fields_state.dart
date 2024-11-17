@@ -1,20 +1,20 @@
-import 'package:enchantment_game/models/monster.dart';
+import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
 sealed class HuntingFieldState {
   HuntingFieldState(
-      {required this.selectedWeapon, required this.selectedMonster});
+      {required this.selectedWeapon, required this.selectedEnemy});
 
   final Weapon selectedWeapon;
-  final Monster selectedMonster;
+  final Enemy selectedEnemy;
 }
 
 class HuntingFieldState$PickPhase extends HuntingFieldState {
   HuntingFieldState$PickPhase(
-      {required super.selectedWeapon, required super.selectedMonster});
+      {required super.selectedWeapon, required super.selectedEnemy});
 }
 
 class HuntingFieldState$HuntingStarted extends HuntingFieldState {
   HuntingFieldState$HuntingStarted(
-      {required super.selectedWeapon, required super.selectedMonster});
+      {required super.selectedWeapon, required super.selectedEnemy});
 }

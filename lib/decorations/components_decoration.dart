@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Decoration monsterHpBarDecoration = BoxDecoration(
+Decoration enemyHpBarDecoration = BoxDecoration(
     //color: Color.fromRGBO(78, 78, 78, 1),
     border: Border(
         top: BorderSide(color: Color.fromRGBO(212, 0, 0, 1).withOpacity(0.4)),

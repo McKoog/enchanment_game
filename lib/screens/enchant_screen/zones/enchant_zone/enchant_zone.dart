@@ -3,7 +3,7 @@ import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_state.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/base_main_zone_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/info_background.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/scroll_field.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/weapon_info_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,7 +28,7 @@ class EnchantZone extends StatelessWidget {
                 child: state is ItemInfoState$Showed
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: BaseEnchantZoneField(
+                        child: InfoBackground(
                           sideSize: height,
                           backgroundItem: state.item,
                           child: state.item is Scroll

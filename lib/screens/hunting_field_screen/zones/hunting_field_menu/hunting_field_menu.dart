@@ -2,8 +2,8 @@ import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.d
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/monster_picker.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_monster_field.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/enemy_picker.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_enemy_field.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_weapon_field.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/weapon_picker.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
   bool get wantKeepAlive => true;
 
   late final FixedExtentScrollController controllerWeapon;
-  late final FixedExtentScrollController controllerMonster;
+  late final FixedExtentScrollController controllerEnemy;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
     controllerWeapon =
         FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
 
-    controllerMonster = FixedExtentScrollController(initialItem: 0);
+    controllerEnemy = FixedExtentScrollController(initialItem: 0);
     super.initState();
   }
 
@@ -70,17 +70,17 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
           children: [
             title("HuntingField"),
             descriptionText(
-                "At first, pick avaliable weapon to fight monsters with..."),
+                "At first, pick avaliable weapon to fight enemys with..."),
             WeaponPicker(
               controllerWeapon: controllerWeapon,
               constraints: widget.constraints,
             ),
             const PickedWeaponField(),
             descriptionText("Then,select your enemy..."),
-            MonsterPicker(
-                controllerMonster: controllerMonster,
+            EnemyPicker(
+                controllerEnemy: controllerEnemy,
                 constraints: widget.constraints),
-            const PickedMonsterField(),
+            const PickedEnemyField(),
           ],
         ),
       ),

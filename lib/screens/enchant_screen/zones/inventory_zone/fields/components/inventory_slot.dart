@@ -2,8 +2,8 @@ import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart'
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_draggable_item.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_drag_target.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_draggable_item.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_drag_target.dart';
 import 'package:flutter/material.dart';
 
 // TODO: Переписать на дженерик

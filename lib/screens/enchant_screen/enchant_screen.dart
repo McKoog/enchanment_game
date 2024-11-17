@@ -1,6 +1,6 @@
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/enchant_zone.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/inventory_zone.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/inventory_zone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

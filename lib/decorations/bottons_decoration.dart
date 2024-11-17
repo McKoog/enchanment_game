@@ -11,7 +11,7 @@ Decoration huntBeginButtonDecoration = BoxDecoration(
           blurRadius: 5, spreadRadius: 0, color: Colors.yellow.withOpacity(0.1))
     ]);
 
-Decoration monsterNameFieldDecoration = BoxDecoration(
+Decoration enemyNameFieldDecoration = BoxDecoration(
     //color: Color.fromRGBO(78, 78, 78, 1),
     border: Border(
         top: BorderSide(color: Colors.yellow.withOpacity(0.5)),

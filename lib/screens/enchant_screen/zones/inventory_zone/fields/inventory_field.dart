@@ -2,7 +2,7 @@ import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

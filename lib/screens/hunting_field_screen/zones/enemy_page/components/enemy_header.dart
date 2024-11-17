@@ -2,17 +2,17 @@ import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.d
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/monster.dart';
+import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-class MonsterHeader extends StatelessWidget {
-  const MonsterHeader({super.key, required this.width, required this.monster});
+class EnemyHeader extends StatelessWidget {
+  const EnemyHeader({super.key, required this.width, required this.enemy});
 
   final double width;
-  final Monster monster;
+  final Enemy enemy;
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +44,13 @@ class MonsterHeader extends StatelessWidget {
                   child: Container(
                       alignment: Alignment.center,
                       height: 53,
-                      decoration: monsterNameFieldDecoration,
+                      decoration: enemyNameFieldDecoration,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            monster.name,
-                            style: FarmMonsterNameTextDecoration,
+                            enemy.name,
+                            style: FarmEnemyNameTextDecoration,
                           ),
                           const Text(
                             "show droplist",

@@ -1,19 +1,19 @@
 import 'package:enchantment_game/decorations/components_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/monster.dart';
+import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class MonsterHpBar extends StatelessWidget {
-  const MonsterHpBar(
+class EnemyHpBar extends StatelessWidget {
+  const EnemyHpBar(
       {super.key,
       required this.width,
-      required this.monster,
+      required this.enemy,
       required this.widthOfOneHP,
       required this.currentHP});
 
   final double width;
-  final Monster monster;
+  final Enemy enemy;
   final double widthOfOneHP;
   final int currentHP;
 
@@ -25,28 +25,28 @@ class MonsterHpBar extends StatelessWidget {
       child: Row(
         //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SvgPicture.asset("assets/monster_hp_icon.svg", height: 50),
+          SvgPicture.asset("assets/enemy_hp_icon.svg", height: 50),
           Stack(
             children: [
               Container(
                 alignment: Alignment.center,
                 height: 35,
                 width: widthOfOneHP * currentHP,
-                decoration: monsterHpBarDecoration,
+                decoration: enemyHpBarDecoration,
               ),
               Container(
                   alignment: Alignment.center,
                   height: 35,
-                  width: widthOfOneHP * monster.hp,
-                  decoration: monsterHpBarDecoration,
+                  width: widthOfOneHP * enemy.hp,
+                  decoration: enemyHpBarDecoration,
                   child: Text(
-                    "$currentHP / ${monster.hp}",
-                    style: FarmMonsterHpTextDecoration,
+                    "$currentHP / ${enemy.hp}",
+                    style: FarmEnemyHpTextDecoration,
                   )),
             ],
           ),
           SvgPicture.asset(
-            "assets/monster_hp_icon.svg",
+            "assets/enemy_hp_icon.svg",
             height: 50,
           ),
         ],

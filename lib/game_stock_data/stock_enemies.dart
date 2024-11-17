@@ -1,8 +1,8 @@
 import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
 import 'package:enchantment_game/models/dropItem.dart';
-import 'package:enchantment_game/models/monster.dart';
+import 'package:enchantment_game/models/enemy.dart';
 
-final stockWerewolf = Monster(
+final stockWerewolf = Enemy(
     name: 'Werewolf',
     image: "assets/lvl_1_werewolf.png",
     hp: 200,

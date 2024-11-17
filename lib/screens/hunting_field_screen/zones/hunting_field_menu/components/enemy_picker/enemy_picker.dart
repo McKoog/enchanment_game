@@ -1,16 +1,16 @@
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
-import 'package:enchantment_game/game_stock_data/stock_monsters.dart';
-import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart';
+import 'package:enchantment_game/game_stock_data/stock_enemies.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/components/horizontal_list_wheel_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MonsterPicker extends StatelessWidget {
-  const MonsterPicker(
-      {super.key, required this.controllerMonster, required this.constraints});
+class EnemyPicker extends StatelessWidget {
+  const EnemyPicker(
+      {super.key, required this.controllerEnemy, required this.constraints});
 
-  final FixedExtentScrollController controllerMonster;
+  final FixedExtentScrollController controllerEnemy;
   final BoxConstraints constraints;
 
   @override
@@ -21,9 +21,9 @@ class MonsterPicker extends StatelessWidget {
       children: [
         InkWell(
             onTap: () {
-              if (controllerMonster.selectedItem > 0) {
-                controllerMonster.animateToItem(
-                    controllerMonster.selectedItem - 1,
+              if (controllerEnemy.selectedItem > 0) {
+                controllerEnemy.animateToItem(
+                    controllerEnemy.selectedItem - 1,
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.linear);
               }
@@ -37,14 +37,14 @@ class MonsterPicker extends StatelessWidget {
           child: SizedBox(
             height: constraints.maxHeight / 4,
             child: HorizontalListWheelScrollView(
-              controller: controllerMonster,
+              controller: controllerEnemy,
               childCount: 3,
               scrollDirection: Axis.horizontal,
               itemExtent: 200,
               onSelectedItemChanged: (index) {
                 /// TODO: Надо будет исправить, сейчас всегда только оборотень
                 huntingFieldsBloc.add(
-                    HuntingFieldEvent$SelectMonster(monster: stockWerewolf));
+                    HuntingFieldEvent$SelectEnemy(enemy: stockWerewolf));
               },
               builder: (BuildContext context, int index) {
                 return Container(
@@ -63,9 +63,9 @@ class MonsterPicker extends StatelessWidget {
         ),
         InkWell(
             onTap: () {
-              if (controllerMonster.selectedItem < 3) {
-                controllerMonster.animateToItem(
-                    controllerMonster.selectedItem + 1,
+              if (controllerEnemy.selectedItem < 3) {
+                controllerEnemy.animateToItem(
+                    controllerEnemy.selectedItem + 1,
                     duration: const Duration(milliseconds: 500),
                     curve: Curves.linear);
               }

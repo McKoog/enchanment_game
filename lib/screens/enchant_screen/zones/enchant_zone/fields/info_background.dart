@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BaseEnchantZoneField extends StatelessWidget {
-  const BaseEnchantZoneField(
+class InfoBackground extends StatelessWidget {
+  const InfoBackground(
       {super.key,
       required this.sideSize,
       this.backgroundItem,

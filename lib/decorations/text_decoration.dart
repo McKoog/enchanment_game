@@ -42,7 +42,7 @@ TextStyle huntFieldSelectedWeaponTextDecoration = TextStyle(
     color: Colors.yellow,
     fontFamily: "PT Sans");
 
-TextStyle huntFieldSelectedMonsterTextDecoration = TextStyle(
+TextStyle huntFieldSelectedEnemyTextDecoration = TextStyle(
     fontSize: 26,
     fontWeight: FontWeight.w600,
     color: Colors.yellow.shade800,
@@ -54,8 +54,8 @@ TextStyle mobNameTextDecoration =
 TextStyle huntingBeginButtonTextDecoration =
     TextStyle(fontSize: 30, color: Colors.yellow, fontFamily: "PT Sans");
 
-TextStyle FarmMonsterNameTextDecoration =
+TextStyle FarmEnemyNameTextDecoration =
     TextStyle(fontSize: 22, color: Colors.yellow, fontFamily: "PT Sans");
 
-TextStyle FarmMonsterHpTextDecoration =
+TextStyle FarmEnemyHpTextDecoration =
     TextStyle(fontSize: 22, color: Colors.black, fontFamily: "PT Sans");

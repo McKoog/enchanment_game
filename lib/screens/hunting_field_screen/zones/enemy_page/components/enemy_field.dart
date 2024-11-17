@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MonsterField extends StatelessWidget {
-  const MonsterField(
+class EnemyField extends StatelessWidget {
+  const EnemyField(
       {super.key, required this.width, required this.assetImageLink});
 
   final double width;

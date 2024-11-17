@@ -1,5 +1,5 @@
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/inventory_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/inventory_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

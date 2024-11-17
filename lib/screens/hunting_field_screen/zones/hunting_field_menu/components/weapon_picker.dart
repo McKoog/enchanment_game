@@ -2,8 +2,8 @@ import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.d
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/own_packages/HorizonalListWheelScrollView.dart';
-import 'package:enchantment_game/screens/enchant_screen/zones/secondary_zone/fields/components/inventory_slot.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/components/horizontal_list_wheel_scroll_view.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

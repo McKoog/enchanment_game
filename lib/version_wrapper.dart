@@ -1,4 +1,4 @@
-import 'package:enchantment_game/shared_variables.dart';
+import 'package:enchantment_game/runner.dart';
 import 'package:flutter/material.dart';
 
 class VersionWrapper extends StatelessWidget {

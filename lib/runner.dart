@@ -1,4 +1,3 @@
-import 'package:enchantment_game/shared_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -11,3 +10,5 @@ class Runner {
     runApp(child);
   }
 }
+
+late final String appVersion;

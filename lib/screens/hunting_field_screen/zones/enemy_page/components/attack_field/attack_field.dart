@@ -3,10 +3,10 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/game_stock_data/game_stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
-import 'package:enchantment_game/models/monster.dart';
+import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/monster_hp_bar.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/weapon_field.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/enemy_hp_bar.dart';
+import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/weapon_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,11 +14,11 @@ class AttackField extends StatefulWidget {
   const AttackField(
       {super.key,
       required this.width,
-      required this.monster,
+      required this.enemy,
       required this.weapon});
 
   final double width;
-  final Monster monster;
+  final Enemy enemy;
   final Weapon weapon;
 
   @override
@@ -46,8 +46,8 @@ class _AttackFieldState extends State<AttackField> {
       if (currentHP > 0) {
         setState(() {});
       } else {
-        currentHP = widget.monster.hp;
-        for (var element in widget.monster.dropList) {
+        currentHP = widget.enemy.hp;
+        for (var element in widget.enemy.dropList) {
           int rand = Random().nextInt(101);
           if (rand <= element.chance) {
             Item? item;
@@ -80,8 +80,8 @@ class _AttackFieldState extends State<AttackField> {
         setState(() {});
       }
     } else {
-      currentHP = widget.monster.hp;
-      for (var element in widget.monster.dropList) {
+      currentHP = widget.enemy.hp;
+      for (var element in widget.enemy.dropList) {
         int rand = Random().nextInt(101);
         if (rand <= element.chance) {
           Item? item = element.item.type == ItemType.weapon
@@ -112,8 +112,8 @@ class _AttackFieldState extends State<AttackField> {
 
   @override
   void initState() {
-    currentHP = widget.monster.hp;
-    widthOfOneHP = (widget.width - 160) / widget.monster.hp;
+    currentHP = widget.enemy.hp;
+    widthOfOneHP = (widget.width - 160) / widget.enemy.hp;
     super.initState();
   }
 
@@ -122,9 +122,9 @@ class _AttackFieldState extends State<AttackField> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        MonsterHpBar(
+        EnemyHpBar(
           width: widget.width,
-          monster: widget.monster,
+          enemy: widget.enemy,
           widthOfOneHP: widthOfOneHP,
           currentHP: currentHP,
         ),
