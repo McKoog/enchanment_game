@@ -1,19 +1,19 @@
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PickedWeaponField extends ConsumerWidget {
-  const PickedWeaponField({Key? key}) : super(key: key);
+  const PickedWeaponField({super.key});
 
   @override
   Widget build(BuildContext context,WidgetRef ref) {
-    var inv = ref.watch(inventory);
-    List<Weapon?> myWeapons = inv.getAllMyWeapons(true);
+    List<Weapon?> myWeapons = context.watch<InventoryBloc>().state.inventory.getAllMyWeapons(true);
     Weapon? selectedWeapon = ref.watch(currentSelectedWeaponHuntingField);
     selectedWeapon ??
         SchedulerBinding.instance.addPostFrameCallback((_) => ref

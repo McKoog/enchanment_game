@@ -1,5 +1,3 @@
-import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';

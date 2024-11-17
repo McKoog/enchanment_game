@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/monster.dart';
@@ -7,6 +8,7 @@ import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/monster_hp_bar.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/moster_page/components/attack_field/components/weapon_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AttackField extends ConsumerStatefulWidget {
@@ -46,7 +48,7 @@ class _AttackFieldState extends ConsumerState<AttackField> {
       }
       else{
         currentHP = widget.monster.hp;
-        widget.monster.dropList.forEach((element) {
+        for (var element in widget.monster.dropList) {
           int rand = Random().nextInt(101);
           if (rand <= element.chance) {
             Item? item;
@@ -59,45 +61,49 @@ class _AttackFieldState extends ConsumerState<AttackField> {
               item = getNewStockItem(ItemType.scroll);
             }
             if (item != null) {
-              if (ref.read(inventory).isLastFiveSlots()) {
+              if (context.read<InventoryBloc>().state.inventory.isLastFiveSlots()) {
                 if (item.type == ItemType.scroll) {
+                  context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
                   // ref
                   //     .read(inventory.notifier)
                   //     .update((state) => ref.read(inventory).putItem(item!));
                 }
               } else {
+                context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
                 // ref
                 //     .read(inventory.notifier)
                 //     .update((state) => ref.read(inventory).putItem(item!));
               }
             }
           }
-        });
+        }
         setState(() {});
       }
     } else {
       currentHP = widget.monster.hp;
-      widget.monster.dropList.forEach((element) {
+      for (var element in widget.monster.dropList) {
         int rand = Random().nextInt(101);
         if (rand <= element.chance) {
           Item? item = element.item.type == ItemType.weapon
               ? getNewStockItem(ItemType.weapon)
               : getNewStockItem(ItemType.scroll);
           if (item != null) {
-            if (ref.read(inventory).isLastFiveSlots()) {
+            if (context.read<InventoryBloc>().state.inventory.isLastFiveSlots()) {
               if (item.type == ItemType.scroll) {
+                context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
                 // ref
                 //     .read(inventory.notifier)
                 //     .update((state) => ref.read(inventory).putItem(item));
               }
             } else {
+              context.read<InventoryBloc>().add(InventoryEvent$AddItem(item: item));
               // ref
               //     .read(inventory.notifier)
               //     .update((state) => ref.read(inventory).putItem(item));
             }
           }
         }
-      });
+      }
       setState(() {});
     }
   }

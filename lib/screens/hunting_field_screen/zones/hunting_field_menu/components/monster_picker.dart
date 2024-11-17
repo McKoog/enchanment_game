@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MonsterPicker extends ConsumerWidget {
-  const MonsterPicker({Key? key,required this.controllerMonster,required this.constraints}) : super(key: key);
+  const MonsterPicker({super.key,required this.controllerMonster,required this.constraints});
 
   final FixedExtentScrollController controllerMonster;
   final BoxConstraints constraints;

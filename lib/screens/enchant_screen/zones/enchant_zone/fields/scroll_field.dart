@@ -1,16 +1,11 @@
-import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/data_providers/animation_providers.dart';
-import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/game_stock_items/game_stock_items.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_button.dart';
@@ -43,7 +38,7 @@ class ScrollField extends ConsumerWidget {
           } else {
             inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
             inventoryBloc
-                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon));
+                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
           }
         }
       },

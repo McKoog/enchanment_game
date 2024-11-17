@@ -1,7 +1,5 @@
-import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
-import 'package:enchantment_game/data_providers/inventory_provider.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/monster_picker.dart';

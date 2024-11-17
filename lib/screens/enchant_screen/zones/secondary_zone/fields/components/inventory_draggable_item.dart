@@ -1,6 +1,5 @@
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_event.dart';
-import 'package:enchantment_game/data_providers/animation_providers.dart';
 import 'package:enchantment_game/data_providers/current_providers.dart';
 import 'package:enchantment_game/data_providers/show_providers.dart';
 import 'package:enchantment_game/models/item.dart';
@@ -52,8 +51,6 @@ class InventoryDraggableItem extends ConsumerWidget {
             ref.read(currentWeapon.notifier).update((state) => null);
             ref.read(currentScroll.notifier).update((state) => item);
             ref.read(scrollEnchantSlotItem.notifier).update((state) => null);
-            ref.read(startProgressBarAnimation.notifier).update((state) => false);
-            ref.read(finishedProgressBarAnimation.notifier).update((state) => false);
             ref.read(showScrollProgressBar.notifier).update((state) => false);
             ref.read(currentEnchantSuccess.notifier).update((state) => null);
 
@@ -65,8 +62,6 @@ class InventoryDraggableItem extends ConsumerWidget {
             ref.read(currentScroll.notifier).update((state) => null);
             ref.read(showWeaponInfoField.notifier).update((state) => !state);
             ref.read(currentWeapon.notifier).update((state) => item);
-            ref.read(startProgressBarAnimation.notifier).update((state) => false);
-            ref.read(finishedProgressBarAnimation.notifier).update((state) => false);
             ref.read(showScrollProgressBar.notifier).update((state) => false);
             ref.read(currentEnchantSuccess.notifier).update((state) => null);
           }
