@@ -38,8 +38,10 @@ class ScrollField extends ConsumerWidget {
       listener: (context,state){
         if (state is EnchantState$Result) {
           if (state.isSuccess) {
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
             inventoryBloc.add(InventoryEvent$RefreshInventory());
           } else {
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
             inventoryBloc
                 .add(InventoryEvent$RemoveItem(item: state.insertedWeapon));
           }
