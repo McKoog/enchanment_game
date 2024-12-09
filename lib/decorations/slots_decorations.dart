@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-Decoration inventorySlotDecoration = BoxDecoration(
+final Decoration inventorySlotDecoration = BoxDecoration(
   color: const Color.fromRGBO(85, 85, 85, 1),
   border: const Border.fromBorderSide(
       BorderSide(color: Color.fromRGBO(130, 130, 130, 1), width: 2)),
   borderRadius: BorderRadius.circular(15),
 );
 
-Decoration scrollEnchantSlotDecoration = BoxDecoration(
+final Decoration scrollEnchantSlotDecoration = BoxDecoration(
     color: const Color.fromRGBO(70, 70, 70, 1),
     border: const Border.fromBorderSide(
         BorderSide(color: Color.fromRGBO(160, 160, 160, 1), width: 2)),
@@ -17,20 +17,34 @@ Decoration scrollEnchantSlotDecoration = BoxDecoration(
           blurRadius: 20, spreadRadius: 1, color: Color.fromRGBO(70, 70, 70, 1))
     ]);
 
-Decoration scrollEnchantSlotSuccessDecoration = BoxDecoration(
-    color: const Color.fromRGBO(70, 70, 70, 1),
-    border: const Border.fromBorderSide(
-        BorderSide(color: Color.fromRGBO(160, 160, 160, 1), width: 2)),
+final Decoration scrollEnchantSlotInsertedDecoration = BoxDecoration(
+    color: Color.lerp(Color.fromRGBO(70, 70, 70, 1),Colors.white,0.2),
     borderRadius: BorderRadius.circular(15),
     boxShadow: const [
-      BoxShadow(blurRadius: 40, spreadRadius: 20, color: Colors.yellow)
+      BoxShadow(
+          blurRadius: 20, spreadRadius: 5, color: Colors.white)
     ]);
 
-Decoration scrollEnchantSlotFailedDecoration = BoxDecoration(
-    color: const Color.fromRGBO(70, 70, 70, 1),
-    border: const Border.fromBorderSide(
-        BorderSide(color: Color.fromRGBO(160, 160, 160, 1), width: 2)),
+final Decoration scrollEnchantProgressSlotDecoration = BoxDecoration(
+    color: Color.fromRGBO(70, 70, 70, 1),
+    borderRadius: BorderRadius.circular(15),
+    boxShadow: [
+      BoxShadow(
+          blurRadius: 25, spreadRadius: 2.5, color: Colors.orange.shade800.withOpacity(0.25))
+    ]);
+
+final Decoration scrollEnchantSlotSuccessDecoration = BoxDecoration(
+    color: Color.lerp(Color.fromRGBO(70, 70, 70, 1),Colors.yellow.shade200,0.15),
+    borderRadius: BorderRadius.circular(15),
+    boxShadow: [
+      BoxShadow(blurRadius: 2, spreadRadius: 1, color: Colors.yellow)
+    ]);
+
+final Decoration scrollEnchantSlotFailedDecoration = BoxDecoration(
+    color: Color.lerp(Color.fromRGBO(70, 70, 70, 1),Colors.black,0.15),
+    border: Border.fromBorderSide(
+        BorderSide(color: Colors.black.withOpacity(0.3), width: 2)),
     borderRadius: BorderRadius.circular(15),
     boxShadow: const [
-      BoxShadow(blurRadius: 40, spreadRadius: 20, color: Colors.black)
+      BoxShadow(blurRadius: 15, spreadRadius: 5, color: Colors.black)
     ]);
