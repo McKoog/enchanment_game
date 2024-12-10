@@ -8,12 +8,12 @@ class ParticlesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (var particle in particles) {
-      Paint paint = Paint()
-        ..color = particle.color.withOpacity(particle.opacity)
-        ..isAntiAlias = false
-        ..style = PaintingStyle.fill;
+    Paint paint = Paint()
+      ..isAntiAlias = false
+      ..style = PaintingStyle.fill;
 
+    for (var particle in particles) {
+      paint.color = particle.color.withOpacity(particle.opacity);
       final offset = particle.polarToCartesian(size.height / 2);
 
       if (offset.dx >= size.height + 2 ||

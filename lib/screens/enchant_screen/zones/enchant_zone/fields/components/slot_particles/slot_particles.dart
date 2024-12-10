@@ -32,7 +32,7 @@ class _SlotParticlesState extends State<SlotParticles> {
 
   @override
   void initState() {
-    _particles = genParticles(600);
+    _particles = genParticles(2400);
     _animationTimer = Timer.periodic(
       const Duration(milliseconds: 1000 ~/ 60),
       (_) => updateParticles(isIdling: _isIdling),

@@ -2,6 +2,22 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+final List<Color> enchantingColors = [
+  Colors.yellow,
+  Colors.yellow.shade200,
+  Colors.yellow.shade800,
+  Colors.orangeAccent.shade200,
+  Colors.orange.shade800,
+];
+
+final List<Color> idleColors = [
+  Colors.white,
+  Colors.grey.shade400,
+  Colors.grey.shade200,
+  Colors.grey.shade500,
+  Colors.grey.shade300
+];
+
 class Particle {
   Particle({required this.orbit, required this.random}) {
     originalOrbit = orbit - random.nextDouble() * 50;
@@ -11,22 +27,6 @@ class Particle {
     color = idleColors[random.nextInt(5)];
     size = random.nextDouble() * 1.5 + 0.75;
   }
-
-  final List<Color> enchantingColors = [
-    Colors.yellow,
-    Colors.yellow.shade200,
-    Colors.yellow.shade800,
-    Colors.orangeAccent.shade200,
-    Colors.orange.shade800,
-  ];
-
-  final List<Color> idleColors = [
-    Colors.white,
-    Colors.grey.shade400,
-    Colors.grey.shade200,
-    Colors.grey.shade500,
-    Colors.grey.shade300
-  ];
 
   double orbit;
   late final double originalOrbit;
