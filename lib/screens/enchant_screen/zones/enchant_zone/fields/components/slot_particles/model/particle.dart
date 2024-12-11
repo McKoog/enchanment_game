@@ -30,7 +30,7 @@ class Particle {
 
   double orbit;
   late final double originalOrbit;
-  late final double theta;
+  double theta = 0;
   late double opacity;
   late Color color;
   late double size;
@@ -38,6 +38,8 @@ class Particle {
   bool _isExploding = true;
 
   double? _shrinkingDelta;
+
+  bool stopUpdating = false;
 
   late final Random random;
 
@@ -49,15 +51,27 @@ class Particle {
 
   void update(Duration duration) {
     if (orbit <= 0) return;
-    if(!enchantingColors.contains(color)) {
+    if (!enchantingColors.contains(color)) {
       color = enchantingColors[random.nextInt(5)];
     }
     _shrinkingDelta ??=
-        (orbit - originalOrbit) / duration.inMilliseconds * (1000 ~/ 60);
+        (orbit - originalOrbit) / duration.inMilliseconds * 1.25 * (1000 ~/ 60);
+    theta += 0.015;
     orbit -= _shrinkingDelta!;
   }
 
   void updateIdle() {
+    if ((orbit >= 150 && orbit <= 175 && random.nextDouble() < 0.2) ||
+        stopUpdating) {
+      stopUpdating = true;
+      theta += 0.01;
+      if (random.nextDouble() > 0.5) {
+        orbit += 0.2;
+      } else {
+        orbit -= 0.2;
+      }
+      return;
+    }
     if (_isExploding) {
       orbit += 3.5;
       opacity -= random.nextDouble() * 0.01 + 0.01;
@@ -66,7 +80,7 @@ class Particle {
       opacity -= random.nextDouble() * 0.005 + 0.005;
     }
 
-    if (opacity <= 0) {
+    if (opacity <= 0.3) {
       _isExploding = false;
       orbit = originalOrbit;
       opacity = random.nextDouble() * 0.9 + 0.1;

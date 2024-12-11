@@ -37,28 +37,28 @@ class ScrollEnchantSlot extends StatelessWidget {
       },
       builder: (BuildContext context, List<Item?> candidateData,
           List<dynamic> rejectedData) {
-        return AnimatedContainer(
-          decoration: switch (currentEnchantState) {
-            EnchantState$Result result => result.isSuccess
-                ? scrollEnchantSlotSuccessDecoration
-                : scrollEnchantSlotFailedDecoration,
-            EnchantState$Idle idle => idle.insertedWeapon == null
-                ? scrollEnchantSlotDecoration
-                : scrollEnchantSlotInsertedDecoration,
-            EnchantState$EnchantmentInProgress() =>
-              scrollEnchantProgressSlotDecoration,
-          },
-          height: currentSideSize,
-          width: currentSideSize,
-          duration: Duration(
-            milliseconds: switch (currentEnchantState) {
-              EnchantState$Idle() => 300,
-              EnchantState$EnchantmentInProgress() => 900,
-              EnchantState$Result() => 300,
+        return SlotParticles(
+          slotSideSize: currentSideSize,
+          child: AnimatedContainer(
+            decoration: switch (currentEnchantState) {
+              EnchantState$Result result => result.isSuccess
+                  ? scrollEnchantSlotSuccessDecoration
+                  : scrollEnchantSlotFailedDecoration,
+              EnchantState$Idle idle => idle.insertedWeapon == null
+                  ? scrollEnchantSlotDecoration
+                  : scrollEnchantSlotInsertedDecoration,
+              EnchantState$EnchantmentInProgress() =>
+                scrollEnchantProgressSlotDecoration,
             },
-          ),
-          child: SlotParticles(
-            slotSideSize: currentSideSize,
+            height: currentSideSize,
+            width: currentSideSize,
+            duration: Duration(
+              milliseconds: switch (currentEnchantState) {
+                EnchantState$Idle() => 300,
+                EnchantState$EnchantmentInProgress() => 900,
+                EnchantState$Result() => 300,
+              },
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: insertedWeapon != null

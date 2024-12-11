@@ -16,12 +16,12 @@ class ParticlesPainter extends CustomPainter {
       paint.color = particle.color.withOpacity(particle.opacity);
       final offset = particle.polarToCartesian(size.height / 2);
 
-      if (offset.dx >= size.height + 2 ||
-          offset.dy >= size.width + 2 ||
-          offset.dx <= -2 ||
-          offset.dy - 2 <= -2) {
+      // if (offset.dx >= size.height + 2 ||
+      //     offset.dy >= size.width + 2 ||
+      //     offset.dx <= -2 ||
+      //     offset.dy - 2 <= -2) {
         canvas.drawCircle(offset, particle.size, paint);
-      }
+      // }
     }
   }
 

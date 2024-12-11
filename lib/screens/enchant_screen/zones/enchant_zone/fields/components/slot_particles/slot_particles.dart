@@ -30,12 +30,14 @@ class _SlotParticlesState extends State<SlotParticles> {
   final slotBorderSize = 2;
   final shrinkParticlesDuration = const Duration(milliseconds: 1200);
 
+  bool shouldResetParticles = false;
+
   @override
   void initState() {
-    _particles = genParticles(2400);
+    _particles = genParticles(5000);
     _animationTimer = Timer.periodic(
       const Duration(milliseconds: 1000 ~/ 60),
-      (_) => updateParticles(isIdling: _isIdling),
+          (_) => updateParticles(isIdling: _isIdling),
     );
     super.initState();
   }
@@ -49,6 +51,14 @@ class _SlotParticlesState extends State<SlotParticles> {
   void updateParticles({bool? isIdling}) {
     switch (isIdling) {
       case null:
+        if (shouldResetParticles) {
+          setState(() {
+            shouldResetParticles = false;
+            for (var particle in _particles) {
+              particle.orbit = particle.originalOrbit;
+            }
+          });
+        }
         return;
       case true:
         setState(() {
@@ -68,8 +78,10 @@ class _SlotParticlesState extends State<SlotParticles> {
   List<Particle> genParticles(int length) {
     return List<Particle>.generate(
         length,
-        (index) => Particle(
-            orbit: widget.slotSideSize / 2 - slotBorderSize, random: _random));
+            (index) =>
+            Particle(
+                orbit: widget.slotSideSize / 2 - slotBorderSize,
+                random: _random));
   }
 
   @override
@@ -87,6 +99,7 @@ class _SlotParticlesState extends State<SlotParticles> {
             break;
           case EnchantState$Result():
             _isIdling = null;
+            shouldResetParticles = true;
         }
       },
       child: RepaintBoundary(
