@@ -19,7 +19,7 @@ final List<Color> idleColors = [
 ];
 
 class Particle {
-  Particle({required this.orbit, required this.random}) {
+  Particle({required this.orbit, required this.random}){
     originalOrbit = orbit - random.nextDouble() * 50;
     orbit -= random.nextDouble() * 50;
     theta = random.nextDouble() * 360 * pi / 180;
@@ -28,56 +28,48 @@ class Particle {
     size = random.nextDouble() * 1.5 + 0.75;
   }
 
+  final Random random;
   double orbit;
+
   late final double originalOrbit;
-  double theta = 0;
+  late double theta;
   late double opacity;
   late Color color;
   late double size;
 
+  bool _stopUpdating = false;
   bool _isExploding = true;
 
-  double? _shrinkingDelta;
-
-  bool stopUpdating = false;
-
-  late final Random random;
-
   Offset polarToCartesian(double centerCorrection) {
-    final dx = orbit * cos(theta);
-    final dy = orbit * sin(theta);
-    return Offset(dx + centerCorrection, dy + centerCorrection);
+    return Offset(orbit * cos(theta) + centerCorrection, orbit * sin(theta) + centerCorrection);
   }
 
-  void update(Duration duration) {
+  void update(Duration duration, double deltaFps) {
     if (orbit <= 0) return;
     if (!enchantingColors.contains(color)) {
       color = enchantingColors[random.nextInt(5)];
     }
-    _shrinkingDelta ??=
-        (orbit - originalOrbit) / duration.inMilliseconds * 1.25 * (1000 ~/ 60);
-    theta += 0.015;
-    orbit -= _shrinkingDelta!;
+    theta += 0.0075 * deltaFps;
+    orbit -= 1.0 * deltaFps;
   }
 
-  void updateIdle() {
-    if ((orbit >= 150 && orbit <= 175 && random.nextDouble() < 0.2) ||
-        stopUpdating) {
-      stopUpdating = true;
-      theta += 0.01;
-      if (random.nextDouble() > 0.5) {
-        orbit += 0.2;
-      } else {
-        orbit -= 0.2;
+  void updateIdle(double deltaFps) {
+    if (_stopUpdating || random.nextDouble() < 0.10 && orbit % 150 <= 40 && orbit ~/ 150 > 0) {
+      _stopUpdating = true;
+      theta += 0.0025 * deltaFps;
+      if(random.nextDouble() > 0.5){
+        orbit += 0.075;
+      }else{
+        orbit -= 0.075;
       }
       return;
     }
     if (_isExploding) {
-      orbit += 3.5;
-      opacity -= random.nextDouble() * 0.01 + 0.01;
+      orbit += 1.75 * deltaFps;
+      opacity -= (random.nextDouble() * 0.005 + 0.005) * deltaFps;
     } else {
-      orbit += 1.5;
-      opacity -= random.nextDouble() * 0.005 + 0.005;
+      orbit += 0.75 * deltaFps;
+      opacity -= (random.nextDouble() * 0.0025 + 0.0025) * deltaFps;
     }
 
     if (opacity <= 0.3) {

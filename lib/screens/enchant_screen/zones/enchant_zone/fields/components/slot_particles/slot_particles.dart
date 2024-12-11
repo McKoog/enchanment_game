@@ -6,6 +6,7 @@ import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/components/particles_painter.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/model/particle.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SlotParticles extends StatefulWidget {
@@ -20,10 +21,10 @@ class SlotParticles extends StatefulWidget {
   State<SlotParticles> createState() => _SlotParticlesState();
 }
 
-class _SlotParticlesState extends State<SlotParticles> {
+class _SlotParticlesState extends State<SlotParticles>
+    with TickerProviderStateMixin {
   final Random _random = Random();
   late final List<Particle> _particles;
-  late final Timer _animationTimer;
 
   bool? _isIdling;
 
@@ -32,23 +33,35 @@ class _SlotParticlesState extends State<SlotParticles> {
 
   bool shouldResetParticles = false;
 
+  late final Ticker _ticker;
+
+  Duration _lastUpdateTime = Duration.zero;
+
   @override
   void initState() {
     _particles = genParticles(5000);
-    _animationTimer = Timer.periodic(
-      const Duration(milliseconds: 1000 ~/ 60),
-          (_) => updateParticles(isIdling: _isIdling),
-    );
+    _ticker = createTicker((elapsed) {
+      // 120 FPS = ~8.33 ms
+      if (elapsed - _lastUpdateTime >= const Duration(microseconds: 8333)) {
+        updateParticles(
+            isIdling: _isIdling,
+            deltaFps: (elapsed - _lastUpdateTime).inMicroseconds / 8333);
+
+        _lastUpdateTime = elapsed;
+      }
+    });
+    _ticker.start();
     super.initState();
   }
 
   @override
   void dispose() {
-    _animationTimer.cancel();
+    _ticker.stop();
+    _ticker.dispose();
     super.dispose();
   }
 
-  void updateParticles({bool? isIdling}) {
+  void updateParticles({bool? isIdling, required double deltaFps}) {
     switch (isIdling) {
       case null:
         if (shouldResetParticles) {
@@ -63,13 +76,13 @@ class _SlotParticlesState extends State<SlotParticles> {
       case true:
         setState(() {
           for (var particle in _particles) {
-            particle.updateIdle();
+            particle.updateIdle(deltaFps);
           }
         });
       case false:
         setState(() {
           for (var particle in _particles) {
-            particle.update(shrinkParticlesDuration);
+            particle.update(shrinkParticlesDuration, deltaFps);
           }
         });
     }
@@ -78,10 +91,8 @@ class _SlotParticlesState extends State<SlotParticles> {
   List<Particle> genParticles(int length) {
     return List<Particle>.generate(
         length,
-            (index) =>
-            Particle(
-                orbit: widget.slotSideSize / 2 - slotBorderSize,
-                random: _random));
+        (index) => Particle(
+            orbit: widget.slotSideSize / 2 - slotBorderSize, random: _random));
   }
 
   @override
