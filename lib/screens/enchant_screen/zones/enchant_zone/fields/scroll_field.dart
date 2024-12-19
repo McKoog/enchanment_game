@@ -6,6 +6,9 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_event.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_state.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -35,12 +38,12 @@ class ScrollField extends StatelessWidget {
       listener: (context, state) {
         if (state is EnchantState$Result) {
           if (state.isSuccess) {
-            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            inventoryBloc.add(InventoryEvent$RefreshInventory());
+            // inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
+            // inventoryBloc.add(InventoryEvent$RefreshInventory());
           } else {
-            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            inventoryBloc
-                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+            // inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
+            // inventoryBloc
+            //     .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
           }
         }
       },
@@ -72,6 +75,7 @@ class ScrollField extends StatelessWidget {
                     insertedWeapon: insertedWeapon,
                     scrollDescription: scroll.description,
                   )),
+                  _ParticleSlider(),
                   _ScrollControls(
                     sideSize: sideSize,
                     enchantState: state,
@@ -87,6 +91,94 @@ class ScrollField extends StatelessWidget {
               ),
             );
           }),
+    );
+  }
+}
+
+class _ParticleSlider extends StatefulWidget {
+  const _ParticleSlider({super.key});
+
+  @override
+  State<_ParticleSlider> createState() => _ParticleSliderState();
+}
+
+class _ParticleSliderState extends State<_ParticleSlider> {
+  late double _sliderValue;
+  late bool _isOptimized;
+
+  @override
+  void didChangeDependencies() {
+    _sliderValue =
+        context.read<ParticleSettingBloc>().state.particlesCount.toDouble();
+    _isOptimized = context.read<ParticleSettingBloc>().state.isOptimized;
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          Text(
+            "Particles: ${_sliderValue.floor()}",
+            style: scrollButtonsTextDecoration,
+          ),
+          Slider(
+            value: _sliderValue,
+            onChanged: (value) {
+              setState(() {
+                _sliderValue = value;
+              });
+              context
+                  .read<ParticleSettingBloc>()
+                  .add(ParticleSettingEvent$ChangeCount(count: value.floor()));
+            },
+            min: 250,
+            max: 25000,
+            activeColor: Colors.grey.shade200.withOpacity(0.3),
+            inactiveColor: Colors.black.withOpacity(0.2),
+            thumbColor: Colors.grey.shade600,
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _isOptimized = !_isOptimized;
+                });
+                context
+                    .read<ParticleSettingBloc>()
+                    .add(ParticleSettingEvent$ChangeOptimized(
+                      isOptimized: _isOptimized,
+                    ));
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                      value: _isOptimized,
+                      checkColor: Colors.grey.shade200.withOpacity(0.6),
+                      activeColor: Colors.grey.shade200.withOpacity(0.4),
+                      fillColor: WidgetStateProperty.all(
+                          Colors.grey.shade200.withOpacity(0.3)),
+                      side: BorderSide(color: Colors.grey.shade200, width: 1),
+                      onChanged: (value) {
+                        setState(() {
+                          _isOptimized = value!;
+                        });
+                        context
+                            .read<ParticleSettingBloc>()
+                            .add(ParticleSettingEvent$ChangeOptimized(
+                              isOptimized: value ?? false,
+                            ));
+                      }),
+                  Text("Optimization", style: scrollButtonsTextDecoration),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

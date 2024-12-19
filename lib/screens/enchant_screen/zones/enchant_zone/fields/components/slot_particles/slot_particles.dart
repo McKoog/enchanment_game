@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_state.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/components/particles_painter.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/model/particle.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,8 @@ class _SlotParticlesState extends State<SlotParticles>
 
   @override
   void initState() {
-    _particles = genParticles(5000);
+    _particles =
+        genParticles(context.read<ParticleSettingBloc>().state.particlesCount);
     _ticker = createTicker((elapsed) {
       // 120 FPS = ~8.33 ms
       if (elapsed - _lastUpdateTime >= const Duration(microseconds: 8333)) {
@@ -97,30 +100,43 @@ class _SlotParticlesState extends State<SlotParticles>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<EnchantBloc, EnchantState>(
-      bloc: context.read<EnchantBloc>(),
-      listener: (BuildContext context, state) {
-        switch (state) {
-          case EnchantState$EnchantmentInProgress():
-            _isIdling = false;
-          case EnchantState$Idle idle:
-            if (idle.insertedWeapon != null) {
-              _isIdling = true;
-            }
-            break;
-          case EnchantState$Result():
-            _isIdling = null;
-            shouldResetParticles = true;
-        }
-      },
-      child: RepaintBoundary(
-        child: CustomPaint(
-          isComplex: true,
-          willChange: true,
-          painter: ParticlesPainter(particles: _particles),
-          child: widget.child,
+    return BlocBuilder<ParticleSettingBloc, ParticleSettingsState>(
+        builder: (context, state) {
+      if (state.particlesCount > _particles.length) {
+        _particles
+            .addAll(genParticles(state.particlesCount - _particles.length));
+      } else if (state.particlesCount < _particles.length) {
+        _particles.removeRange(state.particlesCount, _particles.length);
+      }
+
+      return BlocListener<EnchantBloc, EnchantState>(
+        bloc: context.read<EnchantBloc>(),
+        listener: (BuildContext context, state) {
+          switch (state) {
+            case EnchantState$EnchantmentInProgress():
+              _isIdling = false;
+            case EnchantState$Idle idle:
+              if (idle.insertedWeapon != null) {
+                _isIdling = true;
+              }
+              break;
+            case EnchantState$Result():
+              _isIdling = null;
+              shouldResetParticles = true;
+          }
+        },
+        child: RepaintBoundary(
+          child: CustomPaint(
+            isComplex: true,
+            willChange: true,
+            painter: ParticlesPainter(
+              particles: _particles,
+              isOptimized: state.isOptimized,
+            ),
+            child: widget.child,
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

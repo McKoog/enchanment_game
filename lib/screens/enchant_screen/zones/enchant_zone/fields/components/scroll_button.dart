@@ -21,14 +21,15 @@ class ScrollFieldButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-            textStyle: scrollBottonsTextDecoration,
+            textStyle: scrollButtonsTextDecoration,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(9.0),
             ),
-            backgroundColor: const Color.fromRGBO(130, 130, 130, 1)),
+            elevation: 0,
+            backgroundColor: Color.fromRGBO(130, 130, 130, 1).withOpacity(0.3)),
         child: AutoSizeText(
           caption,
-          style: scrollBottonsTextDecoration,
+          style: scrollButtonsTextDecoration,
         ),
       ),
     );
