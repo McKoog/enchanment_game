@@ -20,14 +20,24 @@ class HuntingFieldsBloc extends Bloc<HuntingFieldEvent, HuntingFieldState> {
 
   void _selectEnemy(HuntingFieldEvent$SelectEnemy event,
       Emitter<HuntingFieldState> emitter) {
-    emitter(HuntingFieldState$PickPhase(
-        selectedWeapon: state.selectedWeapon, selectedEnemy: event.enemy));
+    if (state is HuntingFieldState$HuntingStarted) {
+      emitter(HuntingFieldState$HuntingStarted(
+          selectedWeapon: state.selectedWeapon, selectedEnemy: event.enemy));
+    } else {
+      emitter(HuntingFieldState$PickPhase(
+          selectedWeapon: state.selectedWeapon, selectedEnemy: event.enemy));
+    }
   }
 
   void _selectWeapon(HuntingFieldEvent$SelectWeapon event,
       Emitter<HuntingFieldState> emitter) {
-    emitter(HuntingFieldState$PickPhase(
-        selectedWeapon: event.weapon, selectedEnemy: state.selectedEnemy));
+    if (state is HuntingFieldState$HuntingStarted) {
+      emitter(HuntingFieldState$HuntingStarted(
+          selectedWeapon: event.weapon, selectedEnemy: state.selectedEnemy));
+    } else {
+      emitter(HuntingFieldState$PickPhase(
+          selectedWeapon: event.weapon, selectedEnemy: state.selectedEnemy));
+    }
   }
 
   void _startHunting(HuntingFieldEvent$StartHunting event,

@@ -59,11 +59,13 @@ class _ScrollFieldState extends State<ScrollField> {
       },
       listener: (context, state) {
         if (state is EnchantState$Result) {
-          inventoryBloc
-              .add(InventoryEvent$ConsumeScroll(slotIndex: widget.inventoryIndex));
+          inventoryBloc.add(
+              InventoryEvent$ConsumeScroll(slotIndex: widget.inventoryIndex));
           if (!state.isSuccess && state.insertedWeapon != null) {
             inventoryBloc
                 .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+          } else if (state.isSuccess) {
+            inventoryBloc.add(InventoryEvent$RefreshInventory());
           }
           itemInfoBloc.add(ItemInfoEvent$MarkScrollEnchantFinished(
               inventoryIndex: widget.inventoryIndex));
