@@ -38,7 +38,7 @@ class EnemyField extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.43),
+              color: Colors.black.withValues(alpha: 0.43),
               spreadRadius: 10,
               blurRadius: 100)
         ],

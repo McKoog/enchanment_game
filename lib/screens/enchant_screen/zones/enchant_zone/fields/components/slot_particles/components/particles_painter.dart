@@ -35,7 +35,8 @@ class ParticlesPainter extends CustomPainter {
       }
     } else {
       for (var particle in particles) {
-        _paint.color = Color(particle.color).withOpacity(particle.opacity);
+        _paint.color = Color(particle.color)
+            .withValues(alpha: particle.opacity.clamp(0.0, 1.0));
         canvas.drawCircle(
             particle.polarToCartesian(size.height / 2), particle.size, _paint);
       }

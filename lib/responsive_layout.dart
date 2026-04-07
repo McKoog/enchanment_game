@@ -3,7 +3,6 @@ import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
 import 'package:enchantment_game/screens/shop_screen/shop_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 
 /// Breakpoints for responsive layout.
 const double _kBreakpointWide = 1280;
@@ -123,7 +122,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   void _onMediumScrollEnd() {
     if (_scrollController == null ||
         !_scrollController!.hasClients ||
-        _lastPanelWidth == 0) return;
+        _lastPanelWidth == 0) {
+      return;
+    }
 
     final snapIndex = (_scrollController!.offset / _lastPanelWidth).round();
     if (snapIndex != _currentIndex) {
