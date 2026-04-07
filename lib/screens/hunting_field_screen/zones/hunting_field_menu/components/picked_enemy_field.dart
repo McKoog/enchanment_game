@@ -21,7 +21,7 @@ class PickedEnemyField extends StatelessWidget {
       },
       child: SizedBox(
         height: 80,
-        width: MediaQuery.of(context).size.width - 60,
+        width: double.infinity,
         child: Row(
           children: [
             SvgPicture.asset(

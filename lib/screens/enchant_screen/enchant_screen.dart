@@ -6,20 +6,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnchantScreen extends StatelessWidget {
-  const EnchantScreen({super.key, required this.width});
+  const EnchantScreen({super.key, this.width});
 
-  final double width;
+  /// If provided, uses this fixed width. Otherwise, fills available space.
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      final effectiveWidth = width ?? constraints.maxWidth;
       return BlocProvider(
         create: (context) => ItemInfoBloc(),
-        child: Column(children: [
-          EnchantZone(height: constraints.maxHeight / 2, width: width),
-          InventoryZone(height: constraints.maxHeight / 2, width: width)
-        ]),
+        child: SizedBox(
+          width: effectiveWidth,
+          child: Column(children: [
+            EnchantZone(
+                height: constraints.maxHeight / 2, width: effectiveWidth),
+            InventoryZone(
+                height: constraints.maxHeight / 2, width: effectiveWidth)
+          ]),
+        ),
       );
     }));
   }
