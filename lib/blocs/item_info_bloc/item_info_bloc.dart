@@ -11,12 +11,20 @@ class ItemInfoBloc extends Bloc<ItemInfoEvent, ItemInfoState> {
   }
 
   void _showInfo(ItemInfoEvent$ShowInfo event, Emitter<ItemInfoState> emitter) {
-    if (state is ItemInfoState$Showed &&
-        (state as ItemInfoState$Showed).item == event.item) {
-      emitter(ItemInfoState$Idle());
-    } else {
-      emitter(ItemInfoState$Showed(item: event.item));
+    if (state is ItemInfoState$Showed) {
+      final showedState = state as ItemInfoState$Showed;
+      if (showedState.inventoryIndex == event.inventoryIndex) {
+        emitter(ItemInfoState$Idle());
+        return;
+      }
     }
+
+    emitter(
+      ItemInfoState$Showed(
+        item: event.item,
+        inventoryIndex: event.inventoryIndex,
+      ),
+    );
   }
 
   void _closeInfo(

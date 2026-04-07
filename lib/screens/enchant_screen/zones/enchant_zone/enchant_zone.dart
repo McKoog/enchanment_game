@@ -37,7 +37,8 @@ class EnchantZone extends StatelessWidget {
                                   create: (context) => EnchantBloc(),
                                   child: ScrollField(
                                       sideSize: height,
-                                      scroll: state.item as Scroll))
+                                      scroll: state.item as Scroll,
+                                      inventoryIndex: state.inventoryIndex))
                               : WeaponInfoField(
                                   sideSize: height,
                                   weapon: state.item as Weapon),

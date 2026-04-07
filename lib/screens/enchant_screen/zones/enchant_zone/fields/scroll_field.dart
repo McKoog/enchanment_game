@@ -16,10 +16,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ScrollField extends StatelessWidget {
-  const ScrollField({super.key, required this.sideSize, required this.scroll});
+  const ScrollField(
+      {super.key,
+      required this.sideSize,
+      required this.scroll,
+      required this.inventoryIndex});
 
   final double sideSize;
   final Scroll scroll;
+  final int inventoryIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +39,12 @@ class ScrollField extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is EnchantState$Result) {
-          if (state.isSuccess) {
-            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            inventoryBloc.add(InventoryEvent$RefreshInventory());
-          } else {
-            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            inventoryBloc
-                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+          inventoryBloc.add(InventoryEvent$ConsumeScroll(slotIndex: inventoryIndex));
+          if (!state.isSuccess && state.insertedWeapon != null) {
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+          }
+          if (scroll.quantity <= 1) {
+            itemInfoBloc.add(ItemInfoEvent$CloseInfo());
           }
         }
       },

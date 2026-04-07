@@ -6,10 +6,14 @@ class Scroll extends Item {
       required super.type,
       required super.image,
       required this.name,
-      required this.description});
+      required this.description,
+      this.quantity = 1});
+
+  static const int maxStackSize = 99;
 
   String name;
   String description;
+  int quantity;
 
   @override
   Map toJson() => {
@@ -19,6 +23,7 @@ class Scroll extends Item {
         'image': image,
         'name': name,
         'description': description,
+        'quantity': quantity,
       };
 
   factory Scroll.fromJson(Map<String, dynamic> json) {
@@ -28,6 +33,7 @@ class Scroll extends Item {
       image: json['image'],
       name: json['name'],
       description: json['description'],
+      quantity: json['quantity'] ?? 1,
     );
   }
 
@@ -37,6 +43,7 @@ class Scroll extends Item {
         type: scroll.type,
         image: scroll.image,
         name: scroll.name,
-        description: scroll.description);
+        description: scroll.description,
+        quantity: scroll.quantity);
   }
 }
