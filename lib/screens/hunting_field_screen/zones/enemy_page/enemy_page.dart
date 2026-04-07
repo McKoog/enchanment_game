@@ -42,7 +42,7 @@ class EnemyPage extends StatelessWidget {
                 height: enemyFieldHeight,
                 child: EnemyField(
                   width: width,
-                  assetImageLink: "assets/lvl_1_werewolf.png",
+                  assetImageLink: enemy.image,
                   availableHeight: enemyFieldHeight,
                 ),
               ),

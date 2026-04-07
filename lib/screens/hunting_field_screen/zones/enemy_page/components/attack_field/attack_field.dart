@@ -1,12 +1,10 @@
-import 'dart:math';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/game_stock_data/stock_items.dart';
-import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/enemy_hp_bar.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/weapon_field.dart';
+import 'package:enchantment_game/services/combat_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,84 +33,23 @@ class _AttackFieldState extends State<AttackField> {
   late double widthOfOneHP;
 
   void onTapAttack() {
-    if (currentHP > widget.weapon.lowerDamage) {
-      int randDamage = Random().nextInt(widget.weapon.higherDamage + 1);
-      if (randDamage < widget.weapon.lowerDamage) {
-        randDamage = widget.weapon.lowerDamage;
-      }
-      int randCrit = Random().nextInt(101);
-      bool isCrit = randCrit <= widget.weapon.critRate;
-      if (isCrit) {
-        double additionalCritDamageAmount =
-            randDamage * (widget.weapon.critPower / 100);
-        randDamage += additionalCritDamageAmount.toInt();
-      }
-      currentHP = currentHP - randDamage;
-      if (currentHP > 0) {
-        setState(() {});
-      } else {
-        currentHP = widget.enemy.hp;
-        for (var element in widget.enemy.dropList) {
-          int rand = Random().nextInt(101);
-          if (rand <= element.chance) {
-            Item? item;
-            bool isWeapon = element.item.type == ItemType.weapon;
-            if (isWeapon) {
-              Weapon elementWeapon = element.item as Weapon;
-              item = getNewStockItem(ItemType.weapon, elementWeapon.weaponType);
-            } else {
-              item = getNewStockItem(ItemType.scroll);
-            }
-            if (item != null) {
-              if (context
-                  .read<InventoryBloc>()
-                  .state
-                  .inventory
-                  .isLastFiveSlots()) {
-                if (item.type == ItemType.scroll) {
-                  context
-                      .read<InventoryBloc>()
-                      .add(InventoryEvent$AddItem(item: item));
-                }
-              } else {
-                context
-                    .read<InventoryBloc>()
-                    .add(InventoryEvent$AddItem(item: item));
-              }
-            }
-          }
-        }
-        setState(() {});
-      }
-    } else {
+    final result = CombatService.calculateDamage(widget.weapon);
+    currentHP -= result.damage;
+
+    if (currentHP <= 0) {
+      // Enemy killed — reset HP and generate loot
       currentHP = widget.enemy.hp;
-      for (var element in widget.enemy.dropList) {
-        int rand = Random().nextInt(101);
-        if (rand <= element.chance) {
-          Item? item = element.item.type == ItemType.weapon
-              ? getNewStockItem(ItemType.weapon)
-              : getNewStockItem(ItemType.scroll);
-          if (item != null) {
-            if (context
-                .read<InventoryBloc>()
-                .state
-                .inventory
-                .isLastFiveSlots()) {
-              if (item.type == ItemType.scroll) {
-                context
-                    .read<InventoryBloc>()
-                    .add(InventoryEvent$AddItem(item: item));
-              }
-            } else {
-              context
-                  .read<InventoryBloc>()
-                  .add(InventoryEvent$AddItem(item: item));
-            }
-          }
+      final loot = CombatService.generateLoot(widget.enemy);
+      final inventoryBloc = context.read<InventoryBloc>();
+
+      for (final item in loot.items) {
+        if (!inventoryBloc.state.inventory.isFull) {
+          inventoryBloc.add(InventoryEvent$AddItem(item: item));
         }
       }
-      setState(() {});
     }
+
+    setState(() {});
   }
 
   @override
