@@ -31,20 +31,18 @@ class InventorySlot extends StatelessWidget {
             padding: const EdgeInsets.all(5),
             decoration: weapon != null
                 ? BoxDecoration(
-                    color: const Color.fromRGBO(85, 85, 85, 1),
-                    border: Border.fromBorderSide(BorderSide(
-                        color: weapon.enchantLevel <= 15
-                            ? Color.fromRGBO(130, 130, 130, 1)
-                            : weapon.enchantLevel <= 20
-                                ? enchantedWeaponsGlowColors[weapon.enchantLevel].withValues(alpha: 0.6)
-                                : Color.fromRGBO(130, 130, 130, 1),
-                        width: 2)),
+                    color: weapon.enchantLevel < 16
+                        ? Color.fromRGBO(85, 85, 85, 1).withValues(alpha: 1 - (0.0666 * weapon.enchantLevel))
+                        : weapon.enchantLevel < 21
+                            ? Color.fromRGBO(85, 85, 85, 1).withValues(alpha: 0.5 - (0.06 * (weapon.enchantLevel % 16)))
+                            : Colors.grey.shade900.withValues(alpha: 0.25),
+                    border: Border.fromBorderSide(BorderSide(color: Color.fromRGBO(130, 130, 130, 1), width: 2)),
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: weapon.enchantLevel == 0
                         ? null
                         : weapon.enchantLevel > 20
-                            ? [BoxShadow(color: enchantedWeaponsGlowColors[21], spreadRadius: 2)]
-                            : [BoxShadow(color: enchantedWeaponsGlowColors[weapon.enchantLevel], spreadRadius: 2)])
+                            ? [BoxShadow(color: enchantedWeaponsGlowColors[21], spreadRadius: 0.3)]
+                            : [BoxShadow(color: enchantedWeaponsGlowColors[weapon.enchantLevel], spreadRadius: 0.3)])
                 : inventorySlotDecoration,
             child: item != null
                 ? InventoryDragTarget(
