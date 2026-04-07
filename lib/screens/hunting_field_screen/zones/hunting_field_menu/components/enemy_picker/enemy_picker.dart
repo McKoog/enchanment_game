@@ -7,8 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnemyPicker extends StatelessWidget {
-  const EnemyPicker(
-      {super.key, required this.controllerEnemy, required this.constraints});
+  const EnemyPicker({super.key, required this.controllerEnemy, required this.constraints});
 
   final FixedExtentScrollController controllerEnemy;
   final BoxConstraints constraints;
@@ -19,37 +18,22 @@ class EnemyPicker extends StatelessWidget {
 
     return Row(
       children: [
-        InkWell(
-            onTap: () {
-              if (controllerEnemy.selectedItem > 0) {
-                controllerEnemy.animateToItem(
-                    controllerEnemy.selectedItem - 1,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.linear);
-              }
-            },
-            child: const Icon(
-              Icons.arrow_back_rounded,
-              size: 80,
-              color: Colors.yellow,
-            )),
         Expanded(
           child: SizedBox(
-            height: constraints.maxHeight / 4,
+            height: constraints.maxHeight / 5,
             child: HorizontalListWheelScrollView(
               controller: controllerEnemy,
               childCount: 3,
               scrollDirection: Axis.horizontal,
-              itemExtent: 200,
+              itemExtent: 150,
               onSelectedItemChanged: (index) {
                 /// TODO: Надо будет исправить, сейчас всегда только оборотень
-                huntingFieldsBloc.add(
-                    HuntingFieldEvent$SelectEnemy(enemy: stockWerewolf));
+                huntingFieldsBloc.add(HuntingFieldEvent$SelectEnemy(enemy: stockWerewolf));
               },
               builder: (BuildContext context, int index) {
                 return Container(
-                    height: constraints.maxHeight / 4,
-                    margin: const EdgeInsets.all(16),
+                    height: constraints.maxHeight / 5,
+                    margin: const EdgeInsets.all(4),
                     padding: const EdgeInsets.all(8),
                     decoration: inventorySlotDecoration,
                     child: index == 0
@@ -61,20 +45,6 @@ class EnemyPicker extends StatelessWidget {
             ),
           ),
         ),
-        InkWell(
-            onTap: () {
-              if (controllerEnemy.selectedItem < 3) {
-                controllerEnemy.animateToItem(
-                    controllerEnemy.selectedItem + 1,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.linear);
-              }
-            },
-            child: const Icon(
-              Icons.arrow_forward_rounded,
-              size: 80,
-              color: Colors.yellow,
-            )),
       ],
     );
   }
