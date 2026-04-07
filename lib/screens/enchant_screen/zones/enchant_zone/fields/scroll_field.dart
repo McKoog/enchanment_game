@@ -8,7 +8,6 @@ import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
 import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
 import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_event.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_state.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -32,18 +31,16 @@ class ScrollField extends StatelessWidget {
 
     return BlocListener<EnchantBloc, EnchantState>(
       listenWhen: (oldState, newState) {
-        return oldState is EnchantState$EnchantmentInProgress &&
-            newState is EnchantState$Result;
+        return oldState is EnchantState$EnchantmentInProgress && newState is EnchantState$Result;
       },
       listener: (context, state) {
         if (state is EnchantState$Result) {
           if (state.isSuccess) {
-            // inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            // inventoryBloc.add(InventoryEvent$RefreshInventory());
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
+            inventoryBloc.add(InventoryEvent$RefreshInventory());
           } else {
-            // inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
-            // inventoryBloc
-            //     .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: scroll));
+            inventoryBloc.add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
           }
         }
       },
@@ -64,8 +61,7 @@ class ScrollField extends StatelessWidget {
                 children: [
                   _ScrollHeader(
                       insertedWeapon: insertedWeapon,
-                      isEnchantSucceed:
-                          state is EnchantState$Result && state.isSuccess,
+                      isEnchantSucceed: state is EnchantState$Result && state.isSuccess,
                       sideSize: sideSize,
                       scrollName: scroll.name),
                   Expanded(
@@ -75,14 +71,13 @@ class ScrollField extends StatelessWidget {
                     insertedWeapon: insertedWeapon,
                     scrollDescription: scroll.description,
                   )),
-                  _ParticleSlider(),
+                  // _ParticleSlider(),
                   _ScrollControls(
                     sideSize: sideSize,
                     enchantState: state,
                     onEnchant: () {
                       if (state.insertedWeapon != null) {
-                        enchantBloc.add(EnchantEvent$StartEnchanting(
-                            weapon: state.insertedWeapon!));
+                        enchantBloc.add(EnchantEvent$StartEnchanting(weapon: state.insertedWeapon!));
                       }
                     },
                     onCancel: () => itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
@@ -108,8 +103,7 @@ class _ParticleSliderState extends State<_ParticleSlider> {
 
   @override
   void didChangeDependencies() {
-    _sliderValue =
-        context.read<ParticleSettingBloc>().state.particlesCount.toDouble();
+    _sliderValue = context.read<ParticleSettingBloc>().state.particlesCount.toDouble();
     _isOptimized = context.read<ParticleSettingBloc>().state.isOptimized;
     super.didChangeDependencies();
   }
@@ -129,9 +123,7 @@ class _ParticleSliderState extends State<_ParticleSlider> {
               setState(() {
                 _sliderValue = value;
               });
-              context
-                  .read<ParticleSettingBloc>()
-                  .add(ParticleSettingEvent$ChangeCount(count: value.floor()));
+              context.read<ParticleSettingBloc>().add(ParticleSettingEvent$ChangeCount(count: value.floor()));
             },
             min: 250,
             max: 25000,
@@ -146,9 +138,7 @@ class _ParticleSliderState extends State<_ParticleSlider> {
                 setState(() {
                   _isOptimized = !_isOptimized;
                 });
-                context
-                    .read<ParticleSettingBloc>()
-                    .add(ParticleSettingEvent$ChangeOptimized(
+                context.read<ParticleSettingBloc>().add(ParticleSettingEvent$ChangeOptimized(
                       isOptimized: _isOptimized,
                     ));
               },
@@ -159,16 +149,13 @@ class _ParticleSliderState extends State<_ParticleSlider> {
                       value: _isOptimized,
                       checkColor: Colors.grey.shade200.withOpacity(0.6),
                       activeColor: Colors.grey.shade200.withOpacity(0.4),
-                      fillColor: WidgetStateProperty.all(
-                          Colors.grey.shade200.withOpacity(0.3)),
+                      fillColor: WidgetStateProperty.all(Colors.grey.shade200.withOpacity(0.3)),
                       side: BorderSide(color: Colors.grey.shade200, width: 1),
                       onChanged: (value) {
                         setState(() {
                           _isOptimized = value!;
                         });
-                        context
-                            .read<ParticleSettingBloc>()
-                            .add(ParticleSettingEvent$ChangeOptimized(
+                        context.read<ParticleSettingBloc>().add(ParticleSettingEvent$ChangeOptimized(
                               isOptimized: value ?? false,
                             ));
                       }),
@@ -184,11 +171,7 @@ class _ParticleSliderState extends State<_ParticleSlider> {
 }
 
 class _ScrollHeader extends StatelessWidget {
-  const _ScrollHeader(
-      {required this.insertedWeapon,
-      required this.isEnchantSucceed,
-      required this.sideSize,
-      required this.scrollName});
+  const _ScrollHeader({required this.insertedWeapon, required this.isEnchantSucceed, required this.sideSize, required this.scrollName});
 
   final Weapon? insertedWeapon;
   final bool isEnchantSucceed;
@@ -201,9 +184,7 @@ class _ScrollHeader extends StatelessWidget {
       height: sideSize / 14,
       child: insertedWeapon != null
           ? AutoSizeText(
-              insertedWeapon!.enchantLevel > 0
-                  ? "${insertedWeapon!.name} +${insertedWeapon!.enchantLevel}"
-                  : insertedWeapon!.name,
+              insertedWeapon!.enchantLevel > 0 ? "${insertedWeapon!.name} +${insertedWeapon!.enchantLevel}" : insertedWeapon!.name,
               style: weaponNameDecoration,
             )
           : isEnchantSucceed
@@ -267,11 +248,7 @@ class _ScrollContent extends StatelessWidget {
 }
 
 class _ScrollControls extends StatelessWidget {
-  const _ScrollControls(
-      {required this.sideSize,
-      required this.enchantState,
-      required this.onCancel,
-      required this.onEnchant});
+  const _ScrollControls({required this.sideSize, required this.enchantState, required this.onCancel, required this.onEnchant});
 
   final double sideSize;
   final EnchantState enchantState;
@@ -290,13 +267,8 @@ class _ScrollControls extends StatelessWidget {
               ),
             )
           : enchantState is EnchantState$Result
-              ? Text(
-                  (enchantState as EnchantState$Result).isSuccess
-                      ? "Success"
-                      : "Failed",
-                  style: (enchantState as EnchantState$Result).isSuccess
-                      ? enchantSuccessTextDecoration
-                      : enchantFailTextDecoration)
+              ? Text((enchantState as EnchantState$Result).isSuccess ? "Success" : "Failed",
+                  style: (enchantState as EnchantState$Result).isSuccess ? enchantSuccessTextDecoration : enchantFailTextDecoration)
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
