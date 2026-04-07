@@ -9,64 +9,93 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class EnemyHeader extends StatelessWidget {
-  const EnemyHeader({super.key, required this.width, required this.enemy});
+  const EnemyHeader({
+    super.key,
+    required this.width,
+    required this.enemy,
+    this.heightFactor = 80,
+  });
 
   final double width;
   final Enemy enemy;
 
+  /// Available height for this header section.
+  final double heightFactor;
+
   @override
   Widget build(BuildContext context) {
+    // Scale internal sizes proportionally to the available height.
+    // Reference height = 80 (original design).
+    final double scale = (heightFactor / 80).clamp(0.4, 1.5);
+    final double iconSize = 40 * scale;
+    final double svgHeight = 50 * scale;
+    final double nameFieldHeight = 53 * scale;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        InkWell(
-            onTap: () {
-              context
-                  .read<HuntingFieldsBloc>()
-                  .add(HuntingFieldEvent$StopHunting());
-            },
-            child: const Icon(
-              Icons.arrow_back,
-              size: 40,
-              color: Colors.yellow,
-            )),
-        SizedBox(
-          height: 80,
-          width: width - 100,
-          child: Row(
-            children: [
-              SvgPicture.asset(
-                "assets/hunt_button_icon.svg",
-                height: 50,
-                colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
-              ),
-              Expanded(
-                  child: Container(
-                      alignment: Alignment.center,
-                      height: 53,
-                      decoration: enemyNameFieldDecoration,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            enemy.name,
-                            style: farmEnemyNameTextDecoration,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: InkWell(
+              onTap: () {
+                context
+                    .read<HuntingFieldsBloc>()
+                    .add(HuntingFieldEvent$StopHunting());
+              },
+              child: Icon(
+                Icons.arrow_back,
+                size: iconSize,
+                color: Colors.yellow,
+              )),
+        ),
+        Expanded(
+          child: SizedBox(
+            height: heightFactor,
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/hunt_button_icon.svg",
+                  height: svgHeight,
+                  colorFilter:
+                      ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
+                ),
+                Expanded(
+                    child: Container(
+                        alignment: Alignment.center,
+                        height: nameFieldHeight,
+                        decoration: enemyNameFieldDecoration,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                enemy.name,
+                                style: farmEnemyNameTextDecoration,
+                              ),
+                              const Text(
+                                "show droplist",
+                                style: TextStyle(color: Colors.yellow),
+                              ),
+                            ],
                           ),
-                          const Text(
-                            "show droplist",
-                            style: TextStyle(color: Colors.yellow),
-                          ),
-                        ],
-                      ))),
-              SvgPicture.asset("assets/hunt_button_icon.svg",
-                  height: 50, colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),),
-            ],
+                        ))),
+                SvgPicture.asset(
+                  "assets/hunt_button_icon.svg",
+                  height: svgHeight,
+                  colorFilter:
+                      ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
+                ),
+              ],
+            ),
           ),
         ),
-        const Icon(
-          Icons.arrow_forward,
-          size: 40,
-          color: Colors.yellow,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Icon(
+            Icons.arrow_forward,
+            size: iconSize,
+            color: Colors.yellow,
+          ),
         ),
       ],
     );

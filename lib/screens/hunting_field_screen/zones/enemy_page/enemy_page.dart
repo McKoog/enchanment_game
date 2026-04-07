@@ -20,13 +20,42 @@ class EnemyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        EnemyHeader(width: width, enemy: enemy),
-        EnemyField(width: width, assetImageLink: "assets/lvl_1_werewolf.png"),
-        Expanded(
-            child: AttackField(width: width, enemy: enemy, weapon: weapon)),
-      ]),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableHeight = constraints.maxHeight;
+
+          // Proportional distribution of height:
+          // Header: ~12%, EnemyImage: ~45%, AttackField: ~43%
+          final headerHeight = availableHeight * 0.12;
+          final enemyFieldHeight = availableHeight * 0.45;
+          final attackFieldHeight = availableHeight * 0.43;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                height: headerHeight,
+                child: EnemyHeader(
+                    width: width, enemy: enemy, heightFactor: headerHeight),
+              ),
+              SizedBox(
+                height: enemyFieldHeight,
+                child: EnemyField(
+                  width: width,
+                  assetImageLink: "assets/lvl_1_werewolf.png",
+                  availableHeight: enemyFieldHeight,
+                ),
+              ),
+              SizedBox(
+                height: attackFieldHeight,
+                child: AttackField(
+                    width: width, enemy: enemy, weapon: weapon,
+                    availableHeight: attackFieldHeight),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

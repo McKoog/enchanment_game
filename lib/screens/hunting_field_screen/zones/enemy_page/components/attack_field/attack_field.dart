@@ -11,15 +11,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AttackField extends StatefulWidget {
-  const AttackField(
-      {super.key,
-      required this.width,
-      required this.enemy,
-      required this.weapon});
+  const AttackField({
+    super.key,
+    required this.width,
+    required this.enemy,
+    required this.weapon,
+    this.availableHeight,
+  });
 
   final double width;
   final Enemy enemy;
   final Weapon weapon;
+
+  /// Available height for the entire attack field section.
+  final double? availableHeight;
 
   @override
   State<AttackField> createState() => _AttackFieldState();
@@ -119,14 +124,24 @@ class _AttackFieldState extends State<AttackField> {
 
   @override
   Widget build(BuildContext context) {
+    // Use available height to determine HP bar proportions.
+    final double? ah = widget.availableHeight;
+
+    // HP bar gets ~25% of attack field height, weapon gets the rest.
+    final double hpBarHeight = ah != null ? (ah * 0.25).clamp(40, 80) : 80;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        EnemyHpBar(
-          width: widget.width,
-          enemy: widget.enemy,
-          widthOfOneHP: widthOfOneHP,
-          currentHP: currentHP,
+        SizedBox(
+          height: hpBarHeight,
+          child: EnemyHpBar(
+            width: widget.width,
+            enemy: widget.enemy,
+            widthOfOneHP: widthOfOneHP,
+            currentHP: currentHP,
+            heightFactor: hpBarHeight,
+          ),
         ),
         Expanded(
           child: InkWell(
