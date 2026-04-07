@@ -17,7 +17,7 @@ class PickedWeaponField extends StatelessWidget {
 
     return SizedBox(
       height: 80,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       child: Row(
         children: [
           Expanded(

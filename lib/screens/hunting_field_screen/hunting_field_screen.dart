@@ -8,14 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldScreen extends StatelessWidget {
-  const HuntingFieldScreen({super.key, required this.width});
+  const HuntingFieldScreen({super.key, this.width});
 
-  final double width;
+  /// If provided, uses this fixed width. Otherwise, fills available space.
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      final effectiveWidth = width ?? constraints.maxWidth;
       return BlocProvider(
         create: (context) => HuntingFieldsBloc(
             initialEnemy: stockWerewolf, initialWeapon: stockFist),
@@ -25,11 +27,12 @@ class HuntingFieldScreen extends StatelessWidget {
               builder: (context, state) {
                 return state is HuntingFieldState$HuntingStarted
                     ? EnemyPage(
-                        width: width,
+                        width: effectiveWidth,
                         enemy: state.selectedEnemy,
                         weapon: state.selectedWeapon,
                       )
-                    : HuntingFieldsMenu(constraints: constraints, width: width);
+                    : HuntingFieldsMenu(
+                        constraints: constraints, width: effectiveWidth);
               });
         }),
       );
