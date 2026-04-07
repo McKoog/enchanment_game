@@ -32,18 +32,20 @@ class _EnchantProgressBarState extends State<EnchantProgressBar>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: widget.parentSize / 1.6,
-        child: AnimatedBuilder(
-          animation: controller,
-          builder: (BuildContext context, Widget? child) {
-            return LinearProgressIndicator(
-              minHeight: 20,
-              color: Colors.white,
-              backgroundColor: const Color.fromRGBO(130, 130, 130, 1),
-              value: controller.value,
-            );
-          },
-        ));
+    return RepaintBoundary(
+      child: SizedBox(
+          width: widget.parentSize / 1.6,
+          child: AnimatedBuilder(
+            animation: controller,
+            builder: (BuildContext context, Widget? child) {
+              return LinearProgressIndicator(
+                minHeight: 20,
+                color: Colors.white,
+                backgroundColor: const Color.fromRGBO(130, 130, 130, 1),
+                value: controller.value,
+              );
+            },
+          )),
+    );
   }
 }

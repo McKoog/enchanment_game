@@ -23,7 +23,8 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
       EnchantEvent$StartEnchanting event, Emitter<EnchantState> emitter) async {
     emitter(EnchantState$EnchantmentInProgress(insertedWeapon: event.weapon));
     await Future.delayed(Duration(milliseconds: 1200), () {
-      int rand = Random().nextInt(101);
+      final seed = DateTime.now().millisecondsSinceEpoch;
+      final rand = Random(seed).nextInt(101);
       if (rand <= 75) {
         emitter(EnchantState$Result(
             insertedWeapon: _enchantWeapon(event.weapon), isSuccess: true));
