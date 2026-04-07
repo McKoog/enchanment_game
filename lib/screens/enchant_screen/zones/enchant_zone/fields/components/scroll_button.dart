@@ -26,7 +26,8 @@ class ScrollFieldButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(9.0),
             ),
             elevation: 0,
-            backgroundColor: Color.fromRGBO(130, 130, 130, 1).withOpacity(0.3)),
+            backgroundColor:
+                const Color.fromRGBO(130, 130, 130, 1).withValues(alpha: 0.3)),
         child: AutoSizeText(
           caption,
           style: scrollButtonsTextDecoration,

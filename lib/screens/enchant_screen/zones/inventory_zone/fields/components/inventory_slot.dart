@@ -41,7 +41,7 @@ class InventorySlot extends StatelessWidget {
                             : weapon.enchantLevel <= 20
                                 ? enchantedWeaponsGlowColors[
                                         weapon.enchantLevel]
-                                    .withOpacity(0.6)
+                                    .withValues(alpha: 0.6)
                                 : Color.fromRGBO(130, 130, 130, 1),
                         width: 2)),
                     borderRadius: BorderRadius.circular(15),
