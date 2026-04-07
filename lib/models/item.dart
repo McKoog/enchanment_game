@@ -19,27 +19,10 @@ class Item {
         'image': image,
       };
 
-  checkItemType(String type) {
-    switch (type) {
-      case "weapon":
-        return ItemType.weapon;
-      case "scroll":
-        return ItemType.scroll;
-    }
-  }
-
   factory Item.fromJson(Map<String, dynamic> json) {
-    ItemType? type;
-    String jsonType = json["type"];
-    if (jsonType == "weapon") {
-      type = ItemType.weapon;
-    } else {
-      type = ItemType.scroll;
-    }
-
     return Item(
       id: json['id'],
-      type: type,
+      type: ItemType.values.byName(json['type']),
       isSvgAsset: json['isSvgAsset'],
       image: json['image'],
     );

@@ -22,17 +22,9 @@ class Scroll extends Item {
       };
 
   factory Scroll.fromJson(Map<String, dynamic> json) {
-    ItemType? type;
-    String jsonType = json["type"];
-    if (jsonType == "weapon") {
-      type = ItemType.weapon;
-    } else {
-      type = ItemType.scroll;
-    }
-
     return Scroll(
       id: json['id'],
-      type: type,
+      type: ItemType.values.byName(json['type']),
       image: json['image'],
       name: json['name'],
       description: json['description'],

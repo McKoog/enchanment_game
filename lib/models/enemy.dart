@@ -1,14 +1,17 @@
 import 'package:enchantment_game/models/drop_item.dart';
 
 class Enemy {
-  Enemy(
-      {required this.name,
-      required this.image,
-      required this.hp,
-      required this.dropList});
+  Enemy({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.hp,
+    required this.dropList,
+  });
 
-  String name;
-  String image;
-  List<DropItem> dropList;
-  int hp;
+  final String id;
+  final String name;
+  final String image;
+  final int hp;
+  final List<DropItem> dropList;
 }

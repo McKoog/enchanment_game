@@ -1,4 +1,4 @@
-import 'package:enchantment_game/game_stock_data/stock_items.dart';
+import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -6,7 +6,15 @@ import 'package:enchantment_game/models/weapon.dart';
 class Inventory {
   Inventory({required this.items});
 
+  static const int defaultCapacity = 25;
+
   List<Item?> items;
+
+  /// Number of empty slots remaining.
+  int get emptySlots => items.where((item) => item == null).length;
+
+  /// Whether the inventory has no empty slots.
+  bool get isFull => items.every((item) => item != null);
 
   Map toJson() {
     List<Map?> mapItems = [];
@@ -52,22 +60,12 @@ class Inventory {
 
   List<Weapon> getAllMyWeapons(bool includingFist) {
     List<Weapon> weapons = [];
-    if (includingFist) weapons.add(stockFist);
+    if (includingFist) weapons.add(ItemRegistry.fist);
     for (var element in items) {
       if (element != null && element.type == ItemType.weapon) {
         weapons.add(element as Weapon);
       }
     }
     return weapons;
-  }
-
-  bool isLastFiveSlots() {
-    int emptySlots = 0;
-    for (var element in items) {
-      if (element == null) {
-        emptySlots++;
-      }
-    }
-    return emptySlots <= 5;
   }
 }

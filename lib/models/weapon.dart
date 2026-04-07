@@ -40,31 +40,13 @@ class Weapon extends Item {
       };
 
   factory Weapon.fromJson(Map<String, dynamic> json) {
-    ItemType? itemType;
-    String? jsonTypeItem = json["type"];
-    if (jsonTypeItem == "weapon") {
-      itemType = ItemType.weapon;
-    } else {
-      itemType = ItemType.scroll;
-    }
-
-    WeaponType weaponType;
-    String? jsonTypeWeapon = json["weaponType"];
-    if (jsonTypeWeapon == "sword") {
-      weaponType = WeaponType.sword;
-    } else if (jsonTypeWeapon == "bow") {
-      weaponType = WeaponType.bow;
-    } else {
-      weaponType = WeaponType.dagger;
-    }
-
     return Weapon(
       id: json['id'],
-      type: itemType,
+      type: ItemType.values.byName(json['type']),
       isSvgAsset: json['isSvgAsset'],
       image: json['image'],
       name: json['name'],
-      weaponType: weaponType,
+      weaponType: WeaponType.values.byName(json['weaponType']),
       lowerDamage: json['lowerDamage'],
       higherDamage: json['higherDamage'],
       critRate: json['critRate'],

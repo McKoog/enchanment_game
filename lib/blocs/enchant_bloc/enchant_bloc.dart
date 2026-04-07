@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
+import 'package:enchantment_game/game_stock_data/enchant_config.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/utils/game_random.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
@@ -23,9 +24,9 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
       EnchantEvent$StartEnchanting event, Emitter<EnchantState> emitter) async {
     emitter(EnchantState$EnchantmentInProgress(insertedWeapon: event.weapon));
     await Future.delayed(Duration(milliseconds: 1200), () {
-      final seed = DateTime.now().millisecondsSinceEpoch;
-      final rand = Random(seed).nextInt(101);
-      if (rand <= 75) {
+      final successChance =
+          EnchantConfig.getSuccessChance(event.weapon.enchantLevel);
+      if (GameRandom.chance(successChance)) {
         emitter(EnchantState$Result(
             insertedWeapon: _enchantWeapon(event.weapon), isSuccess: true));
       } else {
@@ -36,16 +37,14 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
   }
 
   Weapon _enchantWeapon(Weapon weapon) {
+    final bonus = EnchantConfig.bonusByWeaponType[weapon.weaponType] ??
+        const EnchantBonus();
+
     weapon.enchantLevel += 1;
-    if (weapon.weaponType == WeaponType.sword) {
-      weapon.lowerDamage += 1;
-      weapon.higherDamage += 2;
-    } else if (weapon.weaponType == WeaponType.bow) {
-      weapon.higherDamage += 3;
-    } else if (weapon.weaponType == WeaponType.dagger) {
-      weapon.lowerDamage += 1;
-      weapon.higherDamage += 1;
-    }
+    weapon.lowerDamage += bonus.lowerDamageBonus;
+    weapon.higherDamage += bonus.higherDamageBonus;
+    weapon.critRate += bonus.critRateBonus;
+    weapon.critPower += bonus.critPowerBonus;
     return weapon;
   }
 }

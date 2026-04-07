@@ -22,3 +22,5 @@ class InventoryEvent$SwapItems extends InventoryEvent {
 }
 
 class InventoryEvent$RefreshInventory extends InventoryEvent {}
+
+class InventoryEvent$LoadSaved extends InventoryEvent {}
