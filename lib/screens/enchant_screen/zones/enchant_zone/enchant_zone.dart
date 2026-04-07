@@ -27,7 +27,7 @@ class EnchantZone extends StatelessWidget {
                 alignment: Alignment.center,
                 child: state is ItemInfoState$Showed
                     ? Padding(
-                        key: ValueKey(state.item.id),
+                        key: ValueKey(state.viewToken),
                         padding: const EdgeInsets.all(8.0),
                         child: InfoBackground(
                           sideSize: height,

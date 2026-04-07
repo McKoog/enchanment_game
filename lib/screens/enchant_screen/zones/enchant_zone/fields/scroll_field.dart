@@ -15,7 +15,7 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ScrollField extends StatelessWidget {
+class ScrollField extends StatefulWidget {
   const ScrollField(
       {super.key,
       required this.sideSize,
@@ -27,8 +27,28 @@ class ScrollField extends StatelessWidget {
   final int inventoryIndex;
 
   @override
+  State<ScrollField> createState() => _ScrollFieldState();
+}
+
+class _ScrollFieldState extends State<ScrollField> {
+  late final EnchantBloc _enchantBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _enchantBloc = context.read<EnchantBloc>();
+  }
+
+  @override
+  void dispose() {
+    if (_enchantBloc.state is EnchantState$EnchantmentInProgress) {
+      _enchantBloc.add(EnchantEvent$CancelEnchanting());
+    }
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final enchantBloc = context.read<EnchantBloc>();
     final inventoryBloc = context.read<InventoryBloc>();
     final itemInfoBloc = context.read<ItemInfoBloc>();
 
@@ -39,17 +59,18 @@ class ScrollField extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is EnchantState$Result) {
-          inventoryBloc.add(InventoryEvent$ConsumeScroll(slotIndex: inventoryIndex));
+          inventoryBloc
+              .add(InventoryEvent$ConsumeScroll(slotIndex: widget.inventoryIndex));
           if (!state.isSuccess && state.insertedWeapon != null) {
-            inventoryBloc.add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+            inventoryBloc
+                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
           }
-          if (scroll.quantity <= 1) {
-            itemInfoBloc.add(ItemInfoEvent$CloseInfo());
-          }
+          itemInfoBloc.add(ItemInfoEvent$MarkScrollEnchantFinished(
+              inventoryIndex: widget.inventoryIndex));
         }
       },
       child: BlocBuilder<EnchantBloc, EnchantState>(
-          bloc: enchantBloc,
+          bloc: _enchantBloc,
           builder: (context, state) {
             Weapon? insertedWeapon = state.insertedWeapon;
 
@@ -67,21 +88,21 @@ class ScrollField extends StatelessWidget {
                       insertedWeapon: insertedWeapon,
                       isEnchantSucceed:
                           state is EnchantState$Result && state.isSuccess,
-                      sideSize: sideSize,
-                      scrollName: scroll.name),
+                      sideSize: widget.sideSize,
+                      scrollName: widget.scroll.name),
                   Expanded(
                       child: _ScrollContent(
-                    sideSize: sideSize,
+                    sideSize: widget.sideSize,
                     enchantState: state,
                     insertedWeapon: insertedWeapon,
-                    scrollDescription: scroll.description,
+                    scrollDescription: widget.scroll.description,
                   )),
                   _ScrollControls(
-                    sideSize: sideSize,
+                    sideSize: widget.sideSize,
                     enchantState: state,
                     onEnchant: () {
                       if (state.insertedWeapon != null) {
-                        enchantBloc.add(EnchantEvent$StartEnchanting(
+                        _enchantBloc.add(EnchantEvent$StartEnchanting(
                             weapon: state.insertedWeapon!));
                       }
                     },

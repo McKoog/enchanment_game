@@ -10,3 +10,9 @@ class ItemInfoEvent$ShowInfo extends ItemInfoEvent {
 }
 
 class ItemInfoEvent$CloseInfo extends ItemInfoEvent {}
+
+class ItemInfoEvent$MarkScrollEnchantFinished extends ItemInfoEvent {
+  ItemInfoEvent$MarkScrollEnchantFinished({required this.inventoryIndex});
+
+  final int inventoryIndex;
+}

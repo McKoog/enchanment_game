@@ -13,3 +13,12 @@ class EnchantEvent$StartEnchanting extends EnchantEvent {
 
   final Weapon weapon;
 }
+
+class EnchantEvent$FinishEnchanting extends EnchantEvent {
+  EnchantEvent$FinishEnchanting({required this.weapon, required this.runToken});
+
+  final Weapon weapon;
+  final int runToken;
+}
+
+class EnchantEvent$CancelEnchanting extends EnchantEvent {}
