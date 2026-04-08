@@ -5,7 +5,6 @@ import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class InventoryDraggableItem extends StatelessWidget {
   const InventoryDraggableItem(
@@ -21,9 +20,7 @@ class InventoryDraggableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!isDraggable) {
-      return item.isSvgAsset
-          ? SvgPicture.asset(item.image)
-          : Image.asset(item.image);
+      return Image.asset(item.image);
     }
 
     final draggableBloc = context.read<DraggableItemsBloc>();
@@ -31,13 +28,7 @@ class InventoryDraggableItem extends StatelessWidget {
 
     return Draggable<Item>(
       data: item,
-      feedback: item.isSvgAsset
-          ? SvgPicture.asset(
-              item.image,
-              height: MediaQuery.of(context).size.height / 12,
-              width: MediaQuery.of(context).size.height / 12,
-            )
-          : Image.asset(
+      feedback: Image.asset(
               item.image,
               height: MediaQuery.of(context).size.height / 12,
               width: MediaQuery.of(context).size.height / 12,
@@ -56,9 +47,7 @@ class InventoryDraggableItem extends StatelessWidget {
       child: InkWell(
           onTap: () => itemInfoBloc.add(ItemInfoEvent$ShowInfo(
               item: item, inventoryIndex: inventoryIndex)),
-          child: item.isSvgAsset
-              ? SvgPicture.asset(item.image)
-              : Image.asset(item.image)),
+          child: Image.asset(item.image)),
     );
   }
 }

@@ -20,7 +20,6 @@ class ItemRegistry {
     WeaponType.fist: Weapon(
       id: 'fist',
       type: ItemType.weapon,
-      isSvgAsset: false,
       image: 'assets/icons/weapons/fist.png',
       name: 'Fists',
       weaponType: WeaponType.fist,
@@ -42,12 +41,10 @@ class ItemRegistry {
         critRate: 15,
         critPower: 50,
         attackSpeed: 0.8,
-        enchantLevel: 0,
-        isSvgAsset: false),
+        enchantLevel: 0),
     WeaponType.bow: Weapon(
       id: 'template',
       type: ItemType.weapon,
-      isSvgAsset: false,
       image: 'assets/icons/weapons/bow.png',
       name: 'Long Bow',
       weaponType: WeaponType.bow,
@@ -61,7 +58,6 @@ class ItemRegistry {
     WeaponType.dagger: Weapon(
       id: 'template',
       type: ItemType.weapon,
-      isSvgAsset: false,
       image: 'assets/icons/weapons/dagger.png',
       name: 'Dagger',
       weaponType: WeaponType.dagger,
@@ -74,15 +70,28 @@ class ItemRegistry {
     ),
   };
 
-  // ——— Scroll template ———
+  // ——— Scroll templates ———
 
-  static final Scroll _scrollTemplate = Scroll(
-    id: 'template',
-    type: ItemType.scroll,
-    image: 'assets/icons/other_items/enchant_scroll_weapon.png',
-    name: 'Scroll of enchant',
-    description: "Increase power of the weapon, but be careful, it's not guaranteed",
-  )..isSvgAsset = false;
+  static final Map<ScrollType, Scroll> _scrollTemplates = {
+    ScrollType.weapon: Scroll(
+      id: 'template',
+      type: ItemType.scroll,
+      image: 'assets/icons/other_items/enchant_scroll_weapon.png',
+      name: 'Weapon Enchant Scroll',
+      description:
+          "Increase power of the weapon, but be careful, it's not guaranteed",
+      scrollType: ScrollType.weapon,
+    ),
+    ScrollType.armor: Scroll(
+      id: 'template',
+      type: ItemType.scroll,
+      image: 'assets/icons/other_items/enchant_scroll_armor.png',
+      name: 'Armor Enchant Scroll',
+      description:
+          "Increase defense of the armor, but be careful, it's not guaranteed",
+      scrollType: ScrollType.armor,
+    ),
+  };
 
   // ——— Armor templates ———
 
@@ -91,7 +100,6 @@ class ItemRegistry {
       id: 'template',
       type: ItemType.armor,
       image: 'assets/icons/armors/skin_helmet.png',
-      isSvgAsset: false,
       name: 'Leather Helmet',
       armorType: ArmorType.helmet,
       defense: 2,
@@ -101,7 +109,6 @@ class ItemRegistry {
       id: 'template',
       type: ItemType.armor,
       image: 'assets/icons/armors/skin_breastplate.png',
-      isSvgAsset: false,
       name: 'Leather Chestplate',
       armorType: ArmorType.chestplate,
       defense: 5,
@@ -111,7 +118,6 @@ class ItemRegistry {
       id: 'template',
       type: ItemType.armor,
       image: 'assets/icons/armors/skin_pants.png',
-      isSvgAsset: false,
       name: 'Leather Leggings',
       armorType: ArmorType.leggings,
       defense: 3,
@@ -121,7 +127,6 @@ class ItemRegistry {
       id: 'template',
       type: ItemType.armor,
       image: 'assets/icons/armors/skin_boots.png',
-      isSvgAsset: false,
       name: 'Leather Boots',
       armorType: ArmorType.boots,
       defense: 1,
@@ -157,8 +162,12 @@ class ItemRegistry {
   }
 
   /// Create a new scroll instance with a unique id.
-  static Scroll createScroll() {
-    final scroll = Scroll.copyWith(_scrollTemplate)..isSvgAsset = false;
+  static Scroll createScroll(ScrollType scrollType) {
+    final template = _scrollTemplates[scrollType];
+    if (template == null) {
+      throw ArgumentError('No scroll template for type: $scrollType');
+    }
+    final scroll = Scroll.copyWith(template);
     scroll.id = _uuid.v1();
     return scroll;
   }
@@ -166,8 +175,11 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type, {WeaponType? weaponType, ArmorType? armorType}) {
-    if (type == ItemType.scroll) return createScroll();
+  static Item createItem(ItemType type,
+      {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
+    if (type == ItemType.scroll) {
+      return createScroll(scrollType ?? ScrollType.weapon);
+    }
     if (type == ItemType.armor) {
       return createArmor(armorType ?? ArmorType.chestplate);
     }

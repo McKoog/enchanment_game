@@ -1,25 +1,18 @@
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/drop_item.dart';
 import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/models/armor.dart';
 
-final stockWerewolf = Enemy(
-    id: 'werewolf',
-    name: 'Werewolf',
-    image: "assets/icons/enemies/lvl_1_werewolf.png",
-    hp: 200,
-    attack: 25,
-    attackSpeed: 1.0,
-    dropList: [
-      DropItem(
-          chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-      DropItem(chance: 50, itemType: ItemType.scroll),
-      DropItem(
-          chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-      DropItem(
-          chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.bow),
-    ]);
+final stockWerewolf =
+    Enemy(id: 'werewolf', name: 'Werewolf', image: "assets/icons/enemies/lvl_1_werewolf.png", hp: 200, attack: 25, attackSpeed: 1.0, dropList: [
+  DropItem(chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+  DropItem(chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+  DropItem(chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+  DropItem(chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+  DropItem(chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.bow),
+]);
 
 final greyWolf = Enemy(
   id: 'grey_wolf',
@@ -30,12 +23,11 @@ final greyWolf = Enemy(
   attackSpeed: 1.0,
   dropList: [
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.helmet),
-    DropItem(
-        chance: 5, itemType: ItemType.armor, armorType: ArmorType.chestplate),
-    DropItem(
-        chance: 5, itemType: ItemType.armor, armorType: ArmorType.leggings),
+    DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.chestplate),
+    DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.leggings),
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.boots),
-    DropItem(chance: 10, itemType: ItemType.scroll),
+    DropItem(chance: 5, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.armor),
   ],
 );
 
@@ -47,11 +39,10 @@ final bandit = Enemy(
   attack: 10,
   attackSpeed: 0.75,
   dropList: [
-    DropItem(
-        chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(chance: 10, itemType: ItemType.scroll),
+    DropItem(chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 20, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 5, itemType: ItemType.scroll, scrollType: ScrollType.armor),
   ],
 );
 
@@ -63,11 +54,10 @@ final goblin = Enemy(
   attack: 15,
   attackSpeed: 0.5,
   dropList: [
-    DropItem(
-        chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(chance: 5, itemType: ItemType.scroll),
+    DropItem(chance: 25, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.armor),
   ],
 );
 
@@ -80,10 +70,9 @@ final dryad = Enemy(
   attackSpeed: 0.5,
   dropList: [
     DropItem(chance: 20, itemType: ItemType.weapon, weaponType: WeaponType.bow),
-    DropItem(
-        chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(chance: 20, itemType: ItemType.scroll),
+    DropItem(chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 10, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.armor),
   ],
 );

@@ -115,7 +115,7 @@ class _SlotParticlesState extends State<SlotParticles>
             case EnchantState$EnchantmentInProgress():
               _isIdling = false;
             case EnchantState$Idle idle:
-              if (idle.insertedWeapon != null) {
+              if (idle.insertedItem != null) {
                 _isIdling = true;
               }
               break;

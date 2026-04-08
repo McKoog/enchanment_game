@@ -248,7 +248,6 @@ class _MenuTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Material(
-            color: Colors.transparent,
             borderRadius: BorderRadius.circular(18),
             clipBehavior: Clip.antiAlias,
             child: InkWell(
@@ -262,7 +261,7 @@ class _MenuTile extends StatelessWidget {
                     Image.asset(
                       backgroundAsset,
                       fit: BoxFit.cover,
-                      color: Colors.black.withValues(alpha: 0.25),
+                      color: Colors.black.withValues(alpha: 0),
                       colorBlendMode: BlendMode.lighten,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
@@ -273,8 +272,8 @@ class _MenuTile extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18),
-                        border: const Border.fromBorderSide(BorderSide(color: Color.fromRGBO(160, 160, 160, 1), width: 2)),
-                        color: Colors.transparent,
+                        border: const Border.fromBorderSide(BorderSide(color: Colors.yellow, width: 2)),
+                        color: Colors.black.withValues(alpha: 0),
                       ),
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
 /// Per-enchantment-level stat bonus applied to a weapon.
@@ -17,6 +18,14 @@ class EnchantBonus {
   });
 }
 
+class EnchantBonusArmor {
+  final int defenseBonus;
+
+  const EnchantBonusArmor({
+    this.defenseBonus = 0,
+  });
+}
+
 /// Centralised enchantment configuration.
 ///
 /// Adding a new weapon type only requires one entry in [bonusByWeaponType].
@@ -27,8 +36,15 @@ class EnchantConfig {
   static const Map<WeaponType, EnchantBonus> bonusByWeaponType = {
     WeaponType.sword: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
     WeaponType.bow: EnchantBonus(higherDamageBonus: 3),
-    WeaponType.dagger: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 1),
+    WeaponType.dagger: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
     WeaponType.fist: EnchantBonus(),
+  };
+
+  static const Map<ArmorType, EnchantBonusArmor> bonusByArmorType = {
+    ArmorType.helmet: EnchantBonusArmor(defenseBonus: 1),
+    ArmorType.chestplate: EnchantBonusArmor(defenseBonus: 1),
+    ArmorType.leggings: EnchantBonusArmor(defenseBonus: 1),
+    ArmorType.boots: EnchantBonusArmor(defenseBonus: 1),
   };
 
   /// Success chance for enchanting at [currentEnchantLevel].

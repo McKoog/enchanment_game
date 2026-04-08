@@ -1,5 +1,7 @@
 import 'package:enchantment_game/models/item.dart';
 
+enum ScrollType { weapon, armor }
+
 class Scroll extends Item {
   Scroll(
       {required super.id,
@@ -7,22 +9,24 @@ class Scroll extends Item {
       required super.image,
       required this.name,
       required this.description,
+      required this.scrollType,
       this.quantity = 1});
 
   static const int maxStackSize = 99;
 
   String name;
   String description;
+  ScrollType scrollType;
   int quantity;
 
   @override
   Map toJson() => {
         'id': id,
         'type': type.name,
-        'isSvgAsset': false,
         'image': image,
         'name': name,
         'description': description,
+        'scrollType': scrollType.name,
         'quantity': quantity,
       };
 
@@ -33,6 +37,9 @@ class Scroll extends Item {
       image: json['image'],
       name: json['name'],
       description: json['description'],
+      scrollType: json['scrollType'] != null
+          ? ScrollType.values.byName(json['scrollType'])
+          : ScrollType.weapon,
       quantity: json['quantity'] ?? 1,
     );
   }
@@ -44,6 +51,7 @@ class Scroll extends Item {
         image: scroll.image,
         name: scroll.name,
         description: scroll.description,
+        scrollType: scroll.scrollType,
         quantity: scroll.quantity);
   }
 }

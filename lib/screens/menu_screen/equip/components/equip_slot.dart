@@ -3,7 +3,6 @@ import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class EquipSlot extends StatelessWidget {
   const EquipSlot({
@@ -50,7 +49,7 @@ class EquipSlot extends StatelessWidget {
                 if (item != null)
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: item!.isSvgAsset ? SvgPicture.asset(item!.image) : Image.asset(item!.image),
+                    child: Image.asset(item!.image),
                   ),
               ],
             ),

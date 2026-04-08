@@ -2,7 +2,6 @@ import 'package:enchantment_game/decorations/components_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class EnemyHpBar extends StatelessWidget {
   const EnemyHpBar({
@@ -27,15 +26,14 @@ class EnemyHpBar extends StatelessWidget {
     // Scale internal elements proportionally.
     // Reference height = 80 (original design).
     final double scale = (heightFactor / 80).clamp(0.4, 1.5);
-    final double svgHeight = 50 * scale;
     final double barHeight = 35 * scale;
 
     return SizedBox(
       height: heightFactor,
       width: width - 60,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset("assets/enemy_hp_icon.svg", height: svgHeight),
           Stack(
             children: [
               Container(
@@ -57,10 +55,6 @@ class EnemyHpBar extends StatelessWidget {
                     ),
                   )),
             ],
-          ),
-          SvgPicture.asset(
-            "assets/enemy_hp_icon.svg",
-            height: svgHeight,
           ),
         ],
       ),

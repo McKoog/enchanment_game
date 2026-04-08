@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_svg: ^2.0.14
   flutter_bloc: ^8.1.6
   auto_size_text: ^3.0.0
   universal_platform: ^1.0.0+1

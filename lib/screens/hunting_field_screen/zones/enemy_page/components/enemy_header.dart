@@ -6,8 +6,6 @@ import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
-
 class EnemyHeader extends StatelessWidget {
   const EnemyHeader({
     super.key,
@@ -28,7 +26,6 @@ class EnemyHeader extends StatelessWidget {
     // Reference height = 80 (original design).
     final double scale = (heightFactor / 80).clamp(0.4, 1.5);
     final double iconSize = 40 * scale;
-    final double svgHeight = 50 * scale;
     final double nameFieldHeight = 53 * scale;
 
     return Row(
@@ -52,11 +49,6 @@ class EnemyHeader extends StatelessWidget {
             height: heightFactor,
             child: Row(
               children: [
-                SvgPicture.asset(
-                  "assets/hunt_button_icon.svg",
-                  height: svgHeight,
-                  colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
-                ),
                 Expanded(
                     child: Container(
                         alignment: Alignment.center,
@@ -78,11 +70,6 @@ class EnemyHeader extends StatelessWidget {
                             ],
                           ),
                         ))),
-                SvgPicture.asset(
-                  "assets/hunt_button_icon.svg",
-                  height: svgHeight,
-                  colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
-                ),
               ],
             ),
           ),

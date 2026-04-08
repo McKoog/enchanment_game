@@ -7,8 +7,10 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_button.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_enchant_slot.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_progress_bar.dart';
@@ -61,9 +63,9 @@ class _ScrollFieldState extends State<ScrollField> {
         if (state is EnchantState$Result) {
           inventoryBloc.add(
               InventoryEvent$ConsumeScroll(slotIndex: widget.inventoryIndex));
-          if (!state.isSuccess && state.insertedWeapon != null) {
+          if (!state.isSuccess && state.insertedItem != null) {
             inventoryBloc
-                .add(InventoryEvent$RemoveItem(item: state.insertedWeapon!));
+                .add(InventoryEvent$RemoveItem(item: state.insertedItem!));
           } else if (state.isSuccess) {
             inventoryBloc.add(InventoryEvent$RefreshInventory());
           }
@@ -74,10 +76,10 @@ class _ScrollFieldState extends State<ScrollField> {
       child: BlocBuilder<EnchantBloc, EnchantState>(
           bloc: _enchantBloc,
           builder: (context, state) {
-            Weapon? insertedWeapon = state.insertedWeapon;
+            Item? insertedItem = state.insertedItem;
 
             if (state is EnchantState$Result && !state.isSuccess) {
-              insertedWeapon = null;
+              insertedItem = null;
             }
 
             return Padding(
@@ -87,7 +89,7 @@ class _ScrollFieldState extends State<ScrollField> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _ScrollHeader(
-                      insertedWeapon: insertedWeapon,
+                      insertedItem: insertedItem,
                       isEnchantSucceed:
                           state is EnchantState$Result && state.isSuccess,
                       sideSize: widget.sideSize,
@@ -96,16 +98,17 @@ class _ScrollFieldState extends State<ScrollField> {
                       child: _ScrollContent(
                     sideSize: widget.sideSize,
                     enchantState: state,
-                    insertedWeapon: insertedWeapon,
+                    insertedItem: insertedItem,
+                    scrollType: widget.scroll.scrollType,
                     scrollDescription: widget.scroll.description,
                   )),
                   _ScrollControls(
                     sideSize: widget.sideSize,
                     enchantState: state,
                     onEnchant: () {
-                      if (state.insertedWeapon != null) {
+                      if (state.insertedItem != null) {
                         _enchantBloc.add(EnchantEvent$StartEnchanting(
-                            weapon: state.insertedWeapon!));
+                            item: state.insertedItem!));
                       }
                     },
                     onCancel: () => itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
@@ -120,25 +123,33 @@ class _ScrollFieldState extends State<ScrollField> {
 
 class _ScrollHeader extends StatelessWidget {
   const _ScrollHeader(
-      {required this.insertedWeapon,
+      {required this.insertedItem,
       required this.isEnchantSucceed,
       required this.sideSize,
       required this.scrollName});
 
-  final Weapon? insertedWeapon;
+  final Item? insertedItem;
   final bool isEnchantSucceed;
   final double sideSize;
   final String scrollName;
 
   @override
   Widget build(BuildContext context) {
+    String itemName = '';
+    int enchantLevel = 0;
+    if (insertedItem is Weapon) {
+      itemName = (insertedItem as Weapon).name;
+      enchantLevel = (insertedItem as Weapon).enchantLevel;
+    } else if (insertedItem is Armor) {
+      itemName = (insertedItem as Armor).name;
+      enchantLevel = (insertedItem as Armor).enchantLevel;
+    }
+
     return SizedBox(
       height: sideSize / 14,
-      child: insertedWeapon != null
+      child: insertedItem != null
           ? AutoSizeText(
-              insertedWeapon!.enchantLevel > 0
-                  ? "${insertedWeapon!.name} +${insertedWeapon!.enchantLevel}"
-                  : insertedWeapon!.name,
+              enchantLevel > 0 ? "$itemName +$enchantLevel" : itemName,
               style: weaponNameDecoration,
             )
           : isEnchantSucceed
@@ -156,14 +167,16 @@ class _ScrollHeader extends StatelessWidget {
 class _ScrollContent extends StatelessWidget {
   const _ScrollContent({
     required this.sideSize,
-    required this.insertedWeapon,
+    required this.insertedItem,
     required this.enchantState,
+    required this.scrollType,
     required this.scrollDescription,
   });
 
   final double sideSize;
   final EnchantState enchantState;
-  final Weapon? insertedWeapon;
+  final Item? insertedItem;
+  final ScrollType scrollType;
   final String scrollDescription;
 
   @override
@@ -171,21 +184,22 @@ class _ScrollContent extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        insertedWeapon == null && enchantState is EnchantState$Idle
+        insertedItem == null && enchantState is EnchantState$Idle
             ? SizedBox(
                 height: sideSize / 10,
                 child: AutoSizeText(
-                  "Put your weapon in the slot",
+                  "Put your item in the slot",
                   style: scrollHintDecoration,
                   maxLines: 1,
                 ))
             : SizedBox.shrink(),
         ScrollEnchantSlot(
-          insertedWeapon: insertedWeapon,
+          insertedItem: insertedItem,
+          scrollType: scrollType,
           currentEnchantState: enchantState,
           sideSize: sideSize,
         ),
-        insertedWeapon == null && enchantState is EnchantState$Idle
+        insertedItem == null && enchantState is EnchantState$Idle
             ? SizedBox(
                 height: sideSize / 10,
                 child: AutoSizeText(

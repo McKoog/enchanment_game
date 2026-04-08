@@ -1,5 +1,6 @@
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
+import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
 /// Describes a potential drop from an enemy.
@@ -12,6 +13,7 @@ class DropItem {
     required this.itemType,
     this.weaponType,
     this.armorType,
+    this.scrollType,
     this.minQuantity = 1,
     this.maxQuantity = 1,
   });
@@ -27,6 +29,9 @@ class DropItem {
 
   /// Armor subtype (required when [itemType] == [ItemType.armor]).
   final ArmorType? armorType;
+
+  /// Scroll subtype (required when [itemType] == [ItemType.scroll]).
+  final ScrollType? scrollType;
 
   /// Minimum number of items per drop.
   final int minQuantity;

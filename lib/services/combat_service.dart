@@ -58,7 +58,9 @@ class CombatService {
 
         for (int i = 0; i < quantity; i++) {
           loot.add(ItemRegistry.createItem(drop.itemType,
-              weaponType: drop.weaponType, armorType: drop.armorType));
+              weaponType: drop.weaponType,
+              armorType: drop.armorType,
+              scrollType: drop.scrollType));
         }
       }
     }

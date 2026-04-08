@@ -1,6 +1,5 @@
 import 'package:enchantment_game/models/item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class InfoBackground extends StatelessWidget {
   const InfoBackground({super.key, required this.sideSize, this.backgroundItem, required this.child});
@@ -23,7 +22,7 @@ class InfoBackground extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Opacity(
-                        opacity: 0.85, child: backgroundItem!.isSvgAsset ? SvgPicture.asset(backgroundItem!.image) : Image.asset(backgroundItem!.image)),
+                        opacity: 0.85, child: Image.asset(backgroundItem!.image)),
                   ),
                   child
                 ],
