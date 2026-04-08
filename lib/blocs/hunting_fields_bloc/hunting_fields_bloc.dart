@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldsBloc extends Bloc<HuntingFieldEvent, HuntingFieldState> {
   HuntingFieldsBloc(
-      {required final Weapon initialWeapon,
-      required final Enemy initialEnemy})
+      {required final Weapon initialWeapon, required final Enemy initialEnemy})
       : super(HuntingFieldState$PickPhase(
             selectedEnemy: initialEnemy, selectedWeapon: initialWeapon)) {
     on<HuntingFieldEvent>((event, emitter) => switch (event) {
@@ -18,8 +17,8 @@ class HuntingFieldsBloc extends Bloc<HuntingFieldEvent, HuntingFieldState> {
         });
   }
 
-  void _selectEnemy(HuntingFieldEvent$SelectEnemy event,
-      Emitter<HuntingFieldState> emitter) {
+  void _selectEnemy(
+      HuntingFieldEvent$SelectEnemy event, Emitter<HuntingFieldState> emitter) {
     if (state is HuntingFieldState$HuntingStarted) {
       emitter(HuntingFieldState$HuntingStarted(
           selectedWeapon: state.selectedWeapon, selectedEnemy: event.enemy));

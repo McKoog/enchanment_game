@@ -1,16 +1,11 @@
-import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
-import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/enemy_picker.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_enemy_field.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/picked_weapon_field.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/weapon_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldsMenu extends StatefulWidget {
-  const HuntingFieldsMenu({super.key, required this.constraints, required this.width});
+  const HuntingFieldsMenu(
+      {super.key, required this.constraints, required this.width});
 
   final BoxConstraints constraints;
   final double width;
@@ -19,21 +14,15 @@ class HuntingFieldsMenu extends StatefulWidget {
   State<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
 }
 
-class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> with AutomaticKeepAliveClientMixin {
+class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  late final FixedExtentScrollController controllerWeapon;
   late final FixedExtentScrollController controllerEnemy;
 
   @override
   void initState() {
-    final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
-    var inventory = context.read<InventoryBloc>().state.inventory;
-    List<Weapon?> myWeapons = inventory.getAllMyWeapons(true);
-    int currSelectedWeaponIndex = myWeapons.indexOf(huntingFieldsBloc.state.selectedWeapon);
-    controllerWeapon = FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
-
     controllerEnemy = FixedExtentScrollController(initialItem: 0);
     super.initState();
   }
@@ -62,17 +51,22 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> with AutomaticKee
         height: widget.constraints.maxHeight,
         width: widget.width,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            title("HuntingField"),
-            descriptionText("At first, pick avaliable weapon to fight enemys with..."),
-            WeaponPicker(
-              controllerWeapon: controllerWeapon,
-              constraints: widget.constraints,
+            SizedBox(
+              height: 12,
             ),
-            const PickedWeaponField(),
-            descriptionText("Then,select your enemy..."),
-            EnemyPicker(controllerEnemy: controllerEnemy, constraints: widget.constraints),
+            title("HuntingField"),
+            descriptionText("Select your enemy..."),
+            SizedBox(
+              height: 24,
+            ),
+            EnemyPicker(
+                controllerEnemy: controllerEnemy,
+                constraints: widget.constraints),
+            SizedBox(
+              height: 24,
+            ),
             const PickedEnemyField(),
           ],
         ),

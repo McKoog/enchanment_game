@@ -1,5 +1,8 @@
+import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
+import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/runner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GameHeader extends StatelessWidget {
   const GameHeader({super.key, required this.child});
@@ -8,25 +11,32 @@ class GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _PersistentHeader(
-          versionLabel: 'v.$appVersion',
-          gold: 0,
-          level: 1,
-          experienceProgress: 0.15,
-          skillPoints: 0,
-        ),
-        Expanded(
-          child: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: child,
+    return BlocBuilder<CharacterBloc, CharacterState>(
+        builder: (context, state) {
+      final character = state.character;
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _PersistentHeader(
+            versionLabel: 'v.$appVersion',
+            gold: character.gold,
+            level: character.level,
+            experienceProgress: character.maxExp > 0
+                ? character.currentExp / character.maxExp
+                : 0,
+            skillPoints: character.skillPoints,
           ),
-        ),
-      ],
-    );
+          Expanded(
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: child,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -147,7 +157,9 @@ class _PersistentHeader extends StatelessWidget {
                           LinearProgressIndicator(
                             value: clampedProgress,
                             minHeight: 8,
-                            backgroundColor: const Color.fromRGBO(230, 200, 80, 1).withValues(alpha: 0.2),
+                            backgroundColor:
+                                const Color.fromRGBO(230, 200, 80, 1)
+                                    .withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Color.fromRGBO(230, 200, 80, 1),
                             ),

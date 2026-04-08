@@ -198,8 +198,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               child: Row(
                 children: [
                   SizedBox(
-                      width: panelWidth,
-                      child: MenuScreen(width: panelWidth)),
+                      width: panelWidth, child: MenuScreen(width: panelWidth)),
                   SizedBox(
                       width: panelWidth,
                       child: EnchantScreen(width: panelWidth)),

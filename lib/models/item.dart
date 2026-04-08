@@ -1,4 +1,4 @@
-enum ItemType { weapon, scroll }
+enum ItemType { weapon, scroll, armor }
 
 class Item {
   Item(

@@ -49,7 +49,9 @@ class EnemyPage extends StatelessWidget {
               SizedBox(
                 height: attackFieldHeight,
                 child: AttackField(
-                    width: width, enemy: enemy, weapon: weapon,
+                    width: width,
+                    enemy: enemy,
+                    weapon: weapon,
                     availableHeight: attackFieldHeight),
               ),
             ],

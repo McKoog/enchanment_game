@@ -9,7 +9,12 @@ import 'package:flutter/material.dart';
 
 // TODO: Переписать на дженерик
 class InventorySlot extends StatelessWidget {
-  const InventorySlot({super.key, required this.index, this.item, this.canBeDragged = true, this.canBeDragTarget = true});
+  const InventorySlot(
+      {super.key,
+      required this.index,
+      this.item,
+      this.canBeDragged = true,
+      this.canBeDragTarget = true});
 
   final int index;
   final Item? item;
@@ -32,17 +37,30 @@ class InventorySlot extends StatelessWidget {
             decoration: weapon != null
                 ? BoxDecoration(
                     color: weapon.enchantLevel < 16
-                        ? Color.fromRGBO(85, 85, 85, 1).withValues(alpha: 1 - (0.0666 * weapon.enchantLevel))
+                        ? Color.fromRGBO(85, 85, 85, 1).withValues(
+                            alpha: 1 - (0.0666 * weapon.enchantLevel))
                         : weapon.enchantLevel < 21
-                            ? Color.fromRGBO(85, 85, 85, 1).withValues(alpha: 0.5 - (0.06 * (weapon.enchantLevel % 16)))
+                            ? Color.fromRGBO(85, 85, 85, 1).withValues(
+                                alpha:
+                                    0.5 - (0.06 * (weapon.enchantLevel % 16)))
                             : Colors.grey.shade900.withValues(alpha: 0.25),
-                    border: Border.fromBorderSide(BorderSide(color: Color.fromRGBO(130, 130, 130, 1), width: 2)),
+                    border: Border.fromBorderSide(BorderSide(
+                        color: Color.fromRGBO(130, 130, 130, 1), width: 2)),
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: weapon.enchantLevel == 0
                         ? null
                         : weapon.enchantLevel > 20
-                            ? [BoxShadow(color: enchantedWeaponsGlowColors[21], spreadRadius: 0.3)]
-                            : [BoxShadow(color: enchantedWeaponsGlowColors[weapon.enchantLevel], spreadRadius: 0.3)])
+                            ? [
+                                BoxShadow(
+                                    color: enchantedWeaponsGlowColors[21],
+                                    spreadRadius: 0.3)
+                              ]
+                            : [
+                                BoxShadow(
+                                    color: enchantedWeaponsGlowColors[
+                                        weapon.enchantLevel],
+                                    spreadRadius: 0.3)
+                              ])
                 : inventorySlotDecoration,
             child: item != null
                 ? InventoryDragTarget(
@@ -72,11 +90,13 @@ class InventorySlot extends StatelessWidget {
               right: 4,
               bottom: 4,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(0, 0, 0, 0.4),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.fromBorderSide(BorderSide(color: Colors.black.withValues(alpha: 0.2))),
+                  border: Border.fromBorderSide(
+                      BorderSide(color: Colors.black.withValues(alpha: 0.2))),
                 ),
                 child: Text(
                   "${scroll.quantity}",

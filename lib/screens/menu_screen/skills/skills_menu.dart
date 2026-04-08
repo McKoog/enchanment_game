@@ -19,4 +19,3 @@ class SkillsMenu extends StatelessWidget {
     );
   }
 }
-

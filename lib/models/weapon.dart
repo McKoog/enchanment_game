@@ -14,6 +14,7 @@ class Weapon extends Item {
       required this.higherDamage,
       required this.critRate,
       required this.critPower,
+      required this.attackSpeed,
       required this.enchantLevel});
 
   String name;
@@ -22,6 +23,7 @@ class Weapon extends Item {
   int higherDamage;
   int critRate;
   int critPower;
+  double attackSpeed;
   int enchantLevel;
 
   @override
@@ -36,6 +38,7 @@ class Weapon extends Item {
         'higherDamage': higherDamage,
         'critRate': critRate,
         'critPower': critPower,
+        'attackSpeed': attackSpeed,
         'enchantLevel': enchantLevel
       };
 
@@ -51,6 +54,7 @@ class Weapon extends Item {
       higherDamage: json['higherDamage'],
       critRate: json['critRate'],
       critPower: json['critPower'],
+      attackSpeed: json['attackSpeed']?.toDouble() ?? 1.0,
       enchantLevel: json['enchantLevel'],
     );
   }
@@ -67,11 +71,12 @@ class Weapon extends Item {
         higherDamage: weapon.higherDamage,
         critRate: weapon.critRate,
         critPower: weapon.critPower,
+        attackSpeed: weapon.attackSpeed,
         enchantLevel: weapon.enchantLevel);
   }
 
   @override
   String toString() {
-    return "id: $id, type: $type, image $image, isSvgAsset: $isSvgAsset, name: $name, weaponType: $weaponType, lowerDamage: $lowerDamage, higherDamage: $higherDamage, critRate: $critRate, critPower: $critPower, enchantLevel: $enchantLevel";
+    return "id: $id, type: $type, image $image, isSvgAsset: $isSvgAsset, name: $name, weaponType: $weaponType, lowerDamage: $lowerDamage, higherDamage: $higherDamage, critRate: $critRate, critPower: $critPower, attackSpeed: $attackSpeed, enchantLevel: $enchantLevel";
   }
 }

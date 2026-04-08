@@ -32,6 +32,13 @@ flutter:
 
   assets:
     - assets/
+    - assets/icons/
+    - assets/icons/menus/
+    - assets/icons/armors/
+    - assets/icons/enemies/
+    - assets/icons/other_items/
+    - assets/icons/stock_equip/
+    - assets/icons/weapons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

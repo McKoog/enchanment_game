@@ -1,3 +1,4 @@
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 
@@ -10,6 +11,7 @@ class DropItem {
     required this.chance,
     required this.itemType,
     this.weaponType,
+    this.armorType,
     this.minQuantity = 1,
     this.maxQuantity = 1,
   });
@@ -22,6 +24,9 @@ class DropItem {
 
   /// Weapon subtype (required when [itemType] == [ItemType.weapon]).
   final WeaponType? weaponType;
+
+  /// Armor subtype (required when [itemType] == [ItemType.armor]).
+  final ArmorType? armorType;
 
   /// Minimum number of items per drop.
   final int minQuantity;
