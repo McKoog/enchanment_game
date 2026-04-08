@@ -1,22 +1,19 @@
 import 'package:enchantment_game/decorations/components_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
-import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
 
-class EnemyHpBar extends StatelessWidget {
-  const EnemyHpBar({
+class PlayerHpBar extends StatelessWidget {
+  const PlayerHpBar({
     super.key,
     required this.width,
-    required this.enemy,
-    required this.widthOfOneHP,
     required this.currentHP,
+    required this.maxHP,
     this.heightFactor = 80,
   });
 
   final double width;
-  final Enemy enemy;
-  final double widthOfOneHP;
   final int currentHP;
+  final int maxHP;
 
   /// Available height for the HP bar row.
   final double heightFactor;
@@ -27,6 +24,7 @@ class EnemyHpBar extends StatelessWidget {
     // Reference height = 80 (original design).
     final double scale = (heightFactor / 40).clamp(0.4, 1.5);
     final double barHeight = 35 * scale;
+    final double widthOfOneHP = (width - 200) / maxHP;
 
     return SizedBox(
       height: heightFactor,
@@ -36,21 +34,16 @@ class EnemyHpBar extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(
-                alignment: Alignment.center,
-                height: barHeight,
-                width: widthOfOneHP * currentHP,
-                decoration: enemyHpBarDecoration,
-              ),
+              Container(alignment: Alignment.center, height: barHeight, width: widthOfOneHP * maxHP, decoration: characterHpBarDecoration),
+              Container(alignment: Alignment.center, height: barHeight, width: widthOfOneHP * currentHP, decoration: characterHpBarDecoration),
               Container(
                   alignment: Alignment.center,
                   height: barHeight,
-                  width: widthOfOneHP * enemy.hp,
-                  decoration: enemyHpBarDecoration,
+                  width: widthOfOneHP * maxHP,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "$currentHP / ${enemy.hp}",
+                      "$currentHP / $maxHP",
                       style: farmEnemyHpTextDecoration,
                     ),
                   )),

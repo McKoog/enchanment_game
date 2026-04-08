@@ -63,6 +63,8 @@ class _PersistentHeader extends StatelessWidget {
         bottom: false,
         child: Container(
           width: double.infinity,
+          decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: .7), border: Border.symmetric(horizontal: BorderSide(color: Colors.yellow.withValues(alpha: .25)))),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -122,7 +124,7 @@ class _PersistentHeader extends StatelessWidget {
                       ),
                       border: Border.all(
                         color: Color.fromRGBO(230, 200, 80, 1),
-                        width: 2,
+                        width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
