@@ -1,23 +1,23 @@
-import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/item.dart';
 
 sealed class EnchantEvent {}
 
-class EnchantEvent$InsertWeapon extends EnchantEvent {
-  EnchantEvent$InsertWeapon({required this.weapon});
+class EnchantEvent$InsertItem extends EnchantEvent {
+  EnchantEvent$InsertItem({required this.item});
 
-  final Weapon weapon;
+  final Item item;
 }
 
 class EnchantEvent$StartEnchanting extends EnchantEvent {
-  EnchantEvent$StartEnchanting({required this.weapon});
+  EnchantEvent$StartEnchanting({required this.item});
 
-  final Weapon weapon;
+  final Item item;
 }
 
 class EnchantEvent$FinishEnchanting extends EnchantEvent {
-  EnchantEvent$FinishEnchanting({required this.weapon, required this.runToken});
+  EnchantEvent$FinishEnchanting({required this.item, required this.runToken});
 
-  final Weapon weapon;
+  final Item item;
   final int runToken;
 }
 

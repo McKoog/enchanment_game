@@ -3,22 +3,23 @@ import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/decorations/slots_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
-import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/slot_particles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ScrollEnchantSlot extends StatelessWidget {
   const ScrollEnchantSlot(
       {super.key,
       required this.sideSize,
-      this.insertedWeapon,
+      this.insertedItem,
+      required this.scrollType,
       required this.currentEnchantState});
 
   final double sideSize;
-  final Weapon? insertedWeapon;
+  final Item? insertedItem;
+  final ScrollType scrollType;
   final EnchantState currentEnchantState;
 
   @override
@@ -28,11 +29,14 @@ class ScrollEnchantSlot extends StatelessWidget {
 
     return DragTarget<Item>(
       onAcceptWithDetails: (details) {
-        if (details.data.type == ItemType.weapon &&
-            insertedWeapon == null &&
-            currentEnchantState is EnchantState$Idle) {
-          enchantBloc
-              .add(EnchantEvent$InsertWeapon(weapon: details.data as Weapon));
+        if (insertedItem == null && currentEnchantState is EnchantState$Idle) {
+          if (scrollType == ScrollType.weapon &&
+              details.data.type == ItemType.weapon) {
+            enchantBloc.add(EnchantEvent$InsertItem(item: details.data));
+          } else if (scrollType == ScrollType.armor &&
+              details.data.type == ItemType.armor) {
+            enchantBloc.add(EnchantEvent$InsertItem(item: details.data));
+          }
         }
       },
       builder: (BuildContext context, List<Item?> candidateData,
@@ -44,7 +48,7 @@ class ScrollEnchantSlot extends StatelessWidget {
               EnchantState$Result result => result.isSuccess
                   ? scrollEnchantSlotSuccessDecoration
                   : scrollEnchantSlotFailedDecoration,
-              EnchantState$Idle idle => idle.insertedWeapon == null
+              EnchantState$Idle idle => idle.insertedItem == null
                   ? scrollEnchantSlotDecoration
                   : scrollEnchantSlotInsertedDecoration,
               EnchantState$EnchantmentInProgress() =>
@@ -61,10 +65,8 @@ class ScrollEnchantSlot extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: insertedWeapon != null
-                  ? insertedWeapon!.isSvgAsset
-                      ? SvgPicture.asset(insertedWeapon!.image)
-                      : Image.asset(insertedWeapon!.image)
+              child: insertedItem != null
+                  ? Image.asset(insertedItem!.image)
                   : null,
             ),
           ),

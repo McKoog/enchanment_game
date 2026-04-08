@@ -2,7 +2,6 @@ import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart'
 import 'package:enchantment_game/decorations/fields_decoration.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class WeaponField extends StatelessWidget {
   const WeaponField({super.key, required this.weapon});
@@ -55,12 +54,7 @@ class WeaponField extends StatelessWidget {
                                     blurRadius: 30,
                                     spreadRadius: 15)
                               ]),
-            child: weapon.isSvgAsset
-                ? SvgPicture.asset(
-                    weapon.image,
-                    fit: BoxFit.contain,
-                  )
-                : Image.asset(
+            child: Image.asset(
                     weapon.image,
                     fit: BoxFit.contain,
                   ));

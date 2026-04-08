@@ -7,7 +7,6 @@ class Armor extends Item {
     required super.id,
     required super.type,
     required super.image,
-    super.isSvgAsset = true,
     required this.name,
     required this.armorType,
     required this.defense,
@@ -28,14 +27,12 @@ class Armor extends Item {
           id: other.id,
           type: other.type,
           image: other.image,
-          isSvgAsset: other.isSvgAsset,
         );
 
   @override
   Map toJson() => {
         'id': id,
         'type': type.name,
-        'isSvgAsset': isSvgAsset,
         'image': image,
         'name': name,
         'armorType': armorType.name,
@@ -47,7 +44,6 @@ class Armor extends Item {
     return Armor(
       id: json['id'],
       type: ItemType.values.byName(json['type']),
-      isSvgAsset: json['isSvgAsset'],
       image: json['image'],
       name: json['name'],
       armorType: ArmorType.values.byName(json['armorType']),

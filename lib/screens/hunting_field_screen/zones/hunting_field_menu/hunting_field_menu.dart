@@ -116,7 +116,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                           width: constraints.maxWidth,
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(78, 78, 78, 1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             border: Border.all(color: Colors.yellow, width: 2),
                             borderRadius: BorderRadius.circular(15),
                             boxShadow: const [

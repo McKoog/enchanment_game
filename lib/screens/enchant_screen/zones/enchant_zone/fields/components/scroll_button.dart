@@ -19,10 +19,11 @@ class ScrollFieldButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
             textStyle: scrollButtonsTextDecoration,
             shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.yellow.withValues(alpha: 0.5), width: 1),
               borderRadius: BorderRadius.circular(9.0),
             ),
             elevation: 0,
-            backgroundColor: const Color.fromRGBO(130, 130, 130, 1).withValues(alpha: 0.7)),
+            backgroundColor: Colors.black.withValues(alpha: 0.4)),
         child: AutoSizeText(
           caption,
           style: scrollButtonsTextDecoration,

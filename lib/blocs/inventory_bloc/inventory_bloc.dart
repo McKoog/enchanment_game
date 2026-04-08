@@ -214,13 +214,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   }
 
   static bool _isSameScrollType(Scroll a, Scroll b) {
-    return a.name == b.name &&
-        a.image == b.image &&
-        a.description == b.description;
+    return a.scrollType == b.scrollType;
   }
 
   static Scroll _createScrollWithNewId(Scroll source, int quantity) {
-    final scroll = ItemRegistry.createScroll();
+    final scroll = ItemRegistry.createScroll(source.scrollType);
     scroll.image = source.image;
     scroll.name = source.name;
     scroll.description = source.description;

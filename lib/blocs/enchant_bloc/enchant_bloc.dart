@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/game_stock_data/enchant_config.dart';
+import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/utils/game_random.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,16 +15,16 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
 
   EnchantBloc() : super(EnchantState$Idle()) {
     on<EnchantEvent>((event, emitter) => switch (event) {
-          EnchantEvent$InsertWeapon() => _insertWeapon(event, emitter),
+          EnchantEvent$InsertItem() => _insertItem(event, emitter),
           EnchantEvent$StartEnchanting() => _startEnchanting(event, emitter),
           EnchantEvent$FinishEnchanting() => _finishEnchanting(event, emitter),
           EnchantEvent$CancelEnchanting() => _cancelEnchanting(event, emitter),
         });
   }
 
-  void _insertWeapon(
-      EnchantEvent$InsertWeapon event, Emitter<EnchantState> emitter) {
-    emitter(EnchantState$Idle(insertedWeapon: event.weapon));
+  void _insertItem(
+      EnchantEvent$InsertItem event, Emitter<EnchantState> emitter) {
+    emitter(EnchantState$Idle(insertedItem: event.item));
   }
 
   void _startEnchanting(
@@ -31,13 +33,13 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     final localToken = _runToken;
     _timer?.cancel();
 
-    emitter(EnchantState$EnchantmentInProgress(insertedWeapon: event.weapon));
+    emitter(EnchantState$EnchantmentInProgress(insertedItem: event.item));
 
     _timer = Timer(const Duration(milliseconds: 1200), () {
       if (isClosed) return;
       if (localToken != _runToken) return;
       add(EnchantEvent$FinishEnchanting(
-          weapon: event.weapon, runToken: localToken));
+          item: event.item, runToken: localToken));
     });
   }
 
@@ -47,14 +49,21 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     _timer?.cancel();
     _timer = null;
 
-    final successChance =
-        EnchantConfig.getSuccessChance(event.weapon.enchantLevel);
+    final item = event.item;
+    int enchantLevel = 0;
+    if (item is Weapon) {
+      enchantLevel = item.enchantLevel;
+    } else if (item is Armor) {
+      enchantLevel = item.enchantLevel;
+    }
+
+    final successChance = EnchantConfig.getSuccessChance(enchantLevel);
     if (GameRandom.chance(successChance)) {
       emitter(EnchantState$Result(
-          insertedWeapon: _enchantWeapon(event.weapon), isSuccess: true));
+          insertedItem: _enchantItem(item), isSuccess: true));
     } else {
       emitter(
-          EnchantState$Result(insertedWeapon: event.weapon, isSuccess: false));
+          EnchantState$Result(insertedItem: item, isSuccess: false));
     }
   }
 
@@ -63,7 +72,7 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     _runToken += 1;
     _timer?.cancel();
     _timer = null;
-    emitter(EnchantState$Idle(insertedWeapon: state.insertedWeapon));
+    emitter(EnchantState$Idle(insertedItem: state.insertedItem));
   }
 
   @override
@@ -74,15 +83,25 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     return super.close();
   }
 
-  Weapon _enchantWeapon(Weapon weapon) {
-    final bonus = EnchantConfig.bonusByWeaponType[weapon.weaponType] ??
-        const EnchantBonus();
+  Item _enchantItem(Item item) {
+    if (item is Weapon) {
+      final bonus = EnchantConfig.bonusByWeaponType[item.weaponType] ??
+          const EnchantBonus();
 
-    weapon.enchantLevel += 1;
-    weapon.lowerDamage += bonus.lowerDamageBonus;
-    weapon.higherDamage += bonus.higherDamageBonus;
-    weapon.critRate += bonus.critRateBonus;
-    weapon.critPower += bonus.critPowerBonus;
-    return weapon;
+      item.enchantLevel += 1;
+      item.lowerDamage += bonus.lowerDamageBonus;
+      item.higherDamage += bonus.higherDamageBonus;
+      item.critRate += bonus.critRateBonus;
+      item.critPower += bonus.critPowerBonus;
+      return item;
+    } else if (item is Armor) {
+      final bonus = EnchantConfig.bonusByArmorType[item.armorType] ??
+          const EnchantBonusArmor();
+      
+      item.enchantLevel += 1;
+      item.defense += bonus.defenseBonus;
+      return item;
+    }
+    return item;
   }
 }

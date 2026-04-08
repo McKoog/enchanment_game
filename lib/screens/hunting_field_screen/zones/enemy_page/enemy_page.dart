@@ -6,11 +6,7 @@ import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/c
 import 'package:flutter/material.dart';
 
 class EnemyPage extends StatelessWidget {
-  const EnemyPage(
-      {super.key,
-      required this.width,
-      required this.enemy,
-      required this.weapon});
+  const EnemyPage({super.key, required this.width, required this.enemy, required this.weapon});
 
   final double width;
   final Enemy enemy;
@@ -18,7 +14,8 @@ class EnemyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/background/forest_enemy_background.png'), fit: BoxFit.cover)),
       width: width,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -35,8 +32,7 @@ class EnemyPage extends StatelessWidget {
             children: [
               SizedBox(
                 height: headerHeight,
-                child: EnemyHeader(
-                    width: width, enemy: enemy, heightFactor: headerHeight),
+                child: EnemyHeader(width: width, enemy: enemy, heightFactor: headerHeight),
               ),
               SizedBox(
                 height: enemyFieldHeight,
@@ -48,11 +44,7 @@ class EnemyPage extends StatelessWidget {
               ),
               SizedBox(
                 height: attackFieldHeight,
-                child: AttackField(
-                    width: width,
-                    enemy: enemy,
-                    weapon: weapon,
-                    availableHeight: attackFieldHeight),
+                child: AttackField(width: width, enemy: enemy, weapon: weapon, availableHeight: attackFieldHeight),
               ),
             ],
           );
