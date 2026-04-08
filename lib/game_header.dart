@@ -11,8 +11,7 @@ class GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharacterBloc, CharacterState>(
-        builder: (context, state) {
+    return BlocBuilder<CharacterBloc, CharacterState>(builder: (context, state) {
       final character = state.character;
 
       return Column(
@@ -22,9 +21,7 @@ class GameHeader extends StatelessWidget {
             versionLabel: 'v.$appVersion',
             gold: character.gold,
             level: character.level,
-            experienceProgress: character.maxExp > 0
-                ? character.currentExp / character.maxExp
-                : 0,
+            experienceProgress: character.maxExp > 0 ? character.currentExp / character.maxExp : 0,
             skillPoints: character.skillPoints,
           ),
           Expanded(
@@ -157,9 +154,7 @@ class _PersistentHeader extends StatelessWidget {
                           LinearProgressIndicator(
                             value: clampedProgress,
                             minHeight: 8,
-                            backgroundColor:
-                                const Color.fromRGBO(230, 200, 80, 1)
-                                    .withValues(alpha: 0.2),
+                            backgroundColor: const Color.fromRGBO(230, 200, 80, 1).withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Color.fromRGBO(230, 200, 80, 1),
                             ),

@@ -56,8 +56,15 @@ class _MenuScreenState extends State<MenuScreen> {
         final possibleColumns = ((available + spacing) / (minTileSize + spacing)).floor().clamp(1, maxColumns);
         final tileSize = possibleColumns == 0 ? minTileSize : (available - spacing * (possibleColumns - 1)) / possibleColumns;
 
-        return SizedBox(
+        return Container(
           width: effectiveWidth,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              opacity: 0.5,
+              image: AssetImage('assets/background/dark_hall_background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
