@@ -32,18 +32,18 @@ class ItemRegistry {
       enchantLevel: 0,
     ),
     WeaponType.sword: Weapon(
-      id: 'template',
-      type: ItemType.weapon,
-      image: 'assets/icons/weapons/sword.svg',
-      name: 'Basic Sword',
-      weaponType: WeaponType.sword,
-      lowerDamage: 2,
-      higherDamage: 3,
-      critRate: 15,
-      critPower: 50,
-      attackSpeed: 0.8,
-      enchantLevel: 0,
-    ),
+        id: 'template',
+        type: ItemType.weapon,
+        image: 'assets/icons/weapons/sword.png',
+        name: 'Basic Sword',
+        weaponType: WeaponType.sword,
+        lowerDamage: 2,
+        higherDamage: 3,
+        critRate: 15,
+        critPower: 50,
+        attackSpeed: 0.8,
+        enchantLevel: 0,
+        isSvgAsset: false),
     WeaponType.bow: Weapon(
       id: 'template',
       type: ItemType.weapon,
@@ -79,11 +79,10 @@ class ItemRegistry {
   static final Scroll _scrollTemplate = Scroll(
     id: 'template',
     type: ItemType.scroll,
-    image: 'assets/icons/other_items/enchant_scroll.svg',
+    image: 'assets/icons/other_items/enchant_scroll_weapon.png',
     name: 'Scroll of enchant',
-    description:
-        "Increase power of the weapon, but be careful, it's not guaranteed",
-  );
+    description: "Increase power of the weapon, but be careful, it's not guaranteed",
+  )..isSvgAsset = false;
 
   // ——— Armor templates ———
 
@@ -159,7 +158,7 @@ class ItemRegistry {
 
   /// Create a new scroll instance with a unique id.
   static Scroll createScroll() {
-    final scroll = Scroll.copyWith(_scrollTemplate);
+    final scroll = Scroll.copyWith(_scrollTemplate)..isSvgAsset = false;
     scroll.id = _uuid.v1();
     return scroll;
   }
@@ -167,8 +166,7 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type,
-      {WeaponType? weaponType, ArmorType? armorType}) {
+  static Item createItem(ItemType type, {WeaponType? weaponType, ArmorType? armorType}) {
     if (type == ItemType.scroll) return createScroll();
     if (type == ItemType.armor) {
       return createArmor(armorType ?? ArmorType.chestplate);

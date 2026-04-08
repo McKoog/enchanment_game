@@ -16,7 +16,7 @@ class EnchantmentGame extends StatelessWidget {
         body: SharedBlocsProvider(
           child: GameHeader(
             child: ColoredBox(
-              color: const Color.fromRGBO(78, 78, 78, 1),
+              color: Colors.black.withValues(alpha: 0.3),
               child: const ResponsiveLayout(),
             ),
           ),

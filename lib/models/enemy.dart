@@ -6,6 +6,8 @@ class Enemy {
     required this.name,
     required this.image,
     required this.hp,
+    required this.attack,
+    required this.attackSpeed,
     required this.dropList,
   });
 
@@ -13,5 +15,7 @@ class Enemy {
   final String name;
   final String image;
   final int hp;
+  final int attack;
+  final double attackSpeed;
   final List<DropItem> dropList;
 }

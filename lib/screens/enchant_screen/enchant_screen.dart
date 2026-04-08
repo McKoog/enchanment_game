@@ -13,18 +13,22 @@ class EnchantScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return SafeArea(child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       final effectiveWidth = width ?? constraints.maxWidth;
       return BlocProvider(
         create: (context) => ItemInfoBloc(),
-        child: SizedBox(
+        child: Container(
           width: effectiveWidth,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              opacity: 0.3,
+              image: AssetImage('assets/background/town_center_background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
           child: Column(children: [
-            EnchantZone(
-                height: constraints.maxHeight / 2, width: effectiveWidth),
-            InventoryZone(
-                height: constraints.maxHeight / 2, width: effectiveWidth)
+            EnchantZone(height: constraints.maxHeight / 2, width: effectiveWidth),
+            InventoryZone(height: constraints.maxHeight / 2, width: effectiveWidth)
           ]),
         ),
       );
