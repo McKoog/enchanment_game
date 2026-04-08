@@ -22,6 +22,11 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
           CharacterAddSkillPoints() => _addSkillPoints(event, emitter),
           CharacterTakeDamage() => _takeDamage(event, emitter),
           CharacterHeal() => _heal(event, emitter),
+          CharacterRespawn() => _respawn(event, emitter),
+          CharacterStartEscapeCooldown() =>
+            _startEscapeCooldown(event, emitter),
+          CharacterClearEscapeCooldown() =>
+            _clearEscapeCooldown(event, emitter),
           CharacterLoad() => _loadSaved(event, emitter),
         });
 
@@ -171,19 +176,73 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
   void _takeDamage(CharacterTakeDamage event, Emitter<CharacterState> emitter) {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
-    int damageTaken = event.damage - currentState.character.defense;
+    if (currentState.character.currentHealth <= 0) return;
+
+    int maxDamageBlocked = (event.damage * 0.7).toInt();
+    int actualDamageBlocked = currentState.character.defense;
+
+    if (actualDamageBlocked > maxDamageBlocked) {
+      actualDamageBlocked = maxDamageBlocked;
+    }
+
+    int damageTaken = event.damage - actualDamageBlocked;
     if (damageTaken < 0) {
-      damageTaken = 0; // 1 armor = 1 damage blocked, min 0 damage
+      damageTaken = 0;
     }
 
     int newHealth = currentState.character.currentHealth - damageTaken;
-    if (newHealth < 0) newHealth = 0;
 
-    final newCharacter = currentState.character.copyWith(
-      currentHealth: newHealth,
-    );
-    emitter(CharacterLoaded(newCharacter));
-    _autoSave(newCharacter);
+    if (newHealth <= 0) {
+      newHealth = 0;
+
+      // Apply death penalties
+      int newGold = (currentState.character.gold * 0.5).toInt();
+      int newSp = currentState.character.skillPoints - 25;
+      if (newSp < 0) newSp = 0;
+
+      int totalExp = _getTotalExp(
+          currentState.character.level, currentState.character.currentExp);
+      int newTotalExp = (totalExp * 0.75).toInt();
+
+      int newLevel = 1;
+      int remainingExp = newTotalExp;
+      while (remainingExp >= _getMaxExpForLevel(newLevel)) {
+        remainingExp -= _getMaxExpForLevel(newLevel);
+        newLevel++;
+      }
+
+      final newCharacter = currentState.character.copyWith(
+        currentHealth: newHealth,
+        gold: newGold,
+        skillPoints: newSp,
+        level: newLevel,
+        currentExp: remainingExp,
+      );
+      emitter(CharacterLoaded(newCharacter));
+      _autoSave(newCharacter);
+    } else {
+      final newCharacter = currentState.character.copyWith(
+        currentHealth: newHealth,
+      );
+      emitter(CharacterLoaded(newCharacter));
+      _autoSave(newCharacter);
+    }
+  }
+
+  int _getMaxExpForLevel(int lvl) {
+    double exp = 100;
+    for (int i = 1; i < lvl; i++) {
+      exp *= 1.25;
+    }
+    return exp.toInt();
+  }
+
+  int _getTotalExp(int level, int currentExp) {
+    int total = currentExp;
+    for (int l = 1; l < level; l++) {
+      total += _getMaxExpForLevel(l);
+    }
+    return total;
   }
 
   void _heal(CharacterHeal event, Emitter<CharacterState> emitter) {
@@ -196,6 +255,39 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
     final newCharacter = currentState.character.copyWith(
       currentHealth: newHealth,
+    );
+    emitter(CharacterLoaded(newCharacter));
+    _autoSave(newCharacter);
+  }
+
+  void _respawn(CharacterRespawn event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    final newCharacter = currentState.character.copyWith(
+      currentHealth: currentState.character.baseHealth,
+      deathCooldownEndTime: DateTime.now().add(const Duration(seconds: 15)),
+    );
+    emitter(CharacterLoaded(newCharacter));
+    _autoSave(newCharacter);
+  }
+
+  void _startEscapeCooldown(
+      CharacterStartEscapeCooldown event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    final newCharacter = currentState.character.copyWith(
+      escapeCooldownEndTime: DateTime.now().add(const Duration(seconds: 5)),
+    );
+    emitter(CharacterLoaded(newCharacter));
+    _autoSave(newCharacter);
+  }
+
+  void _clearEscapeCooldown(
+      CharacterClearEscapeCooldown event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    final newCharacter = currentState.character.copyWith(
+      clearEscapeCooldown: true,
     );
     emitter(CharacterLoaded(newCharacter));
     _autoSave(newCharacter);

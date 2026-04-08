@@ -16,6 +16,8 @@ class Character {
     this.baseHealth = 100,
     this.hpRegen = 1,
     int? currentHealth,
+    this.escapeCooldownEndTime,
+    this.deathCooldownEndTime,
   }) : currentHealth = currentHealth ?? baseHealth;
 
   final int level;
@@ -32,6 +34,9 @@ class Character {
   final int baseHealth;
   final int hpRegen;
   final int currentHealth;
+
+  final DateTime? escapeCooldownEndTime;
+  final DateTime? deathCooldownEndTime;
 
   int get maxExp {
     double exp = 100;
@@ -74,11 +79,15 @@ class Character {
     int? baseHealth,
     int? hpRegen,
     int? currentHealth,
+    DateTime? escapeCooldownEndTime,
+    DateTime? deathCooldownEndTime,
     bool clearWeapon = false,
     bool clearHelmet = false,
     bool clearChestplate = false,
     bool clearLeggings = false,
     bool clearBoots = false,
+    bool clearEscapeCooldown = false,
+    bool clearDeathCooldown = false,
   }) {
     return Character(
       level: level ?? this.level,
@@ -98,6 +107,12 @@ class Character {
       baseHealth: baseHealth ?? this.baseHealth,
       hpRegen: hpRegen ?? this.hpRegen,
       currentHealth: currentHealth ?? this.currentHealth,
+      escapeCooldownEndTime: clearEscapeCooldown
+          ? null
+          : (escapeCooldownEndTime ?? this.escapeCooldownEndTime),
+      deathCooldownEndTime: clearDeathCooldown
+          ? null
+          : (deathCooldownEndTime ?? this.deathCooldownEndTime),
     );
   }
 
@@ -115,6 +130,8 @@ class Character {
       'baseHealth': baseHealth,
       'hpRegen': hpRegen,
       'currentHealth': currentHealth,
+      'escapeCooldownEndTime': escapeCooldownEndTime?.toIso8601String(),
+      'deathCooldownEndTime': deathCooldownEndTime?.toIso8601String(),
     };
   }
 
@@ -142,6 +159,12 @@ class Character {
       baseHealth: json['baseHealth'] ?? 100,
       hpRegen: json['hpRegen'] ?? 1,
       currentHealth: json['currentHealth'],
+      escapeCooldownEndTime: json['escapeCooldownEndTime'] != null
+          ? DateTime.parse(json['escapeCooldownEndTime'])
+          : null,
+      deathCooldownEndTime: json['deathCooldownEndTime'] != null
+          ? DateTime.parse(json['deathCooldownEndTime'])
+          : null,
     );
   }
 }
