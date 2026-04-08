@@ -214,6 +214,14 @@ class _EnemyPageState extends State<EnemyPage>
 
     if (_enemyCurrentHP <= 0) {
       _enemyCurrentHP = widget.enemy.hp;
+
+      // Add Experience and SP
+      if (widget.enemy.expReward > 0 || widget.enemy.spReward > 0) {
+        context.read<CharacterBloc>().add(CharacterAddExp(
+            widget.enemy.expReward,
+            spAmount: widget.enemy.spReward));
+      }
+
       final loot = CombatService.generateLoot(widget.enemy);
       final inventoryBloc = context.read<InventoryBloc>();
 

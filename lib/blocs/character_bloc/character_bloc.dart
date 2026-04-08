@@ -119,11 +119,20 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
 
     int newExp = currentState.character.currentExp + event.amount;
     int newLevel = currentState.character.level;
-    int newSkillPoints = currentState.character.skillPoints;
+    int newSkillPoints = currentState.character.skillPoints + event.spAmount;
+
+    // Helper to get max exp for a given level
+    int getMaxExp(int lvl) {
+      double exp = 100;
+      for (int i = 1; i < lvl; i++) {
+        exp *= 1.25;
+      }
+      return exp.toInt();
+    }
 
     // Level up logic
-    while (newExp >= (newLevel * 100)) {
-      newExp -= (newLevel * 100);
+    while (newExp >= getMaxExp(newLevel)) {
+      newExp -= getMaxExp(newLevel);
       newLevel++;
       newSkillPoints++; // Give 1 skill point per level up
     }
