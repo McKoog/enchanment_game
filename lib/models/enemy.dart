@@ -18,4 +18,6 @@ class Enemy {
   final int attack;
   final double attackSpeed;
   final List<DropItem> dropList;
+
+  int get attackDamage => attack;
 }

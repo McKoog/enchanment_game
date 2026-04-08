@@ -27,7 +27,7 @@ class ItemRegistry {
       higherDamage: 1,
       critRate: 0,
       critPower: 0,
-      attackSpeed: 1.0,
+      attackSpeed: 0.25,
       enchantLevel: 0,
     ),
     WeaponType.sword: Weapon(
@@ -40,7 +40,7 @@ class ItemRegistry {
         higherDamage: 3,
         critRate: 15,
         critPower: 50,
-        attackSpeed: 0.8,
+        attackSpeed: 1.0,
         enchantLevel: 0),
     WeaponType.bow: Weapon(
       id: 'template',
@@ -52,7 +52,7 @@ class ItemRegistry {
       higherDamage: 5,
       critRate: 10,
       critPower: 75,
-      attackSpeed: 0.5,
+      attackSpeed: 1.5,
       enchantLevel: 0,
     ),
     WeaponType.dagger: Weapon(
@@ -65,7 +65,7 @@ class ItemRegistry {
       higherDamage: 2,
       critRate: 40,
       critPower: 100,
-      attackSpeed: 1.2,
+      attackSpeed: 0.75,
       enchantLevel: 0,
     ),
   };
@@ -78,8 +78,7 @@ class ItemRegistry {
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_weapon.png',
       name: 'Weapon Enchant Scroll',
-      description:
-          "Increase power of the weapon, but be careful, it's not guaranteed",
+      description: "Increase power of the weapon, but be careful, it's not guaranteed",
       scrollType: ScrollType.weapon,
     ),
     ScrollType.armor: Scroll(
@@ -87,8 +86,7 @@ class ItemRegistry {
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_armor.png',
       name: 'Armor Enchant Scroll',
-      description:
-          "Increase defense of the armor, but be careful, it's not guaranteed",
+      description: "Increase defense of the armor, but be careful, it's not guaranteed",
       scrollType: ScrollType.armor,
     ),
   };
@@ -102,7 +100,7 @@ class ItemRegistry {
       image: 'assets/icons/armors/skin_helmet.png',
       name: 'Leather Helmet',
       armorType: ArmorType.helmet,
-      defense: 2,
+      defense: 1,
       enchantLevel: 0,
     ),
     ArmorType.chestplate: Armor(
@@ -111,7 +109,7 @@ class ItemRegistry {
       image: 'assets/icons/armors/skin_breastplate.png',
       name: 'Leather Chestplate',
       armorType: ArmorType.chestplate,
-      defense: 5,
+      defense: 1,
       enchantLevel: 0,
     ),
     ArmorType.leggings: Armor(
@@ -120,7 +118,7 @@ class ItemRegistry {
       image: 'assets/icons/armors/skin_pants.png',
       name: 'Leather Leggings',
       armorType: ArmorType.leggings,
-      defense: 3,
+      defense: 1,
       enchantLevel: 0,
     ),
     ArmorType.boots: Armor(
@@ -175,8 +173,7 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type,
-      {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
+  static Item createItem(ItemType type, {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
     if (type == ItemType.scroll) {
       return createScroll(scrollType ?? ScrollType.weapon);
     }

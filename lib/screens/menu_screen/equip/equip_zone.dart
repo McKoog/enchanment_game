@@ -49,6 +49,7 @@ class _EquipZoneState extends State<EquipZone> {
                       _StatRow('Attack Speed', character.attackSpeed.toStringAsFixed(2)),
                       _StatRow('Defense', '${character.defense}'),
                       _StatRow('Health', '${character.health}'),
+                      _StatRow('HP Regen', '${character.hpRegen} / s'),
                     ],
                   ),
                 ),

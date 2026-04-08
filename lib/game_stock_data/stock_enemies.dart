@@ -19,7 +19,7 @@ final greyWolf = Enemy(
   name: 'Grey Wolf',
   image: "assets/icons/enemies/wolf.png",
   hp: 50,
-  attack: 5,
+  attack: 10,
   attackSpeed: 1.0,
   dropList: [
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.helmet),
@@ -36,7 +36,7 @@ final bandit = Enemy(
   name: 'Bandit',
   image: "assets/icons/enemies/bandit.png",
   hp: 75,
-  attack: 10,
+  attack: 15,
   attackSpeed: 0.75,
   dropList: [
     DropItem(chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
@@ -51,7 +51,7 @@ final goblin = Enemy(
   name: 'Goblin',
   image: "assets/icons/enemies/goblin.png",
   hp: 100,
-  attack: 15,
+  attack: 20,
   attackSpeed: 0.5,
   dropList: [
     DropItem(chance: 25, itemType: ItemType.weapon, weaponType: WeaponType.sword),
@@ -66,7 +66,7 @@ final dryad = Enemy(
   name: 'Dryad',
   image: "assets/icons/enemies/dryad.png",
   hp: 150,
-  attack: 20,
+  attack: 25,
   attackSpeed: 0.5,
   dropList: [
     DropItem(chance: 20, itemType: ItemType.weapon, weaponType: WeaponType.bow),
