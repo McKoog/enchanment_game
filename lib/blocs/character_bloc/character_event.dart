@@ -46,4 +46,10 @@ class CharacterHeal extends CharacterEvent {
   CharacterHeal(this.amount);
 }
 
+class CharacterRespawn extends CharacterEvent {}
+
+class CharacterStartEscapeCooldown extends CharacterEvent {}
+
+class CharacterClearEscapeCooldown extends CharacterEvent {}
+
 class CharacterLoad extends CharacterEvent {}

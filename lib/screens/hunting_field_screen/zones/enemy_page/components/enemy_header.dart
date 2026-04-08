@@ -1,3 +1,4 @@
+import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart' show HuntingFieldsBloc;
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
@@ -29,6 +30,8 @@ class EnemyHeader extends StatelessWidget {
     final double scale = (heightFactor / 80).clamp(0.4, 1.5);
     final double iconSize = 40 * scale;
     final double nameFieldHeight = 53 * scale;
+
+    final escapeTime = context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
 
     return Row(
       children: [
@@ -66,19 +69,20 @@ class EnemyHeader extends StatelessWidget {
                                   )))),
                     ],
                   ),
-                  Positioned(
-                    top: 6,
-                    right: 1,
-                    child: InkWell(
-                        onTap: () {
-                          context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
-                        },
-                        child: Icon(
-                          Icons.close,
-                          size: iconSize,
-                          color: Colors.yellow,
-                        )),
-                  ),
+                  if (escapeTime != null && DateTime.now().isAfter(escapeTime))
+                    Positioned(
+                      top: 6,
+                      right: 1,
+                      child: InkWell(
+                          onTap: () {
+                            context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+                          },
+                          child: Icon(
+                            Icons.close,
+                            size: iconSize,
+                            color: Colors.yellow,
+                          )),
+                    ),
                 ],
               ),
             ),

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/game_stock_data/stock_enemies.dart';
@@ -6,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldsMenu extends StatefulWidget {
-  const HuntingFieldsMenu({super.key, required this.constraints, required this.width});
+  const HuntingFieldsMenu(
+      {super.key, required this.constraints, required this.width});
 
   final BoxConstraints constraints;
   final double width;
@@ -17,6 +21,7 @@ class HuntingFieldsMenu extends StatefulWidget {
 
 class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
   Enemy? selectedEnemy;
+  Timer? _timer;
 
   final List<Enemy> enemies = [
     greyWolf,
@@ -26,7 +31,29 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final characterState = context.watch<CharacterBloc>().state;
+    final deathTime = characterState.character.deathCooldownEndTime;
+    final isDeathCooldownActive =
+        deathTime != null && DateTime.now().isBefore(deathTime);
+    final remainingDeathSeconds = isDeathCooldownActive
+        ? deathTime.difference(DateTime.now()).inSeconds + 1
+        : 0;
+
     return Container(
       width: widget.width,
       height: widget.constraints.maxHeight,
@@ -72,41 +99,69 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                     bottom: isTopRow ? null : 200,
                     child: GestureDetector(
                       onTap: () {
+                        if (isDeathCooldownActive) return;
                         setState(() {
                           selectedEnemy = isSelected ? null : enemy;
                         });
                       },
-                      child: Container(
-                        width: circleSize,
-                        height: circleSize,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.transparent,
-                          border: Border.all(
-                            color: isSelected ? Colors.yellow : const Color.fromRGBO(130, 130, 130, 1),
-                            width: 2,
-                          ),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black54,
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                            )
-                          ],
-                        ),
-                        child: ClipOval(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              enemy.image,
-                              fit: BoxFit.contain,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: circleSize,
+                            height: circleSize,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.yellow
+                                    : const Color.fromRGBO(130, 130, 130, 1),
+                                width: 2,
+                              ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                )
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset(
+                                  enemy.image,
+                                  fit: BoxFit.contain,
+                                  color: isDeathCooldownActive
+                                      ? Colors.black54
+                                      : null,
+                                  colorBlendMode: isDeathCooldownActive
+                                      ? BlendMode.darken
+                                      : null,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          if (isDeathCooldownActive)
+                            Text(
+                              '$remainingDeathSeconds',
+                              style: const TextStyle(
+                                color: Colors.yellow,
+                                fontSize: 48,
+                                fontFamily: 'PT Sans',
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(color: Colors.black, blurRadius: 10),
+                                  Shadow(color: Colors.red, blurRadius: 20),
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ),
-                  if (isSelected)
+                  if (isSelected && !isDeathCooldownActive)
                     Positioned(
                       top: isTopRow ? circleSize + 20 : null,
                       bottom: isTopRow ? null : circleSize + 210,
@@ -162,8 +217,10 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  final bloc = context.read<HuntingFieldsBloc>();
-                                  bloc.add(HuntingFieldEvent$SelectEnemy(enemy: enemy));
+                                  final bloc =
+                                      context.read<HuntingFieldsBloc>();
+                                  bloc.add(HuntingFieldEvent$SelectEnemy(
+                                      enemy: enemy));
                                   bloc.add(HuntingFieldEvent$StartHunting());
                                 },
                                 child: const Text(
