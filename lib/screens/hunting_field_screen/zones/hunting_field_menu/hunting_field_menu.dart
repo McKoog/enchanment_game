@@ -45,6 +45,11 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final characterState = context.watch<CharacterBloc>().state;
     final deathTime = characterState.character.deathCooldownEndTime;
@@ -58,6 +63,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
       width: widget.width,
       height: widget.constraints.maxHeight,
       decoration: const BoxDecoration(
+        color: Color.fromRGBO(52, 52, 52, 1),
         image: DecorationImage(
           opacity: 0.7,
           image: AssetImage('assets/background/forest_background.png'),
@@ -133,6 +139,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                                 child: Image.asset(
                                   enemy.image,
                                   fit: BoxFit.contain,
+                                  gaplessPlayback: true,
                                   color: isDeathCooldownActive
                                       ? Colors.black54
                                       : null,

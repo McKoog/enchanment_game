@@ -62,6 +62,7 @@ class WeaponField extends StatelessWidget {
                 : null,
             child: Image.asset(
               weapon.image,
+              gaplessPlayback: true,
               fit: BoxFit.contain,
             ));
       },

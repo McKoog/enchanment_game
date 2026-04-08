@@ -149,6 +149,15 @@ class ItemRegistry {
 
   // ——— Public API ———
 
+  static List<String> get allImages {
+    final images = <String>[];
+    images.addAll(_weaponTemplates.values.map((e) => e.image));
+    images.addAll(_armorTemplates.values.map((e) => e.image));
+    images.addAll(_scrollTemplates.values.map((e) => e.image));
+    images.add('assets/icons/other_items/gold.png');
+    return images.toSet().toList();
+  }
+
   /// The fist weapon singleton (always the same instance).
   static Weapon get fist => _weaponTemplates[WeaponType.fist]!;
 

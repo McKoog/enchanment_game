@@ -69,7 +69,7 @@ class EnemyHeader extends StatelessWidget {
                                   )))),
                     ],
                   ),
-                  if (escapeTime != null && DateTime.now().isAfter(escapeTime))
+                  if (escapeTime != null && DateTime.now().isAfter(escapeTime) || escapeTime == null)
                     Positioned(
                       top: 6,
                       right: 1,
