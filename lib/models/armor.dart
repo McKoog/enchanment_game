@@ -7,6 +7,8 @@ class Armor extends Item {
     required super.id,
     required super.type,
     required super.image,
+    super.sellPrice,
+    super.buyPrice,
     required this.name,
     required this.armorType,
     required this.defense,
@@ -27,6 +29,8 @@ class Armor extends Item {
           id: other.id,
           type: other.type,
           image: other.image,
+          sellPrice: other.sellPrice,
+          buyPrice: other.buyPrice,
         );
 
   @override
@@ -34,6 +38,8 @@ class Armor extends Item {
         'id': id,
         'type': type.name,
         'image': image,
+        'sellPrice': sellPrice,
+        'buyPrice': buyPrice,
         'name': name,
         'armorType': armorType.name,
         'defense': defense,
@@ -45,6 +51,8 @@ class Armor extends Item {
       id: json['id'],
       type: ItemType.values.byName(json['type']),
       image: json['image'],
+      sellPrice: json['sellPrice'] ?? 0,
+      buyPrice: json['buyPrice'] ?? 0,
       name: json['name'],
       armorType: ArmorType.values.byName(json['armorType']),
       defense: json['defense'],

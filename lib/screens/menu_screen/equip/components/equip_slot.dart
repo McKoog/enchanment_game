@@ -29,7 +29,9 @@ class EquipSlot extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: (inventorySlotDecoration as BoxDecoration).copyWith(
-              border: isSelected ? Border.all(color: Colors.yellow, width: 2) : (inventorySlotDecoration as BoxDecoration).border,
+              border: isSelected
+                  ? Border.all(color: Colors.yellow, width: 2)
+                  : (inventorySlotDecoration as BoxDecoration).border,
             ),
             child: Stack(
               alignment: Alignment.center,
@@ -61,8 +63,14 @@ class EquipSlot extends StatelessWidget {
               item == null
                   ? "Empty"
                   : (item is Weapon
-                      ? ((item as Weapon).enchantLevel > 0 ? "${(item as Weapon).name} +${(item as Weapon).enchantLevel}" : (item as Weapon).name)
-                      : (item is Armor ? (item as Armor).name : '')),
+                      ? ((item as Weapon).enchantLevel > 0
+                          ? "${(item as Weapon).name} +${(item as Weapon).enchantLevel}"
+                          : (item as Weapon).name)
+                      : (item is Armor
+                          ? ((item as Armor).enchantLevel > 0
+                              ? "${(item as Armor).name} +${(item as Armor).enchantLevel}"
+                              : (item as Armor).name)
+                          : '')),
               style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white70,
