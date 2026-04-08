@@ -35,4 +35,14 @@ class CharacterAddSkillPoints extends CharacterEvent {
   CharacterAddSkillPoints(this.amount);
 }
 
+class CharacterTakeDamage extends CharacterEvent {
+  final int damage;
+  CharacterTakeDamage(this.damage);
+}
+
+class CharacterHeal extends CharacterEvent {
+  final int amount;
+  CharacterHeal(this.amount);
+}
+
 class CharacterLoad extends CharacterEvent {}

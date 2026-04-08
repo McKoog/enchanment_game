@@ -32,6 +32,13 @@ class WeaponInfoField extends StatelessWidget {
             height: 16,
           ),
           Text(
+            "Attack Speed: ${weapon.attackSpeed}/s",
+            style: weaponInfoTextDecoration,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
             "Critical hit chance: ${weapon.critRate}%",
             style: weaponInfoTextDecoration,
           ),

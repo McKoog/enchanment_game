@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/models/armor.dart';
@@ -6,6 +8,8 @@ import 'package:enchantment_game/services/save_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
+  Timer? _regenTimer;
+
   CharacterBloc({Character? initialCharacter})
       : super(CharacterLoaded(initialCharacter ?? Character())) {
     on<CharacterEvent>((event, emitter) => switch (event) {
@@ -16,10 +20,29 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
           CharacterAddExp() => _addExp(event, emitter),
           CharacterAddGold() => _addGold(event, emitter),
           CharacterAddSkillPoints() => _addSkillPoints(event, emitter),
+          CharacterTakeDamage() => _takeDamage(event, emitter),
+          CharacterHeal() => _heal(event, emitter),
           CharacterLoad() => _loadSaved(event, emitter),
         });
 
     add(CharacterLoad());
+
+    _regenTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (state is CharacterLoaded) {
+        final currentState = state as CharacterLoaded;
+        if (currentState.character.currentHealth > 0 &&
+            currentState.character.currentHealth <
+                currentState.character.baseHealth) {
+          add(CharacterHeal(currentState.character.hpRegen));
+        }
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _regenTimer?.cancel();
+    return super.close();
   }
 
   void _equipWeapon(
@@ -136,8 +159,40 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
     _autoSave(newCharacter);
   }
 
-  Future<void> _loadSaved(
-      CharacterLoad event, Emitter<CharacterState> emitter) async {
+  void _takeDamage(CharacterTakeDamage event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    int damageTaken = event.damage - currentState.character.defense;
+    if (damageTaken < 0) {
+      damageTaken = 0; // 1 armor = 1 damage blocked, min 0 damage
+    }
+
+    int newHealth = currentState.character.currentHealth - damageTaken;
+    if (newHealth < 0) newHealth = 0;
+
+    final newCharacter = currentState.character.copyWith(
+      currentHealth: newHealth,
+    );
+    emitter(CharacterLoaded(newCharacter));
+    _autoSave(newCharacter);
+  }
+
+  void _heal(CharacterHeal event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    int newHealth = currentState.character.currentHealth + event.amount;
+    if (newHealth > currentState.character.baseHealth) {
+      newHealth = currentState.character.baseHealth;
+    }
+
+    final newCharacter = currentState.character.copyWith(
+      currentHealth: newHealth,
+    );
+    emitter(CharacterLoaded(newCharacter));
+    _autoSave(newCharacter);
+  }
+
+  void _loadSaved(CharacterLoad event, Emitter<CharacterState> emitter) async {
     final savedCharacter = await SaveService.loadCharacter();
     if (savedCharacter != null) {
       emitter(CharacterLoaded(savedCharacter));

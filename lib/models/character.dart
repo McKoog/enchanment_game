@@ -14,7 +14,9 @@ class Character {
     this.equippedLeggings,
     this.equippedBoots,
     this.baseHealth = 100,
-  });
+    this.hpRegen = 1,
+    int? currentHealth,
+  }) : currentHealth = currentHealth ?? baseHealth;
 
   final int level;
   final int currentExp;
@@ -28,6 +30,8 @@ class Character {
   final Armor? equippedBoots;
 
   final int baseHealth;
+  final int hpRegen;
+  final int currentHealth;
 
   int get maxExp => level * 100; // simple formula for now
 
@@ -62,6 +66,8 @@ class Character {
     Armor? equippedLeggings,
     Armor? equippedBoots,
     int? baseHealth,
+    int? hpRegen,
+    int? currentHealth,
     bool clearWeapon = false,
     bool clearHelmet = false,
     bool clearChestplate = false,
@@ -84,6 +90,8 @@ class Character {
           clearLeggings ? null : (equippedLeggings ?? this.equippedLeggings),
       equippedBoots: clearBoots ? null : (equippedBoots ?? this.equippedBoots),
       baseHealth: baseHealth ?? this.baseHealth,
+      hpRegen: hpRegen ?? this.hpRegen,
+      currentHealth: currentHealth ?? this.currentHealth,
     );
   }
 
@@ -99,6 +107,8 @@ class Character {
       'equippedLeggings': equippedLeggings?.toJson(),
       'equippedBoots': equippedBoots?.toJson(),
       'baseHealth': baseHealth,
+      'hpRegen': hpRegen,
+      'currentHealth': currentHealth,
     };
   }
 
@@ -124,6 +134,8 @@ class Character {
           ? Armor.fromJson(json['equippedBoots'])
           : null,
       baseHealth: json['baseHealth'] ?? 100,
+      hpRegen: json['hpRegen'] ?? 1,
+      currentHealth: json['currentHealth'],
     );
   }
 }

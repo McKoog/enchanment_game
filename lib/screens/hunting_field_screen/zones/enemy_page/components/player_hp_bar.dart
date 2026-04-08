@@ -24,7 +24,7 @@ class PlayerHpBar extends StatelessWidget {
     // Reference height = 80 (original design).
     final double scale = (heightFactor / 40).clamp(0.4, 1.5);
     final double barHeight = 35 * scale;
-    final double widthOfOneHP = (width - 200) / maxHP;
+    final double widthOfOneHP = maxHP > 0 ? (width - 200) / maxHP : 0;
 
     return SizedBox(
       height: heightFactor,
@@ -34,8 +34,16 @@ class PlayerHpBar extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Container(alignment: Alignment.center, height: barHeight, width: widthOfOneHP * maxHP, decoration: characterHpBarDecoration),
-              Container(alignment: Alignment.center, height: barHeight, width: widthOfOneHP * currentHP, decoration: characterHpBarDecoration),
+              Container(
+                  alignment: Alignment.center,
+                  height: barHeight,
+                  width: widthOfOneHP * maxHP,
+                  decoration: characterHpBarDecoration),
+              Container(
+                  alignment: Alignment.center,
+                  height: barHeight,
+                  width: widthOfOneHP * currentHP,
+                  decoration: characterHpBarDecoration),
               Container(
                   alignment: Alignment.center,
                   height: barHeight,
