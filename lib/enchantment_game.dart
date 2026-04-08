@@ -1,6 +1,6 @@
+import 'package:enchantment_game/game_header.dart';
 import 'package:enchantment_game/responsive_layout.dart';
 import 'package:enchantment_game/shared_blocs_provider.dart';
-import 'package:enchantment_game/version_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class EnchantmentGame extends StatelessWidget {
@@ -14,7 +14,7 @@ class EnchantmentGame extends StatelessWidget {
       theme: ThemeData.dark(useMaterial3: true),
       home: Scaffold(
         body: SharedBlocsProvider(
-          child: VersionWrapper(
+          child: GameHeader(
             child: ColoredBox(
               color: const Color.fromRGBO(78, 78, 78, 1),
               child: const ResponsiveLayout(),

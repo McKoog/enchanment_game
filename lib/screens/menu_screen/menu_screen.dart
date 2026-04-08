@@ -58,50 +58,48 @@ class _MenuScreenState extends State<MenuScreen> {
 
         return SizedBox(
           width: effectiveWidth,
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: 30,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              SizedBox(
+                height: 8,
+              ),
+              _MenuHeader(
+                title: _titleForSection(_section),
+                showBack: _section != _MenuSection.home,
+                onBack: _goHome,
+              ),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  layoutBuilder: (currentChild, previousChildren) {
+                    return Stack(
+                      alignment: Alignment.topCenter,
+                      children: <Widget>[
+                        ...previousChildren,
+                        if (currentChild != null) currentChild,
+                      ],
+                    );
+                  },
+                  child: switch (_section) {
+                    _MenuSection.home => _MenuGrid(
+                        key: const ValueKey('menu_grid'),
+                        tileSize: tileSize,
+                        spacing: spacing,
+                        horizontalPadding: horizontalPadding,
+                        onEquipTap: () => _open(_MenuSection.equip),
+                        onShopTap: () => _open(_MenuSection.shop),
+                        onBlacksmithTap: () => _open(_MenuSection.blacksmith),
+                        onSkillsTap: () => _open(_MenuSection.skills),
+                      ),
+                    _MenuSection.equip => const EquipMenu(key: ValueKey('equip_menu')),
+                    _MenuSection.shop => const ShopMenu(key: ValueKey('shop_menu')),
+                    _MenuSection.blacksmith => const BlacksmithMenu(key: ValueKey('blacksmith_menu')),
+                    _MenuSection.skills => const SkillsMenu(key: ValueKey('skills_menu')),
+                  },
                 ),
-                _MenuHeader(
-                  title: _titleForSection(_section),
-                  showBack: _section != _MenuSection.home,
-                  onBack: _goHome,
-                ),
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    layoutBuilder: (currentChild, previousChildren) {
-                      return Stack(
-                        alignment: Alignment.topCenter,
-                        children: <Widget>[
-                          ...previousChildren,
-                          if (currentChild != null) currentChild,
-                        ],
-                      );
-                    },
-                    child: switch (_section) {
-                      _MenuSection.home => _MenuGrid(
-                          key: const ValueKey('menu_grid'),
-                          tileSize: tileSize,
-                          spacing: spacing,
-                          horizontalPadding: horizontalPadding,
-                          onEquipTap: () => _open(_MenuSection.equip),
-                          onShopTap: () => _open(_MenuSection.shop),
-                          onBlacksmithTap: () => _open(_MenuSection.blacksmith),
-                          onSkillsTap: () => _open(_MenuSection.skills),
-                        ),
-                      _MenuSection.equip => const EquipMenu(key: ValueKey('equip_menu')),
-                      _MenuSection.shop => const ShopMenu(key: ValueKey('shop_menu')),
-                      _MenuSection.blacksmith => const BlacksmithMenu(key: ValueKey('blacksmith_menu')),
-                      _MenuSection.skills => const SkillsMenu(key: ValueKey('skills_menu')),
-                    },
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -127,11 +125,16 @@ class _MenuHeader extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
+            height: 28,
             width: 48,
             child: showBack
-                ? IconButton(
-                    onPressed: onBack,
-                    icon: const Icon(Icons.arrow_back, color: Colors.yellow),
+                ? InkWell(
+                    onTap: onBack,
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.yellow,
+                      size: 28,
+                    ),
                   )
                 : null,
           ),

@@ -10,8 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldsMenu extends StatefulWidget {
-  const HuntingFieldsMenu(
-      {super.key, required this.constraints, required this.width});
+  const HuntingFieldsMenu({super.key, required this.constraints, required this.width});
 
   final BoxConstraints constraints;
   final double width;
@@ -20,8 +19,7 @@ class HuntingFieldsMenu extends StatefulWidget {
   State<HuntingFieldsMenu> createState() => _HuntingFieldsMenuState();
 }
 
-class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
-    with AutomaticKeepAliveClientMixin {
+class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -33,10 +31,8 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
     final huntingFieldsBloc = context.read<HuntingFieldsBloc>();
     var inventory = context.read<InventoryBloc>().state.inventory;
     List<Weapon?> myWeapons = inventory.getAllMyWeapons(true);
-    int currSelectedWeaponIndex =
-        myWeapons.indexOf(huntingFieldsBloc.state.selectedWeapon);
-    controllerWeapon =
-        FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
+    int currSelectedWeaponIndex = myWeapons.indexOf(huntingFieldsBloc.state.selectedWeapon);
+    controllerWeapon = FixedExtentScrollController(initialItem: currSelectedWeaponIndex);
 
     controllerEnemy = FixedExtentScrollController(initialItem: 0);
     super.initState();
@@ -69,17 +65,14 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu>
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             title("HuntingField"),
-            descriptionText(
-                "At first, pick avaliable weapon to fight enemys with..."),
+            descriptionText("At first, pick avaliable weapon to fight enemys with..."),
             WeaponPicker(
               controllerWeapon: controllerWeapon,
               constraints: widget.constraints,
             ),
             const PickedWeaponField(),
             descriptionText("Then,select your enemy..."),
-            EnemyPicker(
-                controllerEnemy: controllerEnemy,
-                constraints: widget.constraints),
+            EnemyPicker(controllerEnemy: controllerEnemy, constraints: widget.constraints),
             const PickedEnemyField(),
           ],
         ),
