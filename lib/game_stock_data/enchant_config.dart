@@ -25,19 +25,17 @@ class EnchantConfig {
 
   /// Stat bonuses granted per enchantment level, keyed by weapon type.
   static const Map<WeaponType, EnchantBonus> bonusByWeaponType = {
-    WeaponType.sword:
-        EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
+    WeaponType.sword: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
     WeaponType.bow: EnchantBonus(higherDamageBonus: 3),
-    WeaponType.dagger:
-        EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 1),
+    WeaponType.dagger: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 1),
     WeaponType.fist: EnchantBonus(),
   };
 
   /// Success chance for enchanting at [currentEnchantLevel].
   ///
-  /// Formula: max(25, 95 − level × 4.375)
-  /// Level 0 → 95 %, Level 5 → 73.1 %, Level 16 → 25 % (floor).
+  /// Formula: max(25, 100 − level × 4.6875)
+  /// Level 0 → 100 %, Level 16 → 25 % (floor).
   static double getSuccessChance(int currentEnchantLevel) {
-    return max(25.0, 95.0 - currentEnchantLevel * 4.375);
+    return max(25.0, 100.0 - currentEnchantLevel * 4.6875);
   }
 }

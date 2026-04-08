@@ -18,8 +18,7 @@ class NavigationArrow extends StatefulWidget {
   State<NavigationArrow> createState() => _NavigationArrowState();
 }
 
-class _NavigationArrowState extends State<NavigationArrow>
-    with SingleTickerProviderStateMixin {
+class _NavigationArrowState extends State<NavigationArrow> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _pulseAnimation;
 
@@ -60,8 +59,8 @@ class _NavigationArrowState extends State<NavigationArrow>
           child: GestureDetector(
             onTap: widget.onTap,
             child: Container(
-              width: 40,
-              height: 80,
+              width: 30,
+              height: 50,
               decoration: BoxDecoration(
                 color: Colors.black.withValues(alpha: 0.5),
                 borderRadius: widget.direction == ArrowDirection.left
@@ -79,9 +78,7 @@ class _NavigationArrowState extends State<NavigationArrow>
                 ),
               ),
               child: Icon(
-                widget.direction == ArrowDirection.left
-                    ? Icons.chevron_left
-                    : Icons.chevron_right,
+                widget.direction == ArrowDirection.left ? Icons.chevron_left : Icons.chevron_right,
                 color: Colors.yellow,
                 size: 30,
               ),
@@ -92,4 +89,3 @@ class _NavigationArrowState extends State<NavigationArrow>
     );
   }
 }
-
