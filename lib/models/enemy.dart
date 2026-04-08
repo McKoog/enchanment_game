@@ -9,6 +9,8 @@ class Enemy {
     required this.attack,
     required this.attackSpeed,
     required this.dropList,
+    this.expReward = 0,
+    this.spReward = 0,
   });
 
   final String id;
@@ -18,6 +20,8 @@ class Enemy {
   final int attack;
   final double attackSpeed;
   final List<DropItem> dropList;
+  final int expReward;
+  final int spReward;
 
   int get attackDamage => attack;
 }

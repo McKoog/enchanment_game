@@ -33,7 +33,13 @@ class Character {
   final int hpRegen;
   final int currentHealth;
 
-  int get maxExp => level * 100; // simple formula for now
+  int get maxExp {
+    double exp = 100;
+    for (int i = 1; i < level; i++) {
+      exp *= 1.25;
+    }
+    return exp.toInt();
+  }
 
   double get attackSpeed =>
       equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;

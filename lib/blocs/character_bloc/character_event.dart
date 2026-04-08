@@ -22,7 +22,8 @@ class CharacterUnequipArmor extends CharacterEvent {
 
 class CharacterAddExp extends CharacterEvent {
   final int amount;
-  CharacterAddExp(this.amount);
+  final int spAmount;
+  CharacterAddExp(this.amount, {this.spAmount = 0});
 }
 
 class CharacterAddGold extends CharacterEvent {
