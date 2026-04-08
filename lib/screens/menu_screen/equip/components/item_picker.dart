@@ -104,7 +104,11 @@ class ItemPicker extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          item is Weapon ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name) : (item is Armor ? item.name : ''),
+                          item is Weapon
+                              ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
+                              : (item is Armor
+                                  ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
+                                  : ''),
                           style: weaponNameDecoration.copyWith(fontSize: 12),
                           textAlign: TextAlign.center,
                           maxLines: 2,

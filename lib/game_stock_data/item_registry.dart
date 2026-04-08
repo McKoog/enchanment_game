@@ -2,6 +2,7 @@ import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/gold_item.dart';
 import 'package:uuid/uuid.dart';
 
 /// Single source of truth for all item templates.
@@ -29,6 +30,7 @@ class ItemRegistry {
       critPower: 0,
       attackSpeed: 0.25,
       enchantLevel: 0,
+      sellPrice: 0,
     ),
     WeaponType.sword: Weapon(
         id: 'template',
@@ -41,7 +43,8 @@ class ItemRegistry {
         critRate: 15,
         critPower: 50,
         attackSpeed: 1.0,
-        enchantLevel: 0),
+        enchantLevel: 0,
+        sellPrice: 50),
     WeaponType.bow: Weapon(
       id: 'template',
       type: ItemType.weapon,
@@ -54,6 +57,7 @@ class ItemRegistry {
       critPower: 75,
       attackSpeed: 1.5,
       enchantLevel: 0,
+      sellPrice: 100,
     ),
     WeaponType.dagger: Weapon(
       id: 'template',
@@ -67,6 +71,7 @@ class ItemRegistry {
       critPower: 100,
       attackSpeed: 0.75,
       enchantLevel: 0,
+      sellPrice: 75,
     ),
   };
 
@@ -78,16 +83,22 @@ class ItemRegistry {
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_weapon.png',
       name: 'Weapon Enchant Scroll',
-      description: "Increase power of the weapon, but be careful, it's not guaranteed",
+      description:
+          "Increase power of the weapon, but be careful, it's not guaranteed",
       scrollType: ScrollType.weapon,
+      sellPrice: 50, // half of buy price (100)
+      buyPrice: 100,
     ),
     ScrollType.armor: Scroll(
       id: 'template',
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_armor.png',
       name: 'Armor Enchant Scroll',
-      description: "Increase defense of the armor, but be careful, it's not guaranteed",
+      description:
+          "Increase defense of the armor, but be careful, it's not guaranteed",
       scrollType: ScrollType.armor,
+      sellPrice: 25, // half of buy price (50)
+      buyPrice: 50,
     ),
   };
 
@@ -102,6 +113,7 @@ class ItemRegistry {
       armorType: ArmorType.helmet,
       defense: 1,
       enchantLevel: 0,
+      sellPrice: 25,
     ),
     ArmorType.chestplate: Armor(
       id: 'template',
@@ -111,6 +123,7 @@ class ItemRegistry {
       armorType: ArmorType.chestplate,
       defense: 1,
       enchantLevel: 0,
+      sellPrice: 25,
     ),
     ArmorType.leggings: Armor(
       id: 'template',
@@ -120,6 +133,7 @@ class ItemRegistry {
       armorType: ArmorType.leggings,
       defense: 1,
       enchantLevel: 0,
+      sellPrice: 25,
     ),
     ArmorType.boots: Armor(
       id: 'template',
@@ -129,6 +143,7 @@ class ItemRegistry {
       armorType: ArmorType.boots,
       defense: 1,
       enchantLevel: 0,
+      sellPrice: 25,
     ),
   };
 
@@ -173,13 +188,26 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type, {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
+  static Item createItem(ItemType type,
+      {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
     if (type == ItemType.scroll) {
       return createScroll(scrollType ?? ScrollType.weapon);
     }
     if (type == ItemType.armor) {
       return createArmor(armorType ?? ArmorType.chestplate);
     }
+    if (type == ItemType.gold) {
+      return createGold(1);
+    }
     return createWeapon(weaponType ?? WeaponType.sword);
+  }
+
+  static GoldItem createGold(int amount) {
+    return GoldItem(
+      id: _uuid.v1(),
+      type: ItemType.gold,
+      image: 'assets/icons/other_items/coin.png',
+      amount: amount,
+    );
   }
 }
