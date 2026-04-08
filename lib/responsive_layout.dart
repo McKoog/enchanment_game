@@ -1,7 +1,7 @@
 import 'package:enchantment_game/navigation_arrow.dart';
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
-import 'package:enchantment_game/screens/shop_screen/shop_screen.dart';
+import 'package:enchantment_game/screens/menu_screen/menu_screen.dart';
 import 'package:flutter/material.dart';
 
 /// Breakpoints for responsive layout.
@@ -52,9 +52,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
       case _LayoutMode.wide:
         return 0;
       case _LayoutMode.medium:
-        return 1; // snap 0 = [Shop,Enchant], snap 1 = [Enchant,Hunting]
+        return 1; // snap 0 = [Menu,Enchant], snap 1 = [Enchant,Hunting]
       case _LayoutMode.narrow:
-        return 2; // page 0 = Shop, 1 = Enchant, 2 = Hunting
+        return 2; // page 0 = Menu, 1 = Enchant, 2 = Hunting
     }
   }
 
@@ -171,7 +171,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     final panelWidth = totalWidth / 3;
     return Row(
       children: [
-        ShopScreen(width: panelWidth),
+        MenuScreen(width: panelWidth),
         EnchantScreen(width: panelWidth),
         HuntingFieldScreen(width: panelWidth),
       ],
@@ -199,7 +199,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
                 children: [
                   SizedBox(
                       width: panelWidth,
-                      child: ShopScreen(width: panelWidth)),
+                      child: MenuScreen(width: panelWidth)),
                   SizedBox(
                       width: panelWidth,
                       child: EnchantScreen(width: panelWidth)),
@@ -228,7 +228,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
             });
           },
           children: const [
-            ShopScreen(),
+            MenuScreen(),
             EnchantScreen(),
             HuntingFieldScreen(),
           ],
