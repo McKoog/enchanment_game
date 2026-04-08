@@ -10,7 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class InventoryDragTarget extends StatefulWidget {
-  const InventoryDragTarget({super.key, required this.inventoryIndex, this.child = const SizedBox.shrink(), this.canBeDragTarget = true});
+  const InventoryDragTarget(
+      {super.key,
+      required this.inventoryIndex,
+      this.child = const SizedBox.shrink(),
+      this.canBeDragTarget = true});
 
   final int inventoryIndex;
   final Widget child;
@@ -54,7 +58,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
 
           if (fromItem is Scroll && fromItem.quantity > 1) {
             final canMoveToEmpty = toItem == null;
-            final canMerge = toScroll != null && _isSameScrollType(fromItem, toScroll);
+            final canMerge =
+                toScroll != null && _isSameScrollType(fromItem, toScroll);
 
             if (canMoveToEmpty || canMerge) {
               final maxTransfer = canMerge
@@ -67,33 +72,45 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
               if (maxTransfer <= 0) return;
 
               if (maxTransfer == 1) {
-                inventoryBloc.add(InventoryEvent$SplitScrollStack(fromIndex: fromIndex, toIndex: widget.inventoryIndex, quantity: 1));
+                inventoryBloc.add(InventoryEvent$SplitScrollStack(
+                    fromIndex: fromIndex,
+                    toIndex: widget.inventoryIndex,
+                    quantity: 1));
                 return;
               }
 
-              final chosen = await _showQuantityPopover(context, maxQuantity: maxTransfer);
+              final chosen =
+                  await _showQuantityPopover(context, maxQuantity: maxTransfer);
               if (chosen == null) return;
 
-              inventoryBloc.add(InventoryEvent$SplitScrollStack(fromIndex: fromIndex, toIndex: widget.inventoryIndex, quantity: chosen));
+              inventoryBloc.add(InventoryEvent$SplitScrollStack(
+                  fromIndex: fromIndex,
+                  toIndex: widget.inventoryIndex,
+                  quantity: chosen));
               return;
             }
           }
 
-          inventoryBloc.add(InventoryEvent$SwapItems(fromIndex: fromIndex, toIndex: widget.inventoryIndex));
+          inventoryBloc.add(InventoryEvent$SwapItems(
+              fromIndex: fromIndex, toIndex: widget.inventoryIndex));
         }
-      }, builder: (BuildContext context, List<Item?> candidateData, List<dynamic> rejectedData) {
+      }, builder: (BuildContext context, List<Item?> candidateData,
+          List<dynamic> rejectedData) {
         return widget.child;
       }),
     );
   }
 
   static bool _isSameScrollType(Scroll a, Scroll b) {
-    return a.name == b.name && a.image == b.image && a.description == b.description;
+    return a.name == b.name &&
+        a.image == b.image &&
+        a.description == b.description;
   }
 
   static int _minInt(int a, int b) => a < b ? a : b;
 
-  Future<int?> _showQuantityPopover(BuildContext context, {required int maxQuantity}) async {
+  Future<int?> _showQuantityPopover(BuildContext context,
+      {required int maxQuantity}) async {
     final overlay = Overlay.of(context, rootOverlay: true);
 
     _activeEntry?.remove();
@@ -139,7 +156,9 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                       decoration: BoxDecoration(
                         color: const Color.fromRGBO(30, 30, 30, 0.95),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color.fromRGBO(120, 120, 120, 1), width: 1),
+                        border: Border.all(
+                            color: const Color.fromRGBO(120, 120, 120, 1),
+                            width: 1),
                       ),
                       child: Row(
                         children: [
@@ -149,7 +168,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                             children: [
                               Text(
                                 '$selected/$maxQuantity',
-                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 12),
                               ),
                               SizedBox(
                                 height: 22,
@@ -157,17 +177,22 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                                 child: SliderTheme(
                                   data: SliderTheme.of(context).copyWith(
                                     trackHeight: 2,
-                                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
+                                    thumbShape: const RoundSliderThumbShape(
+                                        enabledThumbRadius: 6),
+                                    overlayShape: const RoundSliderOverlayShape(
+                                        overlayRadius: 10),
                                     activeTrackColor: Colors.white,
-                                    inactiveTrackColor: const Color.fromRGBO(90, 90, 90, 1),
+                                    inactiveTrackColor:
+                                        const Color.fromRGBO(90, 90, 90, 1),
                                     thumbColor: Colors.white,
                                   ),
                                   child: Slider(
                                     value: selected.toDouble(),
                                     min: 1,
                                     max: maxQuantity.toDouble(),
-                                    divisions: maxQuantity > 1 ? maxQuantity - 1 : null,
+                                    divisions: maxQuantity > 1
+                                        ? maxQuantity - 1
+                                        : null,
                                     onChanged: (value) {
                                       setState(() {
                                         selected = value.round();
@@ -182,7 +207,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                             onTap: () => close(selected),
                             child: const Padding(
                               padding: EdgeInsets.all(4),
-                              child: Icon(Icons.check, size: 24, color: Colors.white),
+                              child: Icon(Icons.check,
+                                  size: 24, color: Colors.white),
                             ),
                           ),
                         ],

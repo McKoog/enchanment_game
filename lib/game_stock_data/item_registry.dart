@@ -1,3 +1,4 @@
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -20,51 +21,55 @@ class ItemRegistry {
       id: 'fist',
       type: ItemType.weapon,
       isSvgAsset: false,
-      image: 'assets/fist.png',
+      image: 'assets/icons/weapons/fist.png',
       name: 'Fists',
       weaponType: WeaponType.fist,
       lowerDamage: 1,
       higherDamage: 1,
       critRate: 0,
       critPower: 0,
+      attackSpeed: 1.0,
       enchantLevel: 0,
     ),
     WeaponType.sword: Weapon(
       id: 'template',
       type: ItemType.weapon,
-      image: 'assets/sword.svg',
+      image: 'assets/icons/weapons/sword.svg',
       name: 'Basic Sword',
       weaponType: WeaponType.sword,
       lowerDamage: 2,
       higherDamage: 3,
       critRate: 15,
       critPower: 50,
+      attackSpeed: 0.8,
       enchantLevel: 0,
     ),
     WeaponType.bow: Weapon(
       id: 'template',
       type: ItemType.weapon,
       isSvgAsset: false,
-      image: 'assets/bow.png',
+      image: 'assets/icons/weapons/bow.png',
       name: 'Long Bow',
       weaponType: WeaponType.bow,
       lowerDamage: 1,
       higherDamage: 5,
       critRate: 10,
       critPower: 75,
+      attackSpeed: 0.5,
       enchantLevel: 0,
     ),
     WeaponType.dagger: Weapon(
       id: 'template',
       type: ItemType.weapon,
       isSvgAsset: false,
-      image: 'assets/dagger.png',
+      image: 'assets/icons/weapons/dagger.png',
       name: 'Dagger',
       weaponType: WeaponType.dagger,
       lowerDamage: 1,
       higherDamage: 2,
       critRate: 40,
       critPower: 100,
+      attackSpeed: 1.2,
       enchantLevel: 0,
     ),
   };
@@ -74,11 +79,56 @@ class ItemRegistry {
   static final Scroll _scrollTemplate = Scroll(
     id: 'template',
     type: ItemType.scroll,
-    image: 'assets/enchant_scroll.svg',
+    image: 'assets/icons/other_items/enchant_scroll.svg',
     name: 'Scroll of enchant',
     description:
         "Increase power of the weapon, but be careful, it's not guaranteed",
   );
+
+  // ——— Armor templates ———
+
+  static final Map<ArmorType, Armor> _armorTemplates = {
+    ArmorType.helmet: Armor(
+      id: 'template',
+      type: ItemType.armor,
+      image: 'assets/icons/armors/skin_helmet.png',
+      isSvgAsset: false,
+      name: 'Leather Helmet',
+      armorType: ArmorType.helmet,
+      defense: 2,
+      enchantLevel: 0,
+    ),
+    ArmorType.chestplate: Armor(
+      id: 'template',
+      type: ItemType.armor,
+      image: 'assets/icons/armors/skin_breastplate.png',
+      isSvgAsset: false,
+      name: 'Leather Chestplate',
+      armorType: ArmorType.chestplate,
+      defense: 5,
+      enchantLevel: 0,
+    ),
+    ArmorType.leggings: Armor(
+      id: 'template',
+      type: ItemType.armor,
+      image: 'assets/icons/armors/skin_pants.png',
+      isSvgAsset: false,
+      name: 'Leather Leggings',
+      armorType: ArmorType.leggings,
+      defense: 3,
+      enchantLevel: 0,
+    ),
+    ArmorType.boots: Armor(
+      id: 'template',
+      type: ItemType.armor,
+      image: 'assets/icons/armors/skin_boots.png',
+      isSvgAsset: false,
+      name: 'Leather Boots',
+      armorType: ArmorType.boots,
+      defense: 1,
+      enchantLevel: 0,
+    ),
+  };
 
   // ——— Public API ———
 
@@ -96,6 +146,17 @@ class ItemRegistry {
     return weapon;
   }
 
+  /// Create a new armor instance with a unique id.
+  static Armor createArmor(ArmorType armorType) {
+    final template = _armorTemplates[armorType];
+    if (template == null) {
+      throw ArgumentError('No armor template for type: $armorType');
+    }
+    final armor = Armor.copyWith(template);
+    armor.id = _uuid.v1();
+    return armor;
+  }
+
   /// Create a new scroll instance with a unique id.
   static Scroll createScroll() {
     final scroll = Scroll.copyWith(_scrollTemplate);
@@ -106,8 +167,12 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type, [WeaponType? weaponType]) {
+  static Item createItem(ItemType type,
+      {WeaponType? weaponType, ArmorType? armorType}) {
     if (type == ItemType.scroll) return createScroll();
+    if (type == ItemType.armor) {
+      return createArmor(armorType ?? ArmorType.chestplate);
+    }
     return createWeapon(weaponType ?? WeaponType.sword);
   }
 }

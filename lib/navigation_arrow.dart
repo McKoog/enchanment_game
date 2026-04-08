@@ -18,7 +18,8 @@ class NavigationArrow extends StatefulWidget {
   State<NavigationArrow> createState() => _NavigationArrowState();
 }
 
-class _NavigationArrowState extends State<NavigationArrow> with SingleTickerProviderStateMixin {
+class _NavigationArrowState extends State<NavigationArrow>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _pulseAnimation;
 
@@ -78,7 +79,9 @@ class _NavigationArrowState extends State<NavigationArrow> with SingleTickerProv
                 ),
               ),
               child: Icon(
-                widget.direction == ArrowDirection.left ? Icons.chevron_left : Icons.chevron_right,
+                widget.direction == ArrowDirection.left
+                    ? Icons.chevron_left
+                    : Icons.chevron_right,
                 color: Colors.yellow,
                 size: 30,
               ),

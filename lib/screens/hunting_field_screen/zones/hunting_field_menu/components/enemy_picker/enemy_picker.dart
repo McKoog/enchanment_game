@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnemyPicker extends StatelessWidget {
-  const EnemyPicker({super.key, required this.controllerEnemy, required this.constraints});
+  const EnemyPicker(
+      {super.key, required this.controllerEnemy, required this.constraints});
 
   final FixedExtentScrollController controllerEnemy;
   final BoxConstraints constraints;
@@ -28,7 +29,8 @@ class EnemyPicker extends StatelessWidget {
               itemExtent: 150,
               onSelectedItemChanged: (index) {
                 /// TODO: Надо будет исправить, сейчас всегда только оборотень
-                huntingFieldsBloc.add(HuntingFieldEvent$SelectEnemy(enemy: stockWerewolf));
+                huntingFieldsBloc
+                    .add(HuntingFieldEvent$SelectEnemy(enemy: stockWerewolf));
               },
               builder: (BuildContext context, int index) {
                 return Container(

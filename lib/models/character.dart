@@ -1,0 +1,129 @@
+import 'package:enchantment_game/game_stock_data/item_registry.dart';
+import 'package:enchantment_game/models/armor.dart';
+import 'package:enchantment_game/models/weapon.dart';
+
+class Character {
+  Character({
+    this.level = 1,
+    this.currentExp = 0,
+    this.gold = 0,
+    this.skillPoints = 0,
+    this.equippedWeapon,
+    this.equippedHelmet,
+    this.equippedChestplate,
+    this.equippedLeggings,
+    this.equippedBoots,
+    this.baseHealth = 100,
+  });
+
+  final int level;
+  final int currentExp;
+  final int gold;
+  final int skillPoints;
+
+  final Weapon? equippedWeapon;
+  final Armor? equippedHelmet;
+  final Armor? equippedChestplate;
+  final Armor? equippedLeggings;
+  final Armor? equippedBoots;
+
+  final int baseHealth;
+
+  int get maxExp => level * 100; // simple formula for now
+
+  double get attackSpeed =>
+      equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
+
+  int get lowerDamage =>
+      equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
+
+  int get higherDamage =>
+      equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
+
+  int get defense {
+    int totalDefense = 0;
+    if (equippedHelmet != null) totalDefense += equippedHelmet!.defense;
+    if (equippedChestplate != null) totalDefense += equippedChestplate!.defense;
+    if (equippedLeggings != null) totalDefense += equippedLeggings!.defense;
+    if (equippedBoots != null) totalDefense += equippedBoots!.defense;
+    return totalDefense;
+  }
+
+  int get health => baseHealth;
+
+  Character copyWith({
+    int? level,
+    int? currentExp,
+    int? gold,
+    int? skillPoints,
+    Weapon? equippedWeapon,
+    Armor? equippedHelmet,
+    Armor? equippedChestplate,
+    Armor? equippedLeggings,
+    Armor? equippedBoots,
+    int? baseHealth,
+    bool clearWeapon = false,
+    bool clearHelmet = false,
+    bool clearChestplate = false,
+    bool clearLeggings = false,
+    bool clearBoots = false,
+  }) {
+    return Character(
+      level: level ?? this.level,
+      currentExp: currentExp ?? this.currentExp,
+      gold: gold ?? this.gold,
+      skillPoints: skillPoints ?? this.skillPoints,
+      equippedWeapon:
+          clearWeapon ? null : (equippedWeapon ?? this.equippedWeapon),
+      equippedHelmet:
+          clearHelmet ? null : (equippedHelmet ?? this.equippedHelmet),
+      equippedChestplate: clearChestplate
+          ? null
+          : (equippedChestplate ?? this.equippedChestplate),
+      equippedLeggings:
+          clearLeggings ? null : (equippedLeggings ?? this.equippedLeggings),
+      equippedBoots: clearBoots ? null : (equippedBoots ?? this.equippedBoots),
+      baseHealth: baseHealth ?? this.baseHealth,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'level': level,
+      'currentExp': currentExp,
+      'gold': gold,
+      'skillPoints': skillPoints,
+      'equippedWeapon': equippedWeapon?.toJson(),
+      'equippedHelmet': equippedHelmet?.toJson(),
+      'equippedChestplate': equippedChestplate?.toJson(),
+      'equippedLeggings': equippedLeggings?.toJson(),
+      'equippedBoots': equippedBoots?.toJson(),
+      'baseHealth': baseHealth,
+    };
+  }
+
+  factory Character.fromJson(Map<String, dynamic> json) {
+    return Character(
+      level: json['level'] ?? 1,
+      currentExp: json['currentExp'] ?? 0,
+      gold: json['gold'] ?? 0,
+      skillPoints: json['skillPoints'] ?? 0,
+      equippedWeapon: json['equippedWeapon'] != null
+          ? Weapon.fromJson(json['equippedWeapon'])
+          : null,
+      equippedHelmet: json['equippedHelmet'] != null
+          ? Armor.fromJson(json['equippedHelmet'])
+          : null,
+      equippedChestplate: json['equippedChestplate'] != null
+          ? Armor.fromJson(json['equippedChestplate'])
+          : null,
+      equippedLeggings: json['equippedLeggings'] != null
+          ? Armor.fromJson(json['equippedLeggings'])
+          : null,
+      equippedBoots: json['equippedBoots'] != null
+          ? Armor.fromJson(json['equippedBoots'])
+          : null,
+      baseHealth: json['baseHealth'] ?? 100,
+    );
+  }
+}

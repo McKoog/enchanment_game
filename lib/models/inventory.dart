@@ -1,4 +1,5 @@
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -25,6 +26,9 @@ class Inventory {
         if (element.type == ItemType.weapon) {
           Weapon weapon = element as Weapon;
           mapItems.add(weapon.toJson());
+        } else if (element.type == ItemType.armor) {
+          Armor armor = element as Armor;
+          mapItems.add(armor.toJson());
         } else {
           Scroll scroll = element as Scroll;
           mapItems.add(scroll.toJson());
@@ -43,12 +47,12 @@ class Inventory {
       if (element == null) {
         items.add(null);
       } else {
-        if (element['type'] == 'weapon') {
-          Weapon weapon = Weapon.fromJson(element);
-          items.add(weapon);
-        } else {
-          Scroll scroll = Scroll.fromJson(element);
-          items.add(scroll);
+        if (element['type'] == ItemType.weapon.name) {
+          items.add(Weapon.fromJson(element));
+        } else if (element['type'] == ItemType.armor.name) {
+          items.add(Armor.fromJson(element));
+        } else if (element['type'] == ItemType.scroll.name) {
+          items.add(Scroll.fromJson(element));
         }
       }
     }

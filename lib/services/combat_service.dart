@@ -57,7 +57,8 @@ class CombatService {
                 GameRandom.nextInt(drop.maxQuantity - drop.minQuantity + 1);
 
         for (int i = 0; i < quantity; i++) {
-          loot.add(ItemRegistry.createItem(drop.itemType, drop.weaponType));
+          loot.add(ItemRegistry.createItem(drop.itemType,
+              weaponType: drop.weaponType, armorType: drop.armorType));
         }
       }
     }

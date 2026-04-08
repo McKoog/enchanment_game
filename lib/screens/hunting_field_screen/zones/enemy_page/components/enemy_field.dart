@@ -21,15 +21,13 @@ class EnemyField extends StatelessWidget {
     if (availableHeight != null) {
       // Use the smaller of width-based and height-based sizing, minus margin.
       final double marginTotal = availableHeight! * 0.1; // 5% margin each side
-      sideSize = (availableHeight! - marginTotal)
-          .clamp(40, width - 100);
+      sideSize = (availableHeight! - marginTotal).clamp(40, width - 100);
     } else {
       sideSize = width - 200;
     }
 
-    final double margin = availableHeight != null
-        ? (availableHeight! * 0.05).clamp(4, 32)
-        : 32.0;
+    final double margin =
+        availableHeight != null ? (availableHeight! * 0.05).clamp(4, 32) : 32.0;
 
     return Container(
       height: sideSize,

@@ -1,11 +1,13 @@
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_state.dart';
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/info_background.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/scroll_field.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/weapon_info_field.dart';
+import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/armor_info_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,9 +41,13 @@ class EnchantZone extends StatelessWidget {
                                       sideSize: height,
                                       scroll: state.item as Scroll,
                                       inventoryIndex: state.inventoryIndex))
-                              : WeaponInfoField(
-                                  sideSize: height,
-                                  weapon: state.item as Weapon),
+                              : state.item is Weapon
+                                  ? WeaponInfoField(
+                                      sideSize: height,
+                                      weapon: state.item as Weapon)
+                                  : ArmorInfoField(
+                                      sideSize: height,
+                                      armor: state.item as Armor),
                         ),
                       )
                     : const SizedBox()),

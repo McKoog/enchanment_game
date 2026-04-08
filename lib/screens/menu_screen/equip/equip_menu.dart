@@ -1,4 +1,4 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/screens/menu_screen/equip/equip_zone.dart';
 import 'package:flutter/material.dart';
 
 class EquipMenu extends StatelessWidget {
@@ -6,16 +6,12 @@ class EquipMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-        child: Text(
-          'Equip menu will be added soon...',
-          style: huntFieldHeaderTextDecoration,
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      final height = constraints.maxHeight;
+      final width = constraints.maxWidth;
+
+      return EquipZone(height: height, width: width);
+    });
   }
 }

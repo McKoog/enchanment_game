@@ -55,8 +55,7 @@ class EnemyHeader extends StatelessWidget {
                 SvgPicture.asset(
                   "assets/hunt_button_icon.svg",
                   height: svgHeight,
-                  colorFilter:
-                      ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
                 ),
                 Expanded(
                     child: Container(
@@ -82,8 +81,7 @@ class EnemyHeader extends StatelessWidget {
                 SvgPicture.asset(
                   "assets/hunt_button_icon.svg",
                   height: svgHeight,
-                  colorFilter:
-                      ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(Colors.yellow, BlendMode.srcIn),
                 ),
               ],
             ),
