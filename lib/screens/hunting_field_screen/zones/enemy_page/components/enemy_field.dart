@@ -42,7 +42,11 @@ class EnemyField extends StatelessWidget {
         ],
       ),
       margin: EdgeInsets.all(margin),
-      child: Image.asset(assetImageLink, fit: BoxFit.contain),
+      child: Image.asset(
+        assetImageLink, 
+        fit: BoxFit.contain,
+        gaplessPlayback: true,
+      ),
     );
   }
 }

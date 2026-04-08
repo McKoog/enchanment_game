@@ -31,6 +31,18 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   _LayoutMode? _lastBuiltMode;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Precache all common backgrounds at the root level
+    precacheImage(
+        const AssetImage('assets/background/dark_hall_background.png'),
+        context);
+    precacheImage(
+        const AssetImage('assets/background/town_center_background.png'),
+        context);
+  }
+
+  @override
   void dispose() {
     _scrollController?.dispose();
     _pageController?.dispose();

@@ -11,21 +11,52 @@ import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_fiel
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HuntingFieldScreen extends StatelessWidget {
+class HuntingFieldScreen extends StatefulWidget {
   const HuntingFieldScreen({super.key, this.width});
 
   /// If provided, uses this fixed width. Otherwise, fills available space.
   final double? width;
 
   @override
+  State<HuntingFieldScreen> createState() => _HuntingFieldScreenState();
+}
+
+class _HuntingFieldScreenState extends State<HuntingFieldScreen> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Precache all backgrounds and enemies for instant toggling
+    precacheImage(
+        const AssetImage('assets/background/forest_background.png'), context);
+    precacheImage(
+        const AssetImage('assets/background/forest_enemy_background.png'),
+        context);
+    precacheImage(const AssetImage('assets/icons/enemies/wolf.png'), context);
+    precacheImage(const AssetImage('assets/icons/enemies/bandit.png'), context);
+    precacheImage(const AssetImage('assets/icons/enemies/goblin.png'), context);
+    precacheImage(const AssetImage('assets/icons/enemies/dryad.png'), context);
+    precacheImage(
+        const AssetImage('assets/icons/enemies/lvl_1_werewolf.png'), context);
+
+    // Precache other icons
+    precacheImage(
+        const AssetImage('assets/icons/slot_slider_icon.png'), context);
+
+    // Precache all item images
+    for (final imagePath in ItemRegistry.allImages) {
+      precacheImage(AssetImage(imagePath), context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final effectiveWidth = width ?? constraints.maxWidth;
-      return BlocProvider(
-        create: (context) => HuntingFieldsBloc(
-            initialEnemy: stockWerewolf, initialWeapon: ItemRegistry.fist),
-        child: Builder(builder: (context) {
+    return BlocProvider(
+      create: (context) => HuntingFieldsBloc(
+          initialEnemy: stockWerewolf, initialWeapon: ItemRegistry.fist),
+      child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+        final effectiveWidth = widget.width ?? constraints.maxWidth;
+        return Builder(builder: (context) {
           final huntingBloc = context.read<HuntingFieldsBloc>();
 
           void syncSelectedWeapon(Character character) {
@@ -50,20 +81,30 @@ class HuntingFieldScreen extends StatelessWidget {
                 return BlocBuilder<HuntingFieldsBloc, HuntingFieldState>(
                     bloc: huntingBloc,
                     builder: (context, state) {
-                      return state is HuntingFieldState$HuntingStarted
-                          ? EnemyPage(
+                      final isHunting =
+                          state is HuntingFieldState$HuntingStarted;
+                      return Stack(
+                        children: [
+                          Offstage(
+                            offstage: isHunting,
+                            child: HuntingFieldsMenu(
+                                constraints: constraints,
+                                width: effectiveWidth),
+                          ),
+                          if (isHunting)
+                            EnemyPage(
                               width: effectiveWidth,
                               enemy: state.selectedEnemy,
                               weapon: state.selectedWeapon,
-                            )
-                          : HuntingFieldsMenu(
-                              constraints: constraints, width: effectiveWidth);
+                            ),
+                        ],
+                      );
                     });
               },
             ),
           );
-        }),
-      );
-    });
+        });
+      }),
+    );
   }
 }

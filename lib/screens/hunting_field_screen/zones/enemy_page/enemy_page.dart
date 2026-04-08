@@ -41,7 +41,8 @@ class EnemyPage extends StatefulWidget {
   State<EnemyPage> createState() => _EnemyPageState();
 }
 
-class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMixin {
+class _EnemyPageState extends State<EnemyPage>
+    with SingleTickerProviderStateMixin {
   bool _showDropList = false;
   late int _enemyCurrentHP;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -114,7 +115,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
     if (_isCombatActive) return;
     _isCombatActive = true;
     final intervalMs = (widget.enemy.attackSpeed * 1000).toInt();
-    _enemyAttackTimer = Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
+    _enemyAttackTimer =
+        Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
       _enemyAttack();
     });
   }
@@ -161,7 +163,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
   void _startPlayerAttack() {
     _isWeaponOnEnemy = true;
     _tryPlayerAttack();
-    _playerAttackTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+    _playerAttackTimer =
+        Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!_isWeaponOnEnemy) {
         timer.cancel();
         return;
@@ -222,7 +225,9 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
 
       // Add Experience and SP
       if (widget.enemy.expReward > 0 || widget.enemy.spReward > 0) {
-        context.read<CharacterBloc>().add(CharacterAddExp(widget.enemy.expReward, spAmount: widget.enemy.spReward));
+        context.read<CharacterBloc>().add(CharacterAddExp(
+            widget.enemy.expReward,
+            spAmount: widget.enemy.spReward));
       }
 
       final loot = CombatService.generateLoot(widget.enemy);
@@ -235,7 +240,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
           inventoryBloc.add(InventoryEvent$AddItem(item: item));
         }
         _dropHistory.insert(0, item);
-        _listKey.currentState?.insertItem(0, duration: const Duration(milliseconds: 300));
+        _listKey.currentState
+            ?.insertItem(0, duration: const Duration(milliseconds: 300));
       }
     }
   }
@@ -243,10 +249,14 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
   String _getItemName(Item item) {
     if (item is GoldItem) return '${item.amount} Gold';
     if (item is Weapon) {
-      return item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name;
+      return item.enchantLevel > 0
+          ? "${item.name} +${item.enchantLevel}"
+          : item.name;
     }
     if (item is Armor) {
-      return item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name;
+      return item.enchantLevel > 0
+          ? "${item.name} +${item.enchantLevel}"
+          : item.name;
     }
     if (item is Scroll) return item.name;
     return 'Unknown Item';
@@ -257,20 +267,24 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
     return BlocListener<CharacterBloc, CharacterState>(
       listenWhen: (previous, current) {
         if (previous is CharacterLoaded && current is CharacterLoaded) {
-          return current.character.currentHealth != previous.character.currentHealth;
+          return current.character.currentHealth !=
+              previous.character.currentHealth;
         }
         return false;
       },
       listener: (context, state) {
         if (state is CharacterLoaded) {
-          final healAmount = state.character.currentHealth - _previousPlayerHealth;
+          final healAmount =
+              state.character.currentHealth - _previousPlayerHealth;
           if (healAmount > 0 && _previousPlayerHealth != -1) {
             final id = UniqueKey().toString();
             setState(() {
               _playerDamageTexts.add(_DamageText(
                 id: id,
                 damage: healAmount,
-                randomX: _isWeaponSlotExpanded ? (_random.nextDouble() * 40 - 20) : 0,
+                randomX: _isWeaponSlotExpanded
+                    ? (_random.nextDouble() * 40 - 20)
+                    : 0,
                 randomY: _random.nextDouble() * 40 - 20,
                 isHeal: true,
               ));
@@ -289,7 +303,13 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
           }
 
           return Container(
-            decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/background/forest_enemy_background.png'), fit: BoxFit.cover)),
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(52, 52, 52, 1),
+              image: DecorationImage(
+                  image: AssetImage(
+                      'assets/background/forest_enemy_background.png'),
+                  fit: BoxFit.cover),
+            ),
             width: widget.width,
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -332,7 +352,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                               ..._playerDamageTexts.map((dt) {
                                 return Positioned(
                                   key: ValueKey(dt.id),
-                                  left: 50, // 100 is the edge of the bar, so 50 is to the left of it
+                                  left:
+                                      50, // 100 is the edge of the bar, so 50 is to the left of it
                                   child: Transform.translate(
                                     offset: Offset(dt.randomX, dt.randomY),
                                     child: DamageTextWidget(
@@ -341,7 +362,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                       isHeal: dt.isHeal,
                                       onComplete: () {
                                         setState(() {
-                                          _playerDamageTexts.removeWhere((e) => e.id == dt.id);
+                                          _playerDamageTexts.removeWhere(
+                                              (e) => e.id == dt.id);
                                         });
                                       },
                                     ),
@@ -356,7 +378,10 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                         ),
                         Text(
                           'Recent Loot:',
-                          style: const TextStyle(fontSize: 14, color: Colors.yellow, fontFamily: "PT Sans"),
+                          style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.yellow,
+                              fontFamily: "PT Sans"),
                         ),
                         Expanded(
                           child: Container(
@@ -364,20 +389,37 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                             child: AnimatedList(
                               key: _listKey,
                               initialItemCount: _dropHistory.length,
-                              padding: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 100), // padding right for weapon slot
+                              padding: const EdgeInsets.only(
+                                  top: 8,
+                                  bottom: 8,
+                                  left: 16,
+                                  right: 100), // padding right for weapon slot
                               itemBuilder: (context, index, animation) {
                                 return SlideTransition(
-                                  position: animation.drive(Tween(begin: const Offset(1, 0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOut))),
+                                  position: animation.drive(Tween(
+                                          begin: const Offset(1, 0),
+                                          end: Offset.zero)
+                                      .chain(
+                                          CurveTween(curve: Curves.easeOut))),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Image.asset(_dropHistory[index].image, width: 40, height: 40),
+                                        Image.asset(
+                                          _dropHistory[index].image,
+                                          width: 40,
+                                          height: 40,
+                                          gaplessPlayback: true,
+                                        ),
                                         const SizedBox(width: 12),
                                         Text(
                                           _getItemName(_dropHistory[index]),
-                                          style: const TextStyle(color: Colors.white, fontFamily: 'PT Sans'),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'PT Sans'),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
@@ -396,7 +438,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                           child: EnemyHpBar(
                             width: widget.width,
                             enemy: widget.enemy,
-                            widthOfOneHP: (widget.width - 200) / widget.enemy.hp,
+                            widthOfOneHP:
+                                (widget.width - 200) / widget.enemy.hp,
                             currentHP: _enemyCurrentHP,
                             heightFactor: enemyHpHeight,
                           ),
@@ -437,7 +480,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                           flyUp: true,
                                           onComplete: () {
                                             setState(() {
-                                              _enemyDamageTexts.removeWhere((e) => e.id == dt.id);
+                                              _enemyDamageTexts.removeWhere(
+                                                  (e) => e.id == dt.id);
                                             });
                                           },
                                         ),
@@ -462,14 +506,21 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                         behavior: HitTestBehavior.opaque,
                         onHorizontalDragUpdate: (details) {
                           if (details.primaryDelta != null) {
-                            if (details.primaryDelta! < -2 && !_isWeaponSlotExpanded) {
+                            if (details.primaryDelta! < -2 &&
+                                !_isWeaponSlotExpanded) {
                               setState(() {
                                 _isWeaponSlotExpanded = true;
                               });
                               _scheduleCombatStart();
-                            } else if (details.primaryDelta! > 2 && _isWeaponSlotExpanded) {
-                              final escapeTime = context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
-                              if (escapeTime == null || DateTime.now().isAfter(escapeTime)) {
+                            } else if (details.primaryDelta! > 2 &&
+                                _isWeaponSlotExpanded) {
+                              final escapeTime = context
+                                  .read<CharacterBloc>()
+                                  .state
+                                  .character
+                                  .escapeCooldownEndTime;
+                              if (escapeTime == null ||
+                                  DateTime.now().isAfter(escapeTime)) {
                                 setState(() {
                                   _isWeaponSlotExpanded = false;
                                 });
@@ -479,7 +530,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                           }
                         },
                         child: Container(
-                          padding: const EdgeInsets.only(left: 0, top: 0, bottom: 0),
+                          padding:
+                              const EdgeInsets.only(left: 0, top: 0, bottom: 0),
                           child: Row(
                             children: [
                               // Animated Arrows
@@ -487,19 +539,29 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                 animation: _pulseController,
                                 builder: (context, child) {
                                   return Transform.translate(
-                                    offset: Offset(_isWeaponSlotExpanded ? (_pulseController.value * 5) : (-_pulseController.value * 15), 0),
+                                    offset: Offset(
+                                        _isWeaponSlotExpanded
+                                            ? (_pulseController.value * 5)
+                                            : (-_pulseController.value * 15),
+                                        0),
                                     child: Column(
                                       children: [
                                         Text(
-                                          _isWeaponSlotExpanded ? '>>>>>>' : '<<<<<<',
+                                          _isWeaponSlotExpanded
+                                              ? '>>>>>>'
+                                              : '<<<<<<',
                                           style: TextStyle(color: Colors.red),
                                         ),
                                         Text(
-                                          _isWeaponSlotExpanded ? '>>>>>>' : '<<<<<<',
+                                          _isWeaponSlotExpanded
+                                              ? '>>>>>>'
+                                              : '<<<<<<',
                                           style: TextStyle(color: Colors.red),
                                         ),
                                         Text(
-                                          _isWeaponSlotExpanded ? '>>>>>>' : '<<<<<<',
+                                          _isWeaponSlotExpanded
+                                              ? '>>>>>>'
+                                              : '<<<<<<',
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ],
@@ -510,15 +572,20 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                               // Silhouette when collapsed
                               if (!_isWeaponSlotExpanded)
                                 ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                                  colorFilter: const ColorFilter.mode(
+                                      Colors.red, BlendMode.srcIn),
                                   child: SizedBox(
                                     width: 40,
                                     height: 40,
-                                    child: Image.asset('assets/icons/slot_slider_icon.png', fit: BoxFit.contain),
+                                    child: Image.asset(
+                                        'assets/icons/slot_slider_icon.png',
+                                        gaplessPlayback: true,
+                                        fit: BoxFit.contain),
                                   ),
                                 ),
 
-                              if (!_isWeaponSlotExpanded) const SizedBox(width: 8),
+                              if (!_isWeaponSlotExpanded)
+                                const SizedBox(width: 8),
 
                               // The actual slot
                               Stack(
@@ -529,19 +596,24 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                     width: 80,
                                     height: 80,
                                     decoration: BoxDecoration(
-                                      color: const Color.fromRGBO(52, 52, 52, 0.95),
+                                      color: const Color.fromRGBO(
+                                          52, 52, 52, 0.95),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Center(
                                       child: Text(
-                                        (_isWeaponDragging && _attackCooldownProgress > 0) ? '${state.character.equippedWeapon?.attackSpeed ?? 0.25}/sec' : '',
+                                        (_isWeaponDragging &&
+                                                _attackCooldownProgress > 0)
+                                            ? '${state.character.equippedWeapon?.attackSpeed ?? 0.25}/sec'
+                                            : '',
                                         style: TextStyle(color: Colors.yellow),
                                       ),
                                     ),
                                   ),
 
                                   // Yellow cooldown fill
-                                  if (_isWeaponDragging && _attackCooldownProgress > 0)
+                                  if (_isWeaponDragging &&
+                                      _attackCooldownProgress > 0)
                                     Positioned(
                                       bottom: 0,
                                       left: 0,
@@ -549,7 +621,8 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                       child: Container(
                                         height: 80 * _attackCooldownProgress,
                                         decoration: BoxDecoration(
-                                          color: Colors.red.withValues(alpha: 0.75),
+                                          color: Colors.red
+                                              .withValues(alpha: 0.75),
                                           borderRadius: const BorderRadius.only(
                                             bottomLeft: Radius.circular(14),
                                             bottomRight: Radius.circular(14),
@@ -566,15 +639,18 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                         setState(() {
                                           _isWeaponDragging = true;
                                         });
-                                        context.read<CharacterBloc>().add(CharacterClearEscapeCooldown());
+                                        context.read<CharacterBloc>().add(
+                                            CharacterClearEscapeCooldown());
                                       },
                                       onDragEnd: (details) {
                                         setState(() {
                                           _isWeaponDragging = false;
                                         });
                                         _stopPlayerAttack();
-                                        if (_isCombatActive && _isWeaponSlotExpanded) {
-                                          context.read<CharacterBloc>().add(CharacterStartEscapeCooldown());
+                                        if (_isCombatActive &&
+                                            _isWeaponSlotExpanded) {
+                                          context.read<CharacterBloc>().add(
+                                              CharacterStartEscapeCooldown());
                                         }
                                       },
                                       feedback: Material(
@@ -591,9 +667,14 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                                   shape: BoxShape.circle,
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color: widget.weapon.enchantLevel > 20
-                                                          ? enchantedWeaponsGlowColors[21]
-                                                          : enchantedWeaponsGlowColors[widget.weapon.enchantLevel],
+                                                      color: widget.weapon
+                                                                  .enchantLevel >
+                                                              20
+                                                          ? enchantedWeaponsGlowColors[
+                                                              21]
+                                                          : enchantedWeaponsGlowColors[
+                                                              widget.weapon
+                                                                  .enchantLevel],
                                                       blurRadius: 20,
                                                       spreadRadius: 10,
                                                     )
@@ -603,12 +684,16 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                             SizedBox(
                                               width: 80,
                                               height: 80,
-                                              child: Image.asset(widget.weapon.image, fit: BoxFit.contain),
+                                              child: Image.asset(
+                                                  widget.weapon.image,
+                                                  gaplessPlayback: true,
+                                                  fit: BoxFit.contain),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      childWhenDragging: const SizedBox(width: 80, height: 80),
+                                      childWhenDragging:
+                                          const SizedBox(width: 80, height: 80),
                                       // Empty slot
                                       child: SizedBox(
                                         width: 80,
@@ -623,10 +708,16 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                   // Escape Cooldown Text
                                   if (_isWeaponSlotExpanded)
                                     Builder(builder: (context) {
-                                      final state = context.watch<CharacterBloc>().state;
-                                      final escapeTime = state.character.escapeCooldownEndTime;
-                                      if (escapeTime != null && DateTime.now().isBefore(escapeTime)) {
-                                        final diff = escapeTime.difference(DateTime.now()).inSeconds + 1;
+                                      final state =
+                                          context.watch<CharacterBloc>().state;
+                                      final escapeTime =
+                                          state.character.escapeCooldownEndTime;
+                                      if (escapeTime != null &&
+                                          DateTime.now().isBefore(escapeTime)) {
+                                        final diff = escapeTime
+                                                .difference(DateTime.now())
+                                                .inSeconds +
+                                            1;
                                         return IgnorePointer(
                                           child: Text(
                                             '$diff',
@@ -636,8 +727,12 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                               fontFamily: 'PT Sans',
                                               fontWeight: FontWeight.bold,
                                               shadows: [
-                                                Shadow(color: Colors.black, blurRadius: 4),
-                                                Shadow(color: Colors.red, blurRadius: 10),
+                                                Shadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 4),
+                                                Shadow(
+                                                    color: Colors.red,
+                                                    blurRadius: 10),
                                               ],
                                             ),
                                           ),
@@ -670,17 +765,31 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: widget.enemy.dropList.map((drop) {
-                                final item =
-                                    ItemRegistry.createItem(drop.itemType, weaponType: drop.weaponType, armorType: drop.armorType, scrollType: drop.scrollType);
+                                final item = ItemRegistry.createItem(
+                                    drop.itemType,
+                                    weaponType: drop.weaponType,
+                                    armorType: drop.armorType,
+                                    scrollType: drop.scrollType);
                                 String titleText = _getItemName(item);
                                 if (item is GoldItem) {
-                                  titleText =
-                                      drop.minQuantity == drop.maxQuantity ? '${drop.minQuantity} Gold' : '${drop.minQuantity}-${drop.maxQuantity} Gold';
+                                  titleText = drop.minQuantity ==
+                                          drop.maxQuantity
+                                      ? '${drop.minQuantity} Gold'
+                                      : '${drop.minQuantity}-${drop.maxQuantity} Gold';
                                 }
                                 return ListTile(
-                                  leading: Image.asset(item.image, width: 40, height: 40),
-                                  title: Text(titleText, style: const TextStyle(color: Colors.white, fontFamily: 'PT Sans')),
-                                  trailing: Text('${drop.chance}%', style: const TextStyle(color: Colors.yellow, fontFamily: 'PT Sans')),
+                                  leading: Image.asset(item.image,
+                                      width: 40,
+                                      height: 40,
+                                      gaplessPlayback: true),
+                                  title: Text(titleText,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'PT Sans')),
+                                  trailing: Text('${drop.chance}%',
+                                      style: const TextStyle(
+                                          color: Colors.yellow,
+                                          fontFamily: 'PT Sans')),
                                 );
                               }).toList(),
                             ),
@@ -726,15 +835,21 @@ class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMix
                                 const SizedBox(height: 40),
                                 ElevatedButton(
                                   onPressed: () {
-                                    context.read<CharacterBloc>().add(CharacterRespawn());
-                                    context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+                                    context
+                                        .read<CharacterBloc>()
+                                        .add(CharacterRespawn());
+                                    context
+                                        .read<HuntingFieldsBloc>()
+                                        .add(HuntingFieldEvent$StopHunting());
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green,
-                                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 40, vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
-                                      side: const BorderSide(color: Colors.white24, width: 2),
+                                      side: const BorderSide(
+                                          color: Colors.white24, width: 2),
                                     ),
                                   ),
                                   child: const Text(
@@ -797,7 +912,8 @@ class DamageTextWidget extends StatefulWidget {
   State<DamageTextWidget> createState() => _DamageTextWidgetState();
 }
 
-class _DamageTextWidgetState extends State<DamageTextWidget> with SingleTickerProviderStateMixin {
+class _DamageTextWidgetState extends State<DamageTextWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _positionAnimation;
