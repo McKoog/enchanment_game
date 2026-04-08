@@ -1,4 +1,4 @@
-import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart';
+import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart' show HuntingFieldsBloc;
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/decorations/bottons_decoration.dart';
 import 'package:enchantment_game/decorations/text_decoration.dart';
@@ -12,10 +12,12 @@ class EnemyHeader extends StatelessWidget {
     required this.width,
     required this.enemy,
     this.heightFactor = 80,
+    required this.onTitleTap,
   });
 
   final double width;
   final Enemy enemy;
+  final VoidCallback onTitleTap;
 
   /// Available height for this header section.
   final double heightFactor;
@@ -30,58 +32,70 @@ class EnemyHeader extends StatelessWidget {
 
     return Row(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: InkWell(
-              onTap: () {
-                context
-                    .read<HuntingFieldsBloc>()
-                    .add(HuntingFieldEvent$StopHunting());
-              },
-              child: Icon(
-                Icons.arrow_back,
-                size: iconSize,
-                color: Colors.yellow,
-              )),
-        ),
         Expanded(
           child: SizedBox(
             height: heightFactor,
-            child: Row(
-              children: [
-                Expanded(
-                    child: Container(
-                        alignment: Alignment.center,
-                        height: nameFieldHeight,
-                        decoration: enemyNameFieldDecoration,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                enemy.name,
-                                style: farmEnemyNameTextDecoration,
-                              ),
-                              const Text(
-                                "show droplist",
-                                style: TextStyle(color: Colors.yellow),
-                              ),
-                            ],
-                          ),
-                        ))),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Stack(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                          child: InkWell(
+                              onTap: onTitleTap,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  height: nameFieldHeight,
+                                  decoration: enemyNameFieldDecoration,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          enemy.name,
+                                          style: farmEnemyNameTextDecoration,
+                                        ),
+                                        const Text(
+                                          "show droplist",
+                                          style: TextStyle(color: Colors.yellow),
+                                        ),
+                                      ],
+                                    ),
+                                  )))),
+                    ],
+                  ),
+                  Positioned(
+                    top: 6,
+                    right: 1,
+                    child: InkWell(
+                        onTap: () {
+                          context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+                        },
+                        child: Icon(
+                          Icons.close,
+                          size: iconSize,
+                          color: Colors.yellow,
+                        )),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Icon(
-            Icons.arrow_forward,
-            size: iconSize,
-            color: Colors.yellow,
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 8),
+        //   child: InkWell(
+        //       onTap: () {
+        //         context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+        //       },
+        //       child: Icon(
+        //         Icons.close,
+        //         size: iconSize,
+        //         color: Colors.yellow,
+        //       )),
+        // ),
       ],
     );
   }
