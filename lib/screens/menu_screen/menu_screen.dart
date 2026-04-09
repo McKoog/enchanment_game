@@ -1,4 +1,4 @@
-import 'package:enchantment_game/screens/menu_screen/blacksmith/blacksmith_menu.dart';
+import 'package:enchantment_game/screens/menu_screen/forge/forge_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/equip_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/shop/shop_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/skills/skills_menu.dart';
@@ -6,7 +6,7 @@ import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
-enum _MenuSection { home, equip, shop, blacksmith, skills }
+enum _MenuSection { home, equip, shop, forge, skills }
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key, this.width});
@@ -41,7 +41,7 @@ class _MenuScreenState extends State<MenuScreen>
       _MenuSection.home => 'Menu',
       _MenuSection.equip => 'Equip',
       _MenuSection.shop => 'Shop',
-      _MenuSection.blacksmith => 'Blacksmith',
+      _MenuSection.forge => 'Forge',
       _MenuSection.skills => 'Skills',
     };
   }
@@ -108,15 +108,15 @@ class _MenuScreenState extends State<MenuScreen>
                         horizontalPadding: horizontalPadding,
                         onEquipTap: () => _open(_MenuSection.equip),
                         onShopTap: () => _open(_MenuSection.shop),
-                        onBlacksmithTap: () => _open(_MenuSection.blacksmith),
+                        onForgeTap: () => _open(_MenuSection.forge),
                         onSkillsTap: () => _open(_MenuSection.skills),
                       ),
                     _MenuSection.equip =>
                       const EquipMenu(key: ValueKey('equip_menu')),
                     _MenuSection.shop =>
                       const ShopMenu(key: ValueKey('shop_menu')),
-                    _MenuSection.blacksmith =>
-                      const BlacksmithMenu(key: ValueKey('blacksmith_menu')),
+                    _MenuSection.forge =>
+                      const ForgeMenu(key: ValueKey('forge_menu')),
                     _MenuSection.skills =>
                       const SkillsMenu(key: ValueKey('skills_menu')),
                   },
@@ -183,7 +183,7 @@ class _MenuGrid extends StatelessWidget {
     required this.horizontalPadding,
     required this.onEquipTap,
     required this.onShopTap,
-    required this.onBlacksmithTap,
+    required this.onForgeTap,
     required this.onSkillsTap,
   });
 
@@ -192,7 +192,7 @@ class _MenuGrid extends StatelessWidget {
   final double horizontalPadding;
   final VoidCallback onEquipTap;
   final VoidCallback onShopTap;
-  final VoidCallback onBlacksmithTap;
+  final VoidCallback onForgeTap;
   final VoidCallback onSkillsTap;
 
   @override
@@ -221,10 +221,10 @@ class _MenuGrid extends StatelessWidget {
             onTap: onShopTap,
           ),
           _MenuTile(
-            title: 'Blacksmith',
+            title: 'Forge',
             size: tileSize,
-            backgroundAsset: 'assets/icons/menus/blacksmith_icon.png',
-            onTap: onBlacksmithTap,
+            backgroundAsset: 'assets/icons/menus/forge_icon.png',
+            onTap: onForgeTap,
           ),
           _MenuTile(
             title: 'Skills',

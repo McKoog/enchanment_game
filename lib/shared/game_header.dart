@@ -15,20 +15,17 @@ class GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharacterBloc, CharacterState>(
-        builder: (context, state) {
+    return BlocBuilder<CharacterBloc, CharacterState>(builder: (context, state) {
       final character = state.character;
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _PersistentHeader(
-            versionLabel: 'alpha v.$appVersion',
+            versionLabel: 'v.$appVersion',
             gold: character.gold,
             level: character.level,
-            experienceProgress: character.maxExp > 0
-                ? character.currentExp / character.maxExp
-                : 0,
+            experienceProgress: character.maxExp > 0 ? character.currentExp / character.maxExp : 0,
             skillPoints: character.skillPoints,
           ),
           Expanded(
@@ -70,10 +67,7 @@ class _PersistentHeader extends StatelessWidget {
         bottom: false,
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: AppColors.overlayDark,
-              border: Border.symmetric(
-                  horizontal: BorderSide(color: AppColors.borderHighlight))),
+          decoration: BoxDecoration(color: AppColors.overlayDark, border: Border.symmetric(horizontal: BorderSide(color: AppColors.borderHighlight))),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -82,8 +76,7 @@ class _PersistentHeader extends StatelessWidget {
                   children: [
                     Text(
                       versionLabel,
-                      style: AppTypography.attributeLabel
-                          .copyWith(color: AppColors.accentYellow),
+                      style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
                     ),
                     const Spacer(),
                     Row(
@@ -157,8 +150,7 @@ class _PersistentHeader extends StatelessWidget {
                           LinearProgressIndicator(
                             value: clampedProgress,
                             minHeight: 8,
-                            backgroundColor:
-                                AppColors.accentYellow.withValues(alpha: 0.2),
+                            backgroundColor: AppColors.accentYellow.withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(
                               AppColors.accentYellow,
                             ),
