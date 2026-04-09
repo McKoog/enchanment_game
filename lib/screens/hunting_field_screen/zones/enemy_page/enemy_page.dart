@@ -166,41 +166,10 @@ class _EnemyPageState extends State<EnemyPage>
 
   void _startPlayerAttack() {
     _isWeaponOnEnemy = true;
-    _tryPlayerAttack();
-    _playerAttackTimer =
-        Timer.periodic(const Duration(milliseconds: 16), (timer) {
-      if (!_isWeaponOnEnemy) {
-        timer.cancel();
-        return;
-      }
-
-      final character = context.read<CharacterBloc>().state.character;
-      final attackSpeedMs = (character.attackSpeed * 1000).toInt();
-
-      if (_lastPlayerAttackTime == null) {
-        _tryPlayerAttack();
-      } else {
-        final now = DateTime.now();
-        final diff = now.difference(_lastPlayerAttackTime!).inMilliseconds;
-
-        setState(() {
-          _attackCooldownProgress = (diff / attackSpeedMs).clamp(0.0, 1.0);
-        });
-
-        if (diff >= attackSpeedMs) {
-          _tryPlayerAttack();
-        }
-      }
-    });
   }
 
   void _stopPlayerAttack() {
     _isWeaponOnEnemy = false;
-    _playerAttackTimer?.cancel();
-    _playerAttackTimer = null;
-    setState(() {
-      _attackCooldownProgress = 0.0;
-    });
   }
 
   void _tryPlayerAttack() {
@@ -276,6 +245,41 @@ class _EnemyPageState extends State<EnemyPage>
       _isWeaponSlotExpanded = true;
     });
     _scheduleCombatStart();
+    _playerAttackTimer?.cancel();
+    _playerAttackTimer =
+        Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      if (!mounted || !_isWeaponSlotExpanded) {
+        timer.cancel();
+        return;
+      }
+
+      final character = context.read<CharacterBloc>().state.character;
+      final attackSpeedMs = (character.attackSpeed * 1000).toInt();
+
+      if (_lastPlayerAttackTime == null) {
+        if (_isWeaponOnEnemy) {
+          _tryPlayerAttack();
+        } else if (_attackCooldownProgress != 1.0) {
+          setState(() {
+            _attackCooldownProgress = 1.0;
+          });
+        }
+      } else {
+        final now = DateTime.now();
+        final diff = now.difference(_lastPlayerAttackTime!).inMilliseconds;
+        final newProgress = (diff / attackSpeedMs).clamp(0.0, 1.0);
+
+        if (_attackCooldownProgress != newProgress) {
+          setState(() {
+            _attackCooldownProgress = newProgress;
+          });
+        }
+
+        if (diff >= attackSpeedMs && _isWeaponOnEnemy) {
+          _tryPlayerAttack();
+        }
+      }
+    });
   }
 
   void _onWeaponSlotCollapsed() {
@@ -284,7 +288,11 @@ class _EnemyPageState extends State<EnemyPage>
     if (escapeTime == null || DateTime.now().isAfter(escapeTime)) {
       setState(() {
         _isWeaponSlotExpanded = false;
+        _attackCooldownProgress = 0.0;
+        _lastPlayerAttackTime = null;
       });
+      _playerAttackTimer?.cancel();
+      _playerAttackTimer = null;
       _stopCombat();
     }
   }

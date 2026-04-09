@@ -17,7 +17,11 @@ class MenuScreen extends StatefulWidget {
   State<MenuScreen> createState() => _MenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _MenuScreenState extends State<MenuScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   _MenuSection _section = _MenuSection.home;
 
   void _goHome() {
@@ -44,6 +48,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final effectiveWidth = widget.width ?? constraints.maxWidth;
@@ -53,9 +58,15 @@ class _MenuScreenState extends State<MenuScreen> {
         const maxColumns = 4;
         const minTileSize = 72.0;
 
-        final available = (effectiveWidth - horizontalPadding * 2).clamp(0.0, double.infinity);
-        final possibleColumns = ((available + spacing) / (minTileSize + spacing)).floor().clamp(1, maxColumns);
-        final tileSize = possibleColumns == 0 ? minTileSize : (available - spacing * (possibleColumns - 1)) / possibleColumns;
+        final available = (effectiveWidth - horizontalPadding * 2)
+            .clamp(0.0, double.infinity);
+        final possibleColumns =
+            ((available + spacing) / (minTileSize + spacing))
+                .floor()
+                .clamp(1, maxColumns);
+        final tileSize = possibleColumns == 0
+            ? minTileSize
+            : (available - spacing * (possibleColumns - 1)) / possibleColumns;
 
         return Container(
           width: effectiveWidth,
@@ -100,10 +111,14 @@ class _MenuScreenState extends State<MenuScreen> {
                         onBlacksmithTap: () => _open(_MenuSection.blacksmith),
                         onSkillsTap: () => _open(_MenuSection.skills),
                       ),
-                    _MenuSection.equip => const EquipMenu(key: ValueKey('equip_menu')),
-                    _MenuSection.shop => const ShopMenu(key: ValueKey('shop_menu')),
-                    _MenuSection.blacksmith => const BlacksmithMenu(key: ValueKey('blacksmith_menu')),
-                    _MenuSection.skills => const SkillsMenu(key: ValueKey('skills_menu')),
+                    _MenuSection.equip =>
+                      const EquipMenu(key: ValueKey('equip_menu')),
+                    _MenuSection.shop =>
+                      const ShopMenu(key: ValueKey('shop_menu')),
+                    _MenuSection.blacksmith =>
+                      const BlacksmithMenu(key: ValueKey('blacksmith_menu')),
+                    _MenuSection.skills =>
+                      const SkillsMenu(key: ValueKey('skills_menu')),
                   },
                 ),
               ),
@@ -262,8 +277,7 @@ class _MenuTile extends StatelessWidget {
                     Image.asset(
                       backgroundAsset,
                       fit: BoxFit.cover,
-                      color: AppColors.transparent,
-                      colorBlendMode: BlendMode.lighten,
+                      gaplessPlayback: true,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           color: AppColors.error,
@@ -273,7 +287,8 @@ class _MenuTile extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18),
-                        border: const Border.fromBorderSide(BorderSide(color: AppColors.accentYellow, width: 2)),
+                        border: const Border.fromBorderSide(BorderSide(
+                            color: AppColors.accentYellow, width: 2)),
                         color: AppColors.transparent,
                       ),
                     ),
