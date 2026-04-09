@@ -1,8 +1,9 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
 import 'package:enchantment_game/screens/menu_screen/blacksmith/blacksmith_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/equip_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/shop/shop_menu.dart';
 import 'package:enchantment_game/screens/menu_screen/skills/skills_menu.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 enum _MenuSection { home, equip, shop, blacksmith, skills }
@@ -139,7 +140,7 @@ class _MenuHeader extends StatelessWidget {
                     onTap: onBack,
                     child: const Icon(
                       Icons.arrow_back,
-                      color: Colors.yellow,
+                      color: AppColors.accentYellow,
                       size: 28,
                     ),
                   )
@@ -149,7 +150,7 @@ class _MenuHeader extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: huntFieldNameTextDecoration,
+              style: AppTypography.titleLargeHighlight,
             ),
           ),
           const SizedBox(width: 48),
@@ -237,9 +238,9 @@ class _MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = huntFieldHeaderTextDecoration.copyWith(
+    final labelStyle = AppTypography.titleLargeSecondary.copyWith(
       fontSize: 18,
-      color: Colors.yellow,
+      color: AppColors.accentYellow,
     );
 
     return SizedBox(
@@ -261,19 +262,19 @@ class _MenuTile extends StatelessWidget {
                     Image.asset(
                       backgroundAsset,
                       fit: BoxFit.cover,
-                      color: Colors.black.withValues(alpha: 0),
+                      color: AppColors.transparent,
                       colorBlendMode: BlendMode.lighten,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: const Color.fromRGBO(25, 25, 25, 1),
+                          color: AppColors.error,
                         );
                       },
                     ),
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18),
-                        border: const Border.fromBorderSide(BorderSide(color: Colors.yellow, width: 2)),
-                        color: Colors.black.withValues(alpha: 0),
+                        border: const Border.fromBorderSide(BorderSide(color: AppColors.accentYellow, width: 2)),
+                        color: AppColors.transparent,
                       ),
                     ),
                   ],

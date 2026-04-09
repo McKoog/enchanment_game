@@ -1,4 +1,4 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 class BlacksmithMenu extends StatelessWidget {
@@ -12,7 +12,7 @@ class BlacksmithMenu extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: Text(
           'Blacksmith menu will be added soon...',
-          style: huntFieldHeaderTextDecoration,
+          style: AppTypography.titleLargeSecondary,
           textAlign: TextAlign.center,
         ),
       ),

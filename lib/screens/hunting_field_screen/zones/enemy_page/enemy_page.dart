@@ -8,7 +8,6 @@ import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.d
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/enemy.dart';
@@ -16,14 +15,20 @@ import 'package:enchantment_game/models/gold_item.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/enemy_hp_bar.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/weapon_field.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/enemy_field.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/enemy_header.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/player_hp_bar.dart';
 import 'package:enchantment_game/services/combat_service.dart';
+import 'package:enchantment_game/services/loot_service.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'components/attack_field/components/enemy_hp_bar.dart';
+import 'components/damage_text_widget.dart';
+import 'components/draggable_weapon_slot.dart';
+import 'components/enemy_field.dart';
+import 'components/enemy_header.dart';
+import 'components/player_hp_bar.dart';
+import 'components/recent_loot_list.dart';
 
 class EnemyPage extends StatefulWidget {
   const EnemyPage({
@@ -48,8 +53,8 @@ class _EnemyPageState extends State<EnemyPage>
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final List<Item> _dropHistory = [];
 
-  final List<_DamageText> _enemyDamageTexts = [];
-  final List<_DamageText> _playerDamageTexts = [];
+  final List<DamageTextData> _enemyDamageTexts = [];
+  final List<DamageTextData> _playerDamageTexts = [];
   final Random _random = Random();
 
   bool _isWeaponSlotExpanded = false;
@@ -136,7 +141,6 @@ class _EnemyPageState extends State<EnemyPage>
     final charState = characterBloc.state as CharacterLoaded;
     if (charState.character.currentHealth <= 0) return;
 
-    // Calculate damage taking defense into account (max 70% blocked)
     int maxDamageBlocked = (widget.enemy.attackDamage * 0.7).toInt();
     int actualDamageBlocked = charState.character.defense;
 
@@ -151,7 +155,7 @@ class _EnemyPageState extends State<EnemyPage>
 
     final id = UniqueKey().toString();
     setState(() {
-      _playerDamageTexts.add(_DamageText(
+      _playerDamageTexts.add(DamageTextData(
         id: id,
         damage: damageTaken,
         randomX: 0,
@@ -212,7 +216,7 @@ class _EnemyPageState extends State<EnemyPage>
     setState(() {
       _enemyCurrentHP -= result.damage;
       final id = UniqueKey().toString();
-      _enemyDamageTexts.add(_DamageText(
+      _enemyDamageTexts.add(DamageTextData(
         id: id,
         damage: result.damage,
         randomX: _random.nextDouble() * 100 - 50,
@@ -223,14 +227,13 @@ class _EnemyPageState extends State<EnemyPage>
     if (_enemyCurrentHP <= 0) {
       _enemyCurrentHP = widget.enemy.hp;
 
-      // Add Experience and SP
       if (widget.enemy.expReward > 0 || widget.enemy.spReward > 0) {
         context.read<CharacterBloc>().add(CharacterAddExp(
             widget.enemy.expReward,
             spAmount: widget.enemy.spReward));
       }
 
-      final loot = CombatService.generateLoot(widget.enemy);
+      final loot = LootService.generateLoot(widget.enemy);
       final inventoryBloc = context.read<InventoryBloc>();
 
       for (final item in loot.items) {
@@ -262,6 +265,71 @@ class _EnemyPageState extends State<EnemyPage>
     return 'Unknown Item';
   }
 
+  void _onShowDropListToggle() {
+    setState(() {
+      _showDropList = !_showDropList;
+    });
+  }
+
+  void _onWeaponSlotExpanded() {
+    setState(() {
+      _isWeaponSlotExpanded = true;
+    });
+    _scheduleCombatStart();
+  }
+
+  void _onWeaponSlotCollapsed() {
+    final escapeTime = context
+        .read<CharacterBloc>()
+        .state
+        .character
+        .escapeCooldownEndTime;
+    if (escapeTime == null || DateTime.now().isAfter(escapeTime)) {
+      setState(() {
+        _isWeaponSlotExpanded = false;
+      });
+      _stopCombat();
+    }
+  }
+
+  void _onWeaponDragStarted() {
+    setState(() {
+      _isWeaponDragging = true;
+    });
+    context.read<CharacterBloc>().add(CharacterClearEscapeCooldown());
+  }
+
+  void _onWeaponDragEnded() {
+    setState(() {
+      _isWeaponDragging = false;
+    });
+    _stopPlayerAttack();
+    if (_isCombatActive && _isWeaponSlotExpanded) {
+      context.read<CharacterBloc>().add(CharacterStartEscapeCooldown());
+    }
+  }
+
+  void _onWeaponDragAccept() {
+    _stopPlayerAttack();
+  }
+
+  void _onPlayerDamageTextComplete(String id) {
+    setState(() {
+      _playerDamageTexts.removeWhere((e) => e.id == id);
+    });
+  }
+
+  void _onEnemyDamageTextComplete(String id) {
+    setState(() {
+      _enemyDamageTexts.removeWhere((e) => e.id == id);
+    });
+  }
+
+  void _onRebornPressed() {
+    context.read<CharacterBloc>().add(CharacterRespawn());
+    context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<CharacterBloc, CharacterState>(
@@ -279,7 +347,7 @@ class _EnemyPageState extends State<EnemyPage>
           if (healAmount > 0 && _previousPlayerHealth != -1) {
             final id = UniqueKey().toString();
             setState(() {
-              _playerDamageTexts.add(_DamageText(
+              _playerDamageTexts.add(DamageTextData(
                 id: id,
                 damage: healAmount,
                 randomX: _isWeaponSlotExpanded
@@ -304,7 +372,7 @@ class _EnemyPageState extends State<EnemyPage>
 
           return Container(
             decoration: const BoxDecoration(
-              color: Color.fromRGBO(52, 52, 52, 1),
+              color: AppColors.panelBackground,
               image: DecorationImage(
                   image: AssetImage(
                       'assets/background/forest_enemy_background.png'),
@@ -330,11 +398,7 @@ class _EnemyPageState extends State<EnemyPage>
                             width: widget.width,
                             enemy: widget.enemy,
                             heightFactor: headerHeight,
-                            onTitleTap: () {
-                              setState(() {
-                                _showDropList = !_showDropList;
-                              });
-                            },
+                            onTitleTap: _onShowDropListToggle,
                           ),
                         ),
                         SizedBox(
@@ -352,20 +416,15 @@ class _EnemyPageState extends State<EnemyPage>
                               ..._playerDamageTexts.map((dt) {
                                 return Positioned(
                                   key: ValueKey(dt.id),
-                                  left:
-                                      50, // 100 is the edge of the bar, so 50 is to the left of it
+                                  left: 50,
                                   child: Transform.translate(
                                     offset: Offset(dt.randomX, dt.randomY),
                                     child: DamageTextWidget(
                                       damage: dt.damage,
                                       flyUp: false,
                                       isHeal: dt.isHeal,
-                                      onComplete: () {
-                                        setState(() {
-                                          _playerDamageTexts.removeWhere(
-                                              (e) => e.id == dt.id);
-                                        });
-                                      },
+                                      onComplete: () =>
+                                          _onPlayerDamageTextComplete(dt.id),
                                     ),
                                   ),
                                 );
@@ -373,66 +432,16 @@ class _EnemyPageState extends State<EnemyPage>
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          'Recent Loot:',
-                          style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.yellow,
-                              fontFamily: "PT Sans"),
-                        ),
+                        const SizedBox(height: 12),
+                        
                         Expanded(
-                          child: Container(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            child: AnimatedList(
-                              key: _listKey,
-                              initialItemCount: _dropHistory.length,
-                              padding: const EdgeInsets.only(
-                                  top: 8,
-                                  bottom: 8,
-                                  left: 16,
-                                  right: 100), // padding right for weapon slot
-                              itemBuilder: (context, index, animation) {
-                                return SlideTransition(
-                                  position: animation.drive(Tween(
-                                          begin: const Offset(1, 0),
-                                          end: Offset.zero)
-                                      .chain(
-                                          CurveTween(curve: Curves.easeOut))),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          _dropHistory[index].image,
-                                          width: 40,
-                                          height: 40,
-                                          gaplessPlayback: true,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          _getItemName(_dropHistory[index]),
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'PT Sans'),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                          child: RecentLootList(
+                            listKey: _listKey,
+                            dropHistory: _dropHistory,
                           ),
                         ),
-                        SizedBox(
-                          height: 12,
-                        ),
+
+                        const SizedBox(height: 12),
                         SizedBox(
                           height: enemyHpHeight,
                           child: EnemyHpBar(
@@ -453,12 +462,8 @@ class _EnemyPageState extends State<EnemyPage>
                             }
                             return false;
                           },
-                          onAcceptWithDetails: (details) {
-                            _stopPlayerAttack();
-                          },
-                          onLeave: (data) {
-                            _stopPlayerAttack();
-                          },
+                          onAcceptWithDetails: (_) => _onWeaponDragAccept(),
+                          onLeave: (_) => _stopPlayerAttack(),
                           builder: (context, candidateData, rejectedData) {
                             return SizedBox(
                               height: enemyFieldHeight,
@@ -478,12 +483,8 @@ class _EnemyPageState extends State<EnemyPage>
                                         child: DamageTextWidget(
                                           damage: dt.damage,
                                           flyUp: true,
-                                          onComplete: () {
-                                            setState(() {
-                                              _enemyDamageTexts.removeWhere(
-                                                  (e) => e.id == dt.id);
-                                            });
-                                          },
+                                          onComplete: () =>
+                                              _onEnemyDamageTextComplete(dt.id),
                                         ),
                                       ),
                                     );
@@ -496,257 +497,26 @@ class _EnemyPageState extends State<EnemyPage>
                         const SizedBox(height: 16),
                       ],
                     ),
+                    
                     // Weapon Slot
                     AnimatedPositioned(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
                       right: _isWeaponSlotExpanded ? 4 : -88,
                       top: headerHeight - 16,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onHorizontalDragUpdate: (details) {
-                          if (details.primaryDelta != null) {
-                            if (details.primaryDelta! < -2 &&
-                                !_isWeaponSlotExpanded) {
-                              setState(() {
-                                _isWeaponSlotExpanded = true;
-                              });
-                              _scheduleCombatStart();
-                            } else if (details.primaryDelta! > 2 &&
-                                _isWeaponSlotExpanded) {
-                              final escapeTime = context
-                                  .read<CharacterBloc>()
-                                  .state
-                                  .character
-                                  .escapeCooldownEndTime;
-                              if (escapeTime == null ||
-                                  DateTime.now().isAfter(escapeTime)) {
-                                setState(() {
-                                  _isWeaponSlotExpanded = false;
-                                });
-                                _stopCombat();
-                              }
-                            }
-                          }
-                        },
-                        child: Container(
-                          padding:
-                              const EdgeInsets.only(left: 0, top: 0, bottom: 0),
-                          child: Row(
-                            children: [
-                              // Animated Arrows
-                              AnimatedBuilder(
-                                animation: _pulseController,
-                                builder: (context, child) {
-                                  return Transform.translate(
-                                    offset: Offset(
-                                        _isWeaponSlotExpanded
-                                            ? (_pulseController.value * 5)
-                                            : (-_pulseController.value * 15),
-                                        0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          _isWeaponSlotExpanded
-                                              ? '>>>>>>'
-                                              : '<<<<<<',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        Text(
-                                          _isWeaponSlotExpanded
-                                              ? '>>>>>>'
-                                              : '<<<<<<',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        Text(
-                                          _isWeaponSlotExpanded
-                                              ? '>>>>>>'
-                                              : '<<<<<<',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                              // Silhouette when collapsed
-                              if (!_isWeaponSlotExpanded)
-                                ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                      Colors.red, BlendMode.srcIn),
-                                  child: SizedBox(
-                                    width: 40,
-                                    height: 40,
-                                    child: Image.asset(
-                                        'assets/icons/slot_slider_icon.png',
-                                        gaplessPlayback: true,
-                                        fit: BoxFit.contain),
-                                  ),
-                                ),
-
-                              if (!_isWeaponSlotExpanded)
-                                const SizedBox(width: 8),
-
-                              // The actual slot
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Base slot background
-                                  Container(
-                                    width: 80,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromRGBO(
-                                          52, 52, 52, 0.95),
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        (_isWeaponDragging &&
-                                                _attackCooldownProgress > 0)
-                                            ? '${state.character.equippedWeapon?.attackSpeed ?? 0.25}/sec'
-                                            : '',
-                                        style: TextStyle(color: Colors.yellow),
-                                      ),
-                                    ),
-                                  ),
-
-                                  // Yellow cooldown fill
-                                  if (_isWeaponDragging &&
-                                      _attackCooldownProgress > 0)
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        height: 80 * _attackCooldownProgress,
-                                        decoration: BoxDecoration(
-                                          color: Colors.red
-                                              .withValues(alpha: 0.75),
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(14),
-                                            bottomRight: Radius.circular(14),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                  // Draggable weapon when expanded
-                                  if (_isWeaponSlotExpanded)
-                                    Draggable<String>(
-                                      data: 'weapon',
-                                      onDragStarted: () {
-                                        setState(() {
-                                          _isWeaponDragging = true;
-                                        });
-                                        context.read<CharacterBloc>().add(
-                                            CharacterClearEscapeCooldown());
-                                      },
-                                      onDragEnd: (details) {
-                                        setState(() {
-                                          _isWeaponDragging = false;
-                                        });
-                                        _stopPlayerAttack();
-                                        if (_isCombatActive &&
-                                            _isWeaponSlotExpanded) {
-                                          context.read<CharacterBloc>().add(
-                                              CharacterStartEscapeCooldown());
-                                        }
-                                      },
-                                      feedback: Material(
-                                        color: Colors.transparent,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            // Glow effect
-                                            if (widget.weapon.enchantLevel > 0)
-                                              Container(
-                                                width: 60,
-                                                height: 60,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: widget.weapon
-                                                                  .enchantLevel >
-                                                              20
-                                                          ? enchantedWeaponsGlowColors[
-                                                              21]
-                                                          : enchantedWeaponsGlowColors[
-                                                              widget.weapon
-                                                                  .enchantLevel],
-                                                      blurRadius: 20,
-                                                      spreadRadius: 10,
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            SizedBox(
-                                              width: 80,
-                                              height: 80,
-                                              child: Image.asset(
-                                                  widget.weapon.image,
-                                                  gaplessPlayback: true,
-                                                  fit: BoxFit.contain),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      childWhenDragging:
-                                          const SizedBox(width: 80, height: 80),
-                                      // Empty slot
-                                      child: SizedBox(
-                                        width: 80,
-                                        height: 80,
-                                        child: WeaponField(
-                                          weapon: widget.weapon,
-                                          showBackground: false,
-                                        ),
-                                      ),
-                                    ),
-
-                                  // Escape Cooldown Text
-                                  if (_isWeaponSlotExpanded)
-                                    Builder(builder: (context) {
-                                      final state =
-                                          context.watch<CharacterBloc>().state;
-                                      final escapeTime =
-                                          state.character.escapeCooldownEndTime;
-                                      if (escapeTime != null &&
-                                          DateTime.now().isBefore(escapeTime)) {
-                                        final diff = escapeTime
-                                                .difference(DateTime.now())
-                                                .inSeconds +
-                                            1;
-                                        return IgnorePointer(
-                                          child: Text(
-                                            '$diff',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 36,
-                                              fontFamily: 'PT Sans',
-                                              fontWeight: FontWeight.bold,
-                                              shadows: [
-                                                Shadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 4),
-                                                Shadow(
-                                                    color: Colors.red,
-                                                    blurRadius: 10),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                      return const SizedBox.shrink();
-                                    }),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                      child: DraggableWeaponSlot(
+                        isExpanded: _isWeaponSlotExpanded,
+                        isDragging: _isWeaponDragging,
+                        attackCooldownProgress: _attackCooldownProgress,
+                        weapon: widget.weapon,
+                        pulseController: _pulseController,
+                        onExpand: _onWeaponSlotExpanded,
+                        onCollapse: _onWeaponSlotCollapsed,
+                        onDragStarted: _onWeaponDragStarted,
+                        onDragEnded: _onWeaponDragEnded,
                       ),
                     ),
+                    
                     // Drop List Overlay
                     if (_showDropList)
                       Positioned(
@@ -754,13 +524,13 @@ class _EnemyPageState extends State<EnemyPage>
                         left: 16,
                         right: 16,
                         child: Material(
-                          color: Colors.transparent,
+                          color: AppColors.transparent,
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: const Color.fromRGBO(52, 52, 52, 0.95),
+                              color: AppColors.overlayVeryDark,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.yellow),
+                              border: Border.all(color: AppColors.accentYellow),
                             ),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
@@ -772,92 +542,73 @@ class _EnemyPageState extends State<EnemyPage>
                                     scrollType: drop.scrollType);
                                 String titleText = _getItemName(item);
                                 if (item is GoldItem) {
-                                  titleText = drop.minQuantity ==
-                                          drop.maxQuantity
+                                  titleText = drop.minQuantity == drop.maxQuantity
                                       ? '${drop.minQuantity} Gold'
                                       : '${drop.minQuantity}-${drop.maxQuantity} Gold';
                                 }
                                 return ListTile(
                                   leading: Image.asset(item.image,
-                                      width: 40,
-                                      height: 40,
-                                      gaplessPlayback: true),
+                                      width: 40, height: 40, gaplessPlayback: true),
                                   title: Text(titleText,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'PT Sans')),
+                                      style: AppTypography.bodyMediumPrimary),
                                   trailing: Text('${drop.chance}%',
-                                      style: const TextStyle(
-                                          color: Colors.yellow,
-                                          fontFamily: 'PT Sans')),
+                                      style: AppTypography.bodyLargeHighlight),
                                 );
                               }).toList(),
                             ),
                           ),
                         ),
                       ),
+                      
                     // Death Overlay
                     if (character.currentHealth <= 0)
                       Positioned.fill(
                         child: Container(
-                          color: Colors.black.withValues(alpha: 0.85),
+                          color: AppColors.overlayVeryDark,
                           child: Center(
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
+                                Text(
                                   'YOU ARE DEAD',
-                                  style: TextStyle(
-                                    color: Colors.red,
+                                  style: AppTypography.titleLargePrimary.copyWith(
+                                    color: AppColors.error,
                                     fontSize: 48,
-                                    fontFamily: 'PT Sans',
                                     fontWeight: FontWeight.bold,
                                     shadows: [
                                       Shadow(
                                         blurRadius: 10.0,
-                                        color: Colors.redAccent,
-                                        offset: Offset(0, 0),
+                                        color: AppColors.enemyHp,
+                                        offset: const Offset(0, 0),
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                const Text(
+                                Text(
                                   'You lost:\n-25% exp\n-50% gold\n-25 SP\n\nHunting is now unavailable for 15 seconds.',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.redAccent,
-                                    fontSize: 20,
-                                    fontFamily: 'PT Sans',
+                                  style: AppTypography.titleMediumPrimary.copyWith(
+                                    color: AppColors.enemyHp,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 const SizedBox(height: 40),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    context
-                                        .read<CharacterBloc>()
-                                        .add(CharacterRespawn());
-                                    context
-                                        .read<HuntingFieldsBloc>()
-                                        .add(HuntingFieldEvent$StopHunting());
-                                  },
+                                  onPressed: _onRebornPressed,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
+                                    backgroundColor: AppColors.success,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 40, vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
-                                      side: const BorderSide(
-                                          color: Colors.white24, width: 2),
+                                      side: BorderSide(
+                                          color: AppColors.primaryText.withValues(alpha: 0.24), width: 2),
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     'REBORN',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontFamily: 'PT Sans',
+                                    style: AppTypography.titleLargePrimary.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -874,106 +625,6 @@ class _EnemyPageState extends State<EnemyPage>
           );
         },
       ),
-    );
-  }
-}
-
-class _DamageText {
-  final String id;
-  final int damage;
-  final double randomX;
-  final double randomY;
-  final bool isHeal;
-
-  _DamageText({
-    required this.id,
-    required this.damage,
-    required this.randomX,
-    required this.randomY,
-    this.isHeal = false,
-  });
-}
-
-class DamageTextWidget extends StatefulWidget {
-  final int damage;
-  final VoidCallback onComplete;
-  final bool flyUp;
-  final bool isHeal;
-
-  const DamageTextWidget({
-    super.key,
-    required this.damage,
-    required this.onComplete,
-    this.flyUp = true,
-    this.isHeal = false,
-  });
-
-  @override
-  State<DamageTextWidget> createState() => _DamageTextWidgetState();
-}
-
-class _DamageTextWidgetState extends State<DamageTextWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-  late Animation<Offset> _positionAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-    _positionAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: widget.flyUp ? const Offset(0, -100) : const Offset(-100, 0),
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-
-    _controller.forward().then((_) {
-      widget.onComplete();
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: _positionAnimation.value,
-          child: Opacity(
-            opacity: _opacityAnimation.value,
-            child: Text(
-              widget.isHeal ? '+ ${widget.damage}' : '- ${widget.damage}',
-              style: TextStyle(
-                color: widget.isHeal ? Colors.green : Colors.red,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'PT Sans',
-                shadows: const [
-                  Shadow(
-                    color: Colors.black,
-                    blurRadius: 4,
-                    offset: Offset(1, 1),
-                  )
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

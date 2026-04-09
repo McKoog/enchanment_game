@@ -15,16 +15,11 @@ final stockWerewolf = Enemy(
     expReward: 100,
     spReward: 8,
     dropList: [
-      DropItem(
-          chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-      DropItem(
-          chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-      DropItem(
-          chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.armor),
-      DropItem(
-          chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-      DropItem(
-          chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.bow),
+      DropItem(chance: 5, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+      DropItem(chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+      DropItem(chance: 25, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+      DropItem(chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+      DropItem(chance: 1, itemType: ItemType.weapon, weaponType: WeaponType.bow),
     ]);
 
 final greyWolf = Enemy(
@@ -37,18 +32,14 @@ final greyWolf = Enemy(
   expReward: 5,
   spReward: 1,
   dropList: [
-    DropItem(
-        chance: 80, itemType: ItemType.gold, minQuantity: 2, maxQuantity: 2),
+    DropItem(chance: 80, itemType: ItemType.gold, minQuantity: 2, maxQuantity: 2),
     DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.helmet),
-    DropItem(
-        chance: 15, itemType: ItemType.armor, armorType: ArmorType.chestplate),
-    DropItem(
-        chance: 15, itemType: ItemType.armor, armorType: ArmorType.leggings),
+    DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.chestplate),
+    DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.leggings),
     DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.boots),
-    DropItem(
-        chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-    DropItem(
-        chance: 15, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 15, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 7, itemType: ItemType.weapon, weaponType: WeaponType.sword),
   ],
 );
 
@@ -62,16 +53,15 @@ final bandit = Enemy(
   expReward: 20,
   spReward: 2,
   dropList: [
-    DropItem(
-        chance: 80, itemType: ItemType.gold, minQuantity: 4, maxQuantity: 4),
-    DropItem(
-        chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 20, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(
-        chance: 15, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-    DropItem(
-        chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 80, itemType: ItemType.gold, minQuantity: 4, maxQuantity: 4),
+    DropItem(chance: 20, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 15, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 7, itemType: ItemType.armor, armorType: ArmorType.helmet),
+    DropItem(chance: 7, itemType: ItemType.armor, armorType: ArmorType.chestplate),
+    DropItem(chance: 7, itemType: ItemType.armor, armorType: ArmorType.leggings),
+    DropItem(chance: 7, itemType: ItemType.armor, armorType: ArmorType.boots),
   ],
 );
 
@@ -85,16 +75,15 @@ final goblin = Enemy(
   expReward: 50,
   spReward: 4,
   dropList: [
-    DropItem(
-        chance: 80, itemType: ItemType.gold, minQuantity: 7, maxQuantity: 7),
-    DropItem(
-        chance: 25, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(
-        chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-    DropItem(
-        chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 80, itemType: ItemType.gold, minQuantity: 7, maxQuantity: 7),
+    DropItem(chance: 25, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 20, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 10, itemType: ItemType.armor, armorType: ArmorType.helmet),
+    DropItem(chance: 10, itemType: ItemType.armor, armorType: ArmorType.chestplate),
+    DropItem(chance: 10, itemType: ItemType.armor, armorType: ArmorType.leggings),
+    DropItem(chance: 10, itemType: ItemType.armor, armorType: ArmorType.boots),
   ],
 );
 
@@ -108,16 +97,11 @@ final dryad = Enemy(
   expReward: 100,
   spReward: 8,
   dropList: [
-    DropItem(
-        chance: 80, itemType: ItemType.gold, minQuantity: 10, maxQuantity: 10),
+    DropItem(chance: 80, itemType: ItemType.gold, minQuantity: 10, maxQuantity: 10),
     DropItem(chance: 33, itemType: ItemType.weapon, weaponType: WeaponType.bow),
-    DropItem(
-        chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.sword),
-    DropItem(
-        chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
-    DropItem(
-        chance: 33, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-    DropItem(
-        chance: 40, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 40, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 33, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
+    DropItem(chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
   ],
 );

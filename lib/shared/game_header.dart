@@ -1,6 +1,7 @@
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/runner.dart';
+import 'package:enchantment_game/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -58,13 +59,12 @@ class _PersistentHeader extends StatelessWidget {
     final percentLabel = '${(clampedProgress * 100).round()}%';
 
     return Material(
-      color: const Color.fromRGBO(52, 52, 52, 1),
+      color: AppColors.panelBackground,
       child: SafeArea(
         bottom: false,
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
-              color: Colors.black.withValues(alpha: .7), border: Border.symmetric(horizontal: BorderSide(color: Colors.yellow.withValues(alpha: .25)))),
+          decoration: BoxDecoration(color: AppColors.overlayDark, border: Border.symmetric(horizontal: BorderSide(color: AppColors.borderHighlight))),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -73,29 +73,22 @@ class _PersistentHeader extends StatelessWidget {
                   children: [
                     Text(
                       versionLabel,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.yellow,
-                        fontFamily: 'PT Sans',
-                      ),
+                      style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
                     ),
                     const Spacer(),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.monetization_on,
                           size: 20,
-                          color: Colors.yellow,
+                          color: AppColors.accentYellow,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$gold',
-                          style: TextStyle(
-                            fontSize: 18,
+                          style: AppTypography.titleSmallPrimary.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: Colors.yellow.shade700,
-                            fontFamily: 'PT Sans',
                           ),
                         ),
                       ],
@@ -112,23 +105,23 @@ class _PersistentHeader extends StatelessWidget {
                     height: 34,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const RadialGradient(
+                      gradient: RadialGradient(
                         colors: [
-                          Color.fromRGBO(110, 110, 110, 1),
-                          Color.fromRGBO(62, 62, 62, 1),
-                          Color.fromRGBO(38, 38, 38, 1),
+                          AppColors.panelBorder,
+                          AppColors.panelBorder.withValues(alpha: 0.7),
+                          AppColors.panelBorder.withValues(alpha: 0.5),
                         ],
-                        stops: [0.0, 0.55, 1.0],
-                        center: Alignment(-0.25, -0.25),
+                        stops: const [0.0, 0.55, 1.0],
+                        center: const Alignment(-0.25, -0.25),
                         radius: 0.95,
                       ),
                       border: Border.all(
-                        color: Color.fromRGBO(230, 200, 80, 1),
+                        color: AppColors.accentYellow,
                         width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.35),
+                          color: AppColors.overlayMedium,
                           blurRadius: 10,
                           offset: Offset(0, 6),
                         ),
@@ -137,11 +130,9 @@ class _PersistentHeader extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       '$level',
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: AppTypography.attributeLabel.copyWith(
                         fontWeight: FontWeight.w800,
-                        color: Colors.yellow,
-                        fontFamily: 'PT Sans',
+                        color: AppColors.accentYellow,
                       ),
                     ),
                   ),
@@ -156,9 +147,9 @@ class _PersistentHeader extends StatelessWidget {
                           LinearProgressIndicator(
                             value: clampedProgress,
                             minHeight: 8,
-                            backgroundColor: const Color.fromRGBO(230, 200, 80, 1).withValues(alpha: 0.2),
+                            backgroundColor: AppColors.accentYellow.withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Color.fromRGBO(230, 200, 80, 1),
+                              AppColors.accentYellow,
                             ),
                           ),
                           Positioned.fill(
@@ -168,8 +159,7 @@ class _PersistentHeader extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 7,
                                   fontWeight: FontWeight.w700,
-                                  color: Color.fromRGBO(10, 10, 10, 1),
-                                  fontFamily: 'PT Sans',
+                                  color: AppColors.darkText,
                                 ),
                               ),
                             ),
@@ -189,21 +179,15 @@ class _PersistentHeader extends StatelessWidget {
                     children: [
                       Text(
                         'SP',
-                        style: TextStyle(
-                          fontSize: 16,
+                        style: AppTypography.bodyLargeHighlight.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: Colors.yellow.shade700,
-                          fontFamily: 'PT Sans',
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         '$skillPoints',
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: AppTypography.bodyLargeHighlight.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: Colors.yellow,
-                          fontFamily: 'PT Sans',
                         ),
                       ),
                     ],

@@ -1,3 +1,4 @@
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class EnemyField extends StatelessWidget {
@@ -36,7 +37,7 @@ class EnemyField extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.43),
+              color: AppColors.overlayMedium,
               spreadRadius: 10,
               blurRadius: 100)
         ],

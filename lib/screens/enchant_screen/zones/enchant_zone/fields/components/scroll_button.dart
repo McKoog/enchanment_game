@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 class ScrollFieldButton extends StatelessWidget {
@@ -17,7 +17,7 @@ class ScrollFieldButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-            textStyle: scrollButtonsTextDecoration,
+            textStyle: AppTypography.bodyMediumPrimary,
             shape: RoundedRectangleBorder(
               side: BorderSide(color: Colors.yellow.withValues(alpha: 0.5), width: 1),
               borderRadius: BorderRadius.circular(9.0),
@@ -26,7 +26,7 @@ class ScrollFieldButton extends StatelessWidget {
             backgroundColor: Colors.black.withValues(alpha: 0.4)),
         child: AutoSizeText(
           caption,
-          style: scrollButtonsTextDecoration,
+          style: AppTypography.bodyMediumPrimary,
         ),
       ),
     );

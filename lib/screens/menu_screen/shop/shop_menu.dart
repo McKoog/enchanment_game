@@ -10,6 +10,12 @@ import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
+
+import 'components/shop_inventory_list.dart';
+import 'components/shop_tabs_header.dart';
+import 'components/shop_trade_checkout.dart';
 
 enum ShopTab { buy, sell }
 
@@ -50,252 +56,17 @@ class _ShopMenuState extends State<ShopMenu> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final characterBloc = context.watch<CharacterBloc>();
-    final inventoryBloc = context.watch<InventoryBloc>();
-    final character = characterBloc.state.character;
-    final inventory = inventoryBloc.state.inventory;
-
-    int totalSum = 0;
-    for (var trade in _tradeList) {
-      if (_currentTab == ShopTab.buy) {
-        totalSum += trade.item.buyPrice * trade.quantity;
-      } else {
-        totalSum += trade.item.sellPrice * trade.quantity;
-      }
-    }
-
-    bool canConfirm = false;
-    if (_tradeList.isNotEmpty) {
-      if (_currentTab == ShopTab.buy) {
-        if (totalSum <= character.gold) {
-          // Simple slot check: count how many slots we need
-          // Actually, scrolls stack, but let's do a rough check or exact check.
-          int neededSlots = 0;
-          for (var trade in _tradeList) {
-            if (trade.item is Scroll) {
-              neededSlots += (trade.quantity / Scroll.maxStackSize).ceil();
-            } else {
-              neededSlots += trade.quantity;
-            }
-          }
-          if (inventory.emptySlots >= neededSlots) {
-            canConfirm = true;
-          }
-        }
-      } else {
-        canConfirm = true; // Always can sell
-      }
-    }
-
-    return Stack(
-      children: [
-        Column(
-          children: [
-            // Top Section Tabs
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(child: _buildTab(ShopTab.buy, 'Buy')),
-                Expanded(child: _buildTab(ShopTab.sell, 'Sell')),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Top Section List
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border:
-                      Border.all(color: Colors.yellow.withValues(alpha: 0.5)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: _buildTopList(character.gold, inventory.items),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text('Trade List',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.yellow)),
-            const SizedBox(height: 8),
-            // Bottom Section (Trade List)
-            Expanded(
-              flex: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border:
-                      Border.all(color: Colors.yellow.withValues(alpha: 0.5)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ListView.builder(
-                  itemCount: _tradeList.length,
-                  itemBuilder: (context, index) {
-                    final trade = _tradeList[index];
-                    final price = _currentTab == ShopTab.buy
-                        ? trade.item.buyPrice
-                        : trade.item.sellPrice;
-                    return ListTile(
-                      leading:
-                          Image.asset(trade.item.image, width: 40, height: 40),
-                      title: Text(_getItemName(trade.item)),
-                      subtitle: Text(
-                          'Quantity: ${trade.quantity} | Total: ${price * trade.quantity} G'),
-                      trailing: IconButton(
-                        icon:
-                            const Icon(Icons.remove_circle, color: Colors.red),
-                        onPressed: () {
-                          setState(() {
-                            _tradeList.removeAt(index);
-                          });
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            // Total & Confirm
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Total: $totalSum Gold',
-                    style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.yellow)),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.withValues(alpha: 0.2),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                          color: Colors.yellow.withValues(alpha: 0.5),
-                          width: 1),
-                    ),
-                  ),
-                  onPressed: canConfirm
-                      ? () =>
-                          _confirmTrade(characterBloc, inventoryBloc, totalSum)
-                      : null,
-                  child: const Text(
-                    'Confirm Deal',
-                    style: TextStyle(color: Colors.yellow),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        Positioned.fill(
-          child: IgnorePointer(
-            child: AnimatedOpacity(
-              opacity: _showSuccess ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 500),
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.black87,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.yellow, width: 2),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.check_circle, color: Colors.green, size: 64),
-                      SizedBox(height: 16),
-                      Text('Successfull Deal',
-                          style: TextStyle(color: Colors.white, fontSize: 24)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  void _onTabChanged(ShopTab tab) {
+    setState(() {
+      _currentTab = tab;
+      _tradeList.clear();
+    });
   }
 
-  Widget _buildTab(ShopTab tab, String label) {
-    final isSelected = _currentTab == tab;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _currentTab = tab;
-          _tradeList.clear();
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Colors.yellow.withValues(alpha: 0.4)
-              : Colors.grey.shade700.withValues(alpha: 0.75),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTopList(int playerGold, List<Item?> inventoryItems) {
-    if (_currentTab == ShopTab.buy) {
-      return ListView.builder(
-        itemCount: _buyItems.length,
-        itemBuilder: (context, index) {
-          final item = _buyItems[index];
-          return _ShopListItem(
-            item: item,
-            title: _getItemName(item),
-            subtitle: '${item.buyPrice} Gold',
-            onTap: (layerLink) =>
-                _handleItemTap(item, playerGold, null, layerLink),
-          );
-        },
-      );
-    } else {
-      final sellableItems = <Map<String, dynamic>>[];
-      for (int i = 0; i < inventoryItems.length; i++) {
-        final item = inventoryItems[i];
-        if (item != null) {
-          // Check if already in trade list
-          bool inTradeList = _tradeList.any((t) => t.inventoryIndex == i);
-          if (!inTradeList) {
-            sellableItems.add({'item': item, 'index': i});
-          }
-        }
-      }
-
-      return ListView.builder(
-        itemCount: sellableItems.length,
-        itemBuilder: (context, index) {
-          final data = sellableItems[index];
-          final item = data['item'] as Item;
-          final invIndex = data['index'] as int;
-          int qty = 1;
-          if (item is Scroll) qty = item.quantity;
-          return _ShopListItem(
-            item: item,
-            title: _getItemName(item),
-            subtitle: 'Quantity: $qty | ${item.sellPrice} Gold',
-            onTap: (layerLink) =>
-                _handleItemTap(item, playerGold, invIndex, layerLink),
-          );
-        },
-      );
-    }
+  void _onRemoveTradeItem(int index) {
+    setState(() {
+      _tradeList.removeAt(index);
+    });
   }
 
   String _getItemName(Item item) {
@@ -313,8 +84,8 @@ class _ShopMenuState extends State<ShopMenu> {
     return 'Item';
   }
 
-  void _handleItemTap(
-      Item item, int playerGold, int? invIndex, LayerLink layerLink) async {
+  void _onItemTap(
+      Item item, int? invIndex, LayerLink layerLink, int playerGold) async {
     int maxQty = 1;
     if (_currentTab == ShopTab.buy) {
       if (item is Scroll) {
@@ -344,7 +115,6 @@ class _ShopMenuState extends State<ShopMenu> {
 
     setState(() {
       if (_currentTab == ShopTab.buy) {
-        // Check if already in trade list to stack
         final existing = _tradeList
             .where((t) => _getItemName(t.item) == _getItemName(item))
             .firstOrNull;
@@ -405,10 +175,10 @@ class _ShopMenuState extends State<ShopMenu> {
                       width: 166,
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color.fromRGBO(30, 30, 30, 0.95),
+                        color: AppColors.overlayVeryDark,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: const Color.fromRGBO(120, 120, 120, 1),
+                            color: AppColors.panelBorder,
                             width: 1),
                       ),
                       child: Row(
@@ -419,8 +189,8 @@ class _ShopMenuState extends State<ShopMenu> {
                             children: [
                               Text(
                                 '$selected/$maxQuantity',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                style: AppTypography.attributeLabel.copyWith(
+                                    color: AppColors.primaryText),
                               ),
                               SizedBox(
                                 height: 22,
@@ -432,10 +202,10 @@ class _ShopMenuState extends State<ShopMenu> {
                                         enabledThumbRadius: 6),
                                     overlayShape: const RoundSliderOverlayShape(
                                         overlayRadius: 10),
-                                    activeTrackColor: Colors.white,
+                                    activeTrackColor: AppColors.white,
                                     inactiveTrackColor:
-                                        const Color.fromRGBO(90, 90, 90, 1),
-                                    thumbColor: Colors.white,
+                                        AppColors.slotBackground,
+                                    thumbColor: AppColors.white,
                                   ),
                                   child: Slider(
                                     value: selected.toDouble(),
@@ -459,7 +229,7 @@ class _ShopMenuState extends State<ShopMenu> {
                             child: const Padding(
                               padding: EdgeInsets.all(4),
                               child: Icon(Icons.check,
-                                  size: 24, color: Colors.white),
+                                  size: 24, color: AppColors.white),
                             ),
                           ),
                         ],
@@ -479,7 +249,7 @@ class _ShopMenuState extends State<ShopMenu> {
     return completer.future;
   }
 
-  void _confirmTrade(CharacterBloc characterBloc, InventoryBloc inventoryBloc,
+  void _onConfirmTrade(CharacterBloc characterBloc, InventoryBloc inventoryBloc,
       int totalSum) async {
     if (_currentTab == ShopTab.buy) {
       characterBloc.add(CharacterAddGold(-totalSum));
@@ -492,7 +262,7 @@ class _ShopMenuState extends State<ShopMenu> {
         } else {
           for (int i = 0; i < trade.quantity; i++) {
             inventoryBloc.add(InventoryEvent$AddItem(
-                item: trade.item)); // Need proper cloning if weapons/armor
+                item: trade.item)); 
           }
         }
       }
@@ -501,8 +271,6 @@ class _ShopMenuState extends State<ShopMenu> {
       for (var trade in _tradeList) {
         if (trade.item is Scroll &&
             trade.quantity < (trade.item as Scroll).quantity) {
-          // We sold partial stack, need to consume scroll or update inventory manually
-          // The easiest way is to split/consume.
           for (int i = 0; i < trade.quantity; i++) {
             inventoryBloc.add(
                 InventoryEvent$ConsumeScroll(slotIndex: trade.inventoryIndex!));
@@ -525,39 +293,128 @@ class _ShopMenuState extends State<ShopMenu> {
       });
     }
   }
-}
-
-class _ShopListItem extends StatefulWidget {
-  final Item item;
-  final String title;
-  final String subtitle;
-  final void Function(LayerLink) onTap;
-
-  const _ShopListItem({
-    required this.item,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  @override
-  State<_ShopListItem> createState() => _ShopListItemState();
-}
-
-class _ShopListItemState extends State<_ShopListItem> {
-  final LayerLink _layerLink = LayerLink();
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: ListTile(
-        leading: Image.asset(widget.item.image, width: 40, height: 40),
-        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
-        subtitle:
-            Text(widget.subtitle, style: const TextStyle(color: Colors.grey)),
-        onTap: () => widget.onTap(_layerLink),
-      ),
+    final characterBloc = context.watch<CharacterBloc>();
+    final inventoryBloc = context.watch<InventoryBloc>();
+    final character = characterBloc.state.character;
+    final inventory = inventoryBloc.state.inventory;
+
+    int totalSum = 0;
+    for (var trade in _tradeList) {
+      if (_currentTab == ShopTab.buy) {
+        totalSum += trade.item.buyPrice * trade.quantity;
+      } else {
+        totalSum += trade.item.sellPrice * trade.quantity;
+      }
+    }
+
+    bool canConfirm = false;
+    if (_tradeList.isNotEmpty) {
+      if (_currentTab == ShopTab.buy) {
+        if (totalSum <= character.gold) {
+          int neededSlots = 0;
+          for (var trade in _tradeList) {
+            if (trade.item is Scroll) {
+              neededSlots += (trade.quantity / Scroll.maxStackSize).ceil();
+            } else {
+              neededSlots += trade.quantity;
+            }
+          }
+          if (inventory.emptySlots >= neededSlots) {
+            canConfirm = true;
+          }
+        }
+      } else {
+        canConfirm = true;
+      }
+    }
+
+    final sellableItems = <Map<String, dynamic>>[];
+    if (_currentTab == ShopTab.sell) {
+      for (int i = 0; i < inventory.items.length; i++) {
+        final item = inventory.items[i];
+        if (item != null) {
+          bool inTradeList = _tradeList.any((t) => t.inventoryIndex == i);
+          if (!inTradeList) {
+            sellableItems.add({'item': item, 'index': i});
+          }
+        }
+      }
+    }
+
+    return Stack(
+      children: [
+        Column(
+          children: [
+            ShopTabsHeader(
+              currentTab: _currentTab,
+              onTabChanged: _onTabChanged,
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                  border:
+                      Border.all(color: AppColors.borderHighlight),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ShopInventoryList(
+                  currentTab: _currentTab,
+                  buyItems: _buyItems,
+                  sellableItems: sellableItems,
+                  getItemName: _getItemName,
+                  onItemTap: (item, invIndex, layerLink) =>
+                      _onItemTap(item, invIndex, layerLink, character.gold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              flex: 1,
+              child: ShopTradeCheckout(
+                tradeList: _tradeList,
+                currentTab: _currentTab,
+                totalSum: totalSum,
+                canConfirm: canConfirm,
+                getItemName: _getItemName,
+                onRemoveItem: _onRemoveTradeItem,
+                onConfirm: () => _onConfirmTrade(
+                    characterBloc, inventoryBloc, totalSum),
+              ),
+            ),
+          ],
+        ),
+        Positioned.fill(
+          child: IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _showSuccess ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 500),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: AppColors.overlayVeryDark,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.accentYellow, width: 2),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check_circle, color: AppColors.success, size: 64),
+                      const SizedBox(height: 16),
+                      Text('Successfull Deal',
+                          style: AppTypography.titleLargePrimary),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

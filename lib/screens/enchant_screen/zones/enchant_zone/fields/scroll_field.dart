@@ -6,7 +6,7 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_event.dart';
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -150,12 +150,12 @@ class _ScrollHeader extends StatelessWidget {
       child: insertedItem != null
           ? AutoSizeText(
               enchantLevel > 0 ? "$itemName +$enchantLevel" : itemName,
-              style: weaponNameDecoration,
+              style: AppTypography.titleLargeHighlight,
             )
           : isEnchantSucceed
               ? AutoSizeText(
                   scrollName,
-                  style: scrollNameDecoration,
+                  style: AppTypography.titleMediumPrimary,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                 )
@@ -189,7 +189,7 @@ class _ScrollContent extends StatelessWidget {
                 height: sideSize / 10,
                 child: AutoSizeText(
                   "Put your item in the slot",
-                  style: scrollHintDecoration,
+                  style: AppTypography.bodyLargeHighlight,
                   maxLines: 1,
                 ))
             : SizedBox.shrink(),
@@ -204,7 +204,7 @@ class _ScrollContent extends StatelessWidget {
                 height: sideSize / 10,
                 child: AutoSizeText(
                   scrollDescription,
-                  style: scrollInfoTextDecoration,
+                  style: AppTypography.bodyLargePrimary,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                 ),
@@ -244,8 +244,8 @@ class _ScrollControls extends StatelessWidget {
                       ? "Success"
                       : "Failed",
                   style: (enchantState as EnchantState$Result).isSuccess
-                      ? enchantSuccessTextDecoration
-                      : enchantFailTextDecoration)
+                      ? AppTypography.titleLargeHighlight
+                      : AppTypography.titleLargeDark)
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

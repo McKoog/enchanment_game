@@ -5,6 +5,7 @@ import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.d
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
 import 'package:enchantment_game/game_stock_data/stock_enemies.dart';
 import 'package:enchantment_game/models/enemy.dart';
+import 'package:enchantment_game/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,7 +64,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
       width: widget.width,
       height: widget.constraints.maxHeight,
       decoration: const BoxDecoration(
-        color: Color.fromRGBO(52, 52, 52, 1),
+        color: AppColors.panelBackground,
         image: DecorationImage(
           opacity: 0.7,
           image: AssetImage('assets/background/forest_background.png'),
@@ -121,13 +122,13 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                               color: Colors.transparent,
                               border: Border.all(
                                 color: isSelected
-                                    ? Colors.yellow
-                                    : const Color.fromRGBO(130, 130, 130, 1),
+                                    ? AppColors.accentYellow
+                                    : AppColors.panelBorder,
                                 width: 2,
                               ),
-                              boxShadow: const [
+                              boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black54,
+                                  color: AppColors.overlayMedium,
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 )
@@ -141,7 +142,7 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                                   fit: BoxFit.contain,
                                   gaplessPlayback: true,
                                   color: isDeathCooldownActive
-                                      ? Colors.black54
+                                      ? AppColors.overlayMedium
                                       : null,
                                   colorBlendMode: isDeathCooldownActive
                                       ? BlendMode.darken
@@ -153,14 +154,13 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                           if (isDeathCooldownActive)
                             Text(
                               '$remainingDeathSeconds',
-                              style: const TextStyle(
-                                color: Colors.yellow,
+                              style: AppTypography.titleLargePrimary.copyWith(
+                                color: AppColors.accentYellow,
                                 fontSize: 48,
-                                fontFamily: 'PT Sans',
                                 fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(color: Colors.black, blurRadius: 10),
-                                  Shadow(color: Colors.red, blurRadius: 20),
+                                shadows: const [
+                                  Shadow(color: AppColors.black, blurRadius: 10),
+                                  Shadow(color: AppColors.error, blurRadius: 20),
                                 ],
                               ),
                             ),
@@ -178,12 +178,12 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                           width: constraints.maxWidth,
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            border: Border.all(color: Colors.yellow, width: 2),
+                            color: AppColors.overlayLight,
+                            border: Border.all(color: AppColors.accentYellow, width: 2),
                             borderRadius: BorderRadius.circular(15),
-                            boxShadow: const [
+                            boxShadow: [
                               BoxShadow(
-                                color: Colors.black54,
+                                color: AppColors.overlayMedium,
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               )

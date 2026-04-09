@@ -1,4 +1,4 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:flutter/material.dart';
 
@@ -20,13 +20,13 @@ class ArmorInfoField extends StatelessWidget {
               armor.enchantLevel > 0
                   ? "${armor.name} +${armor.enchantLevel}"
                   : armor.name,
-              style: weaponNameDecoration),
+              style: AppTypography.titleLargeHighlight),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Defense: ${armor.defense}",
-            style: weaponInfoTextDecoration,
+            style: AppTypography.titleSmallPrimary,
           ),
         ],
       ),

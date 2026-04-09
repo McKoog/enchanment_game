@@ -1,6 +1,7 @@
-import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
-import 'package:enchantment_game/decorations/fields_decoration.dart';
+import 'package:enchantment_game/theme/enchanted_weapons_glow_colors.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class WeaponField extends StatelessWidget {
@@ -30,17 +31,17 @@ class WeaponField extends StatelessWidget {
             padding: EdgeInsets.all(padding),
             decoration: showBackground
                 ? (weapon.enchantLevel < 1
-                    ? attackFieldDecoration
+                    ? AppDecorations.attackField
                     : BoxDecoration(
-                        color: const Color.fromRGBO(85, 85, 85, 1),
+                        color: AppColors.slotBackground,
                         border: Border.fromBorderSide(BorderSide(
                             color: weapon.enchantLevel <= 15
-                                ? const Color.fromRGBO(130, 130, 130, 1)
+                                ? AppColors.panelBorder
                                 : weapon.enchantLevel <= 20
                                     ? enchantedWeaponsGlowColors[
                                             weapon.enchantLevel]
                                         .withValues(alpha: 0.6)
-                                    : const Color.fromRGBO(130, 130, 130, 1),
+                                    : AppColors.panelBorder,
                             width: 2)),
                         shape: BoxShape.circle,
                         boxShadow: weapon.enchantLevel == 0

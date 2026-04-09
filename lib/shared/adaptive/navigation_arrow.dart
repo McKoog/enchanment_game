@@ -1,3 +1,4 @@
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 enum ArrowDirection { left, right }
@@ -63,7 +64,7 @@ class _NavigationArrowState extends State<NavigationArrow>
               width: 30,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.5),
+                color: AppColors.overlayMedium,
                 borderRadius: widget.direction == ArrowDirection.left
                     ? const BorderRadius.only(
                         topRight: Radius.circular(12),
@@ -74,7 +75,7 @@ class _NavigationArrowState extends State<NavigationArrow>
                         bottomLeft: Radius.circular(12),
                       ),
                 border: Border.all(
-                  color: Colors.yellow.withValues(alpha: 0.6),
+                  color: AppColors.borderHighlight,
                   width: 1.5,
                 ),
               ),
@@ -82,7 +83,7 @@ class _NavigationArrowState extends State<NavigationArrow>
                 widget.direction == ArrowDirection.left
                     ? Icons.chevron_left
                     : Icons.chevron_right,
-                color: Colors.yellow,
+                color: AppColors.accentYellow,
                 size: 30,
               ),
             ),
