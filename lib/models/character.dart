@@ -2,6 +2,7 @@ import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
+import 'package:enchantment_game/services/skill_service.dart';
 
 class Character {
   Character({
@@ -17,6 +18,7 @@ class Character {
     this.baseHealth = 100,
     this.hpRegen = 1,
     int? currentHealth,
+    this.learnedSkills = const {},
     this.escapeCooldownEndTime,
     this.deathCooldownEndTime,
   }) : currentHealth = currentHealth ?? baseHealth;
@@ -35,6 +37,8 @@ class Character {
   final int baseHealth;
   final int hpRegen;
   final int currentHealth;
+
+  final Map<String, int> learnedSkills;
 
   final DateTime? escapeCooldownEndTime;
   final DateTime? deathCooldownEndTime;
@@ -76,35 +80,46 @@ class Character {
   double get attackSpeed {
     double speed = equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
     final setEffect = ArmorSetService.getEffect(activeSetType);
+    final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     if (setEffect != null) {
-      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
       speed *=
           setEffect.getAttackSpeedMultiplier(activeSetEnchantLevel, weaponType);
     }
+    speed += SkillService.getAttackSpeedBonus(learnedSkills, weaponType);
     return speed;
   }
 
   double get lowerDamage {
     double damage =
         equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
+    final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     final setEffect = ArmorSetService.getEffect(activeSetType);
     if (setEffect != null) {
-      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
       damage +=
           setEffect.getBonusLowerDamage(activeSetEnchantLevel, weaponType);
     }
+    final bonusMultiplier = equippedWeapon != null
+        ? SkillService.getEnchantmentBonusDamageMultiplier(
+            learnedSkills, equippedWeapon!.enchantLevel)
+        : 0.0;
+    damage += damage * bonusMultiplier;
     return damage;
   }
 
   double get higherDamage {
     double damage =
         equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
+    final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     final setEffect = ArmorSetService.getEffect(activeSetType);
     if (setEffect != null) {
-      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
       damage +=
           setEffect.getBonusHigherDamage(activeSetEnchantLevel, weaponType);
     }
+    final bonusMultiplier = equippedWeapon != null
+        ? SkillService.getEnchantmentBonusDamageMultiplier(
+            learnedSkills, equippedWeapon!.enchantLevel)
+        : 0.0;
+    damage += damage * bonusMultiplier;
     return damage;
   }
 
@@ -165,6 +180,7 @@ class Character {
     int? baseHealth,
     int? hpRegen,
     int? currentHealth,
+    Map<String, int>? learnedSkills,
     DateTime? escapeCooldownEndTime,
     DateTime? deathCooldownEndTime,
     bool clearWeapon = false,
@@ -193,6 +209,7 @@ class Character {
       baseHealth: baseHealth ?? this.baseHealth,
       hpRegen: hpRegen ?? this.hpRegen,
       currentHealth: currentHealth ?? this.currentHealth,
+      learnedSkills: learnedSkills ?? this.learnedSkills,
       escapeCooldownEndTime: clearEscapeCooldown
           ? null
           : (escapeCooldownEndTime ?? this.escapeCooldownEndTime),
@@ -216,6 +233,7 @@ class Character {
       'baseHealth': baseHealth,
       'hpRegen': hpRegen,
       'currentHealth': currentHealth,
+      'learnedSkills': learnedSkills,
       'escapeCooldownEndTime': escapeCooldownEndTime?.toIso8601String(),
       'deathCooldownEndTime': deathCooldownEndTime?.toIso8601String(),
     };
@@ -245,6 +263,9 @@ class Character {
       baseHealth: json['baseHealth'] ?? 100,
       hpRegen: json['hpRegen'] ?? 1,
       currentHealth: json['currentHealth'],
+      learnedSkills: json['learnedSkills'] != null
+          ? Map<String, int>.from(json['learnedSkills'])
+          : const {},
       escapeCooldownEndTime: json['escapeCooldownEndTime'] != null
           ? DateTime.parse(json['escapeCooldownEndTime'])
           : null,

@@ -2,9 +2,11 @@ import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/character.dart';
+import 'package:enchantment_game/models/skills/skill_type.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/components/equip_slot.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/components/equipment_picker.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
+import 'package:enchantment_game/services/skill_service.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +26,68 @@ class _EquipZoneState extends State<EquipZone> {
 
   List<Widget> _buildEffectsList(Character character) {
     final effects = <Widget>[];
+
+    // Build skills section
+    final learnedSkills =
+        character.learnedSkills.entries.where((e) => e.value > 0).toList();
+    if (learnedSkills.isNotEmpty) {
+      effects.add(
+        const Padding(
+          padding: EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            'Skills',
+            style: TextStyle(
+              color: AppColors.accentYellow,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontFamily: 'PT Sans',
+            ),
+          ),
+        ),
+      );
+
+      for (final skillEntry in learnedSkills) {
+        final skillType =
+            SkillType.values.firstWhere((e) => e.name == skillEntry.key);
+        final level = skillEntry.value;
+        final description =
+            SkillService.getSkillDescription(skillType, level: level);
+        final skillName =
+            SkillService.allSkills.firstWhere((s) => s.type == skillType).name;
+
+        effects.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6.0),
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontFamily: 'PT Sans',
+                  fontSize: 13,
+                  height: 1.2,
+                ),
+                children: [
+                  TextSpan(
+                    text: '$skillName (lvl. $level): ',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: description,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+      effects.add(const SizedBox(height: 8));
+    }
+
     final setEffect = ArmorSetService.getEffect(character.activeSetType);
 
     if (setEffect != null) {

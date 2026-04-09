@@ -31,6 +31,8 @@ import 'components/enemy_header.dart';
 import 'components/player_hp_bar.dart';
 import 'components/recent_loot_list.dart';
 
+import 'package:enchantment_game/models/skills/skill_type.dart';
+
 class EnemyPage extends StatefulWidget {
   const EnemyPage({
     super.key,
@@ -86,11 +88,22 @@ class _EnemyPageState extends State<EnemyPage>
 
     _bonusRegenTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final characterBloc = context.read<CharacterBloc>();
-      if (!_isWeaponSlotExpanded) {
-        if (characterBloc.state is CharacterLoaded) {
-          final char = (characterBloc.state as CharacterLoaded).character;
-          if (char.currentHealth > 0 && char.currentHealth < char.health) {
-            characterBloc.add(CharacterHeal(4));
+      if (characterBloc.state is CharacterLoaded) {
+        final char = (characterBloc.state as CharacterLoaded).character;
+        if (char.currentHealth > 0 && char.currentHealth < char.health) {
+          int healAmount = 0;
+          final restLevel = char.learnedSkills[SkillType.rest.name] ?? 0;
+
+          if (!_isWeaponSlotExpanded) {
+            // Weapon slot closed
+            healAmount = 3 * restLevel;
+          } else if (!_isWeaponDragging && !_isWeaponOnEnemy) {
+            // Weapon slot opened but weapon is not taken
+            healAmount = 1 * restLevel;
+          }
+
+          if (healAmount > 0) {
+            characterBloc.add(CharacterHeal(healAmount));
           }
         }
       }

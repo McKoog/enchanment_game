@@ -23,6 +23,7 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState>
           CharacterAddExp() => addExp(event, emitter),
           CharacterAddGold() => addGold(event, emitter),
           CharacterAddSkillPoints() => addSkillPoints(event, emitter),
+          CharacterUpgradeSkill() => upgradeSkill(event, emitter),
           CharacterTakeDamage() => takeDamage(event, emitter),
           CharacterHeal() => healCharacter(event, emitter),
           CharacterRespawn() => respawn(event, emitter),

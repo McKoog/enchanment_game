@@ -52,6 +52,12 @@ class CharacterStartEscapeCooldown extends CharacterEvent {}
 
 class CharacterClearEscapeCooldown extends CharacterEvent {}
 
+class CharacterUpgradeSkill extends CharacterEvent {
+  final String skillName;
+  final int cost;
+  CharacterUpgradeSkill(this.skillName, this.cost);
+}
+
 class CharacterLoad extends CharacterEvent {}
 
 class CharacterReset extends CharacterEvent {}

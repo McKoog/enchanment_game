@@ -49,4 +49,22 @@ mixin CharacterResourceMixin on Bloc<CharacterEvent, CharacterState> {
     emitter(CharacterLoaded(newCharacter));
     SaveService.saveCharacter(newCharacter);
   }
+
+  void upgradeSkill(CharacterUpgradeSkill event, Emitter<CharacterState> emitter) {
+    if (state is! CharacterLoaded) return;
+    final currentState = state as CharacterLoaded;
+    if (currentState.character.skillPoints < event.cost) return;
+
+    final newSkills = Map<String, int>.from(currentState.character.learnedSkills);
+    final currentLevel = newSkills[event.skillName] ?? 0;
+    newSkills[event.skillName] = currentLevel + 1;
+
+    final newCharacter = currentState.character.copyWith(
+      skillPoints: currentState.character.skillPoints - event.cost,
+      learnedSkills: newSkills,
+    );
+
+    emitter(CharacterLoaded(newCharacter));
+    SaveService.saveCharacter(newCharacter);
+  }
 }
