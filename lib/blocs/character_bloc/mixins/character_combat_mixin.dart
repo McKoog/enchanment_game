@@ -10,19 +10,19 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
     final currentState = state as CharacterLoaded;
     if (currentState.character.currentHealth <= 0) return;
 
-    int maxDamageBlocked = (event.damage * 0.8).toInt();
-    int actualDamageBlocked = currentState.character.defense;
+    double maxDamageBlocked = event.damage * 0.8;
+    double actualDamageBlocked = currentState.character.defense.toDouble();
 
     if (actualDamageBlocked > maxDamageBlocked) {
       actualDamageBlocked = maxDamageBlocked;
     }
 
-    int damageTaken = event.damage - actualDamageBlocked;
+    double damageTaken = event.damage - actualDamageBlocked;
     if (damageTaken < 0) {
       damageTaken = 0;
     }
 
-    int newHealth = currentState.character.currentHealth - damageTaken;
+    int newHealth = currentState.character.currentHealth - damageTaken.toInt();
 
     if (newHealth <= 0) {
       newHealth = 0;

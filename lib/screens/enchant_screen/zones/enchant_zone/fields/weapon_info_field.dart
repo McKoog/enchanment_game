@@ -25,7 +25,7 @@ class WeaponInfoField extends StatelessWidget {
             height: 16,
           ),
           Text(
-            "Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",
+            "Damage: ${weapon.lowerDamage.toStringAsFixed(1)}-${weapon.higherDamage.toStringAsFixed(1)}",
             style: AppTypography.titleSmallPrimary,
           ),
           const SizedBox(

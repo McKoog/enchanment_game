@@ -17,11 +17,11 @@ class Enemy {
   final String name;
   final String image;
   final int hp;
-  final int attack;
+  final double attack;
   final double attackSpeed;
   final List<DropItem> dropList;
   final int expReward;
   final int spReward;
 
-  int get attackDamage => attack;
+  double get attackDamage => attack;
 }

@@ -3,7 +3,7 @@ import 'package:enchantment_game/utils/game_random.dart';
 
 /// Result of a single attack.
 class AttackResult {
-  final int damage;
+  final double damage;
   final bool isCrit;
 
   const AttackResult({required this.damage, required this.isCrit});
@@ -21,7 +21,7 @@ class CombatService {
   /// Preserves the original damage distribution:
   /// roll [0, higherDamage], clamp to lowerDamage minimum, then apply crit.
   static AttackResult calculateDamage(Weapon weapon) {
-    int damage = GameRandom.nextInt(weapon.higherDamage + 1);
+    double damage = GameRandom.nextInt(weapon.higherDamage.toInt() + 1).toDouble();
     if (damage < weapon.lowerDamage) {
       damage = weapon.lowerDamage;
     }
@@ -29,7 +29,7 @@ class CombatService {
     bool isCrit = GameRandom.chance(weapon.critRate.toDouble());
     if (isCrit) {
       double critBonus = damage * (weapon.critPower / 100);
-      damage += critBonus.toInt();
+      damage += critBonus;
     }
 
     return AttackResult(damage: damage, isCrit: isCrit);

@@ -5,14 +5,14 @@ import 'package:enchantment_game/models/weapon.dart';
 
 /// Per-enchantment-level stat bonus applied to a weapon.
 class EnchantBonus {
-  final int lowerDamageBonus;
-  final int higherDamageBonus;
+  final double lowerDamageBonus;
+  final double higherDamageBonus;
   final int critRateBonus;
   final int critPowerBonus;
 
   const EnchantBonus({
-    this.lowerDamageBonus = 0,
-    this.higherDamageBonus = 0,
+    this.lowerDamageBonus = 0.0,
+    this.higherDamageBonus = 0.0,
     this.critRateBonus = 0,
     this.critPowerBonus = 0,
   });

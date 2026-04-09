@@ -26,11 +26,10 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState>
           CharacterTakeDamage() => takeDamage(event, emitter),
           CharacterHeal() => healCharacter(event, emitter),
           CharacterRespawn() => respawn(event, emitter),
-          CharacterStartEscapeCooldown() =>
-            startEscapeCooldown(event, emitter),
-          CharacterClearEscapeCooldown() =>
-            clearEscapeCooldown(event, emitter),
+          CharacterStartEscapeCooldown() => startEscapeCooldown(event, emitter),
+          CharacterClearEscapeCooldown() => clearEscapeCooldown(event, emitter),
           CharacterLoad() => _loadSaved(event, emitter),
+          CharacterReset() => _reset(event, emitter),
         });
 
     add(CharacterLoad());
@@ -58,5 +57,11 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState>
     if (savedCharacter != null) {
       emitter(CharacterLoaded(savedCharacter));
     }
+  }
+
+  void _reset(CharacterReset event, Emitter<CharacterState> emitter) {
+    final newChar = Character();
+    emitter(CharacterLoaded(newChar));
+    SaveService.saveCharacter(newChar);
   }
 }

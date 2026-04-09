@@ -37,7 +37,7 @@ class CharacterAddSkillPoints extends CharacterEvent {
 }
 
 class CharacterTakeDamage extends CharacterEvent {
-  final int damage;
+  final double damage;
   CharacterTakeDamage(this.damage);
 }
 
@@ -53,3 +53,5 @@ class CharacterStartEscapeCooldown extends CharacterEvent {}
 class CharacterClearEscapeCooldown extends CharacterEvent {}
 
 class CharacterLoad extends CharacterEvent {}
+
+class CharacterReset extends CharacterEvent {}

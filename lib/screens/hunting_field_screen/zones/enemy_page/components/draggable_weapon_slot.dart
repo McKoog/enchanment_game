@@ -107,9 +107,8 @@ class DraggableWeaponSlot extends StatelessWidget {
                       height: 80 * attackCooldownProgress,
                       decoration: BoxDecoration(
                         color: AppColors.error.withValues(alpha: 0.75),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(14),
-                          bottomRight: Radius.circular(14),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(14),
                         ),
                       ),
                     ),
@@ -136,8 +135,8 @@ class DraggableWeaponSlot extends StatelessWidget {
                                 boxShadow: [
                                   BoxShadow(
                                     color: weapon.enchantLevel > 20 ? enchantedWeaponsGlowColors[21] : enchantedWeaponsGlowColors[weapon.enchantLevel],
-                                    blurRadius: 20,
-                                    spreadRadius: 10,
+                                    blurRadius: weapon.enchantLevel * 2,
+                                    spreadRadius: weapon.enchantLevel.toDouble(),
                                   )
                                 ],
                               ),

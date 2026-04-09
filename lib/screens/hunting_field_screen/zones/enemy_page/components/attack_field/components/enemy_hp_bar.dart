@@ -16,7 +16,7 @@ class EnemyHpBar extends StatelessWidget {
   final double width;
   final Enemy enemy;
   final double widthOfOneHP;
-  final int currentHP;
+  final double currentHP;
 
   /// Available height for the HP bar row.
   final double heightFactor;
@@ -50,7 +50,7 @@ class EnemyHpBar extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "$currentHP / ${enemy.hp}",
+                      "${currentHP.toStringAsFixed(1)} / ${enemy.hp}",
                       style: AppTypography.titleMediumDark,
                     ),
                   )),

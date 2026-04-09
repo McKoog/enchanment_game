@@ -20,6 +20,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           InventoryEvent$ConsumeScroll() => _consumeScroll(event, emitter),
           InventoryEvent$SplitScrollStack() =>
             _splitScrollStack(event, emitter),
+          InventoryEvent$Reset() => _reset(event, emitter),
         });
 
     // Automatically load saved inventory on creation.
@@ -206,6 +207,11 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     if (saved != null) {
       emitter(InventoryState(inventory: saved));
     }
+  }
+
+  void _reset(InventoryEvent$Reset event, Emitter<InventoryState> emitter) {
+    emitter(InventoryState(inventory: stockInventory));
+    _autoSave(stockInventory);
   }
 
   /// Fire-and-forget save after each mutation.

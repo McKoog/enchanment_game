@@ -1,4 +1,6 @@
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_decorations.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -28,7 +30,8 @@ class EquipSlot extends StatelessWidget {
           Container(
             width: 80,
             height: 80,
-            decoration: (AppDecorations.inventorySlot as BoxDecoration).copyWith(
+            decoration:
+                (AppDecorations.inventorySlot as BoxDecoration).copyWith(
               border: isSelected
                   ? Border.all(color: Colors.yellow, width: 2)
                   : (AppDecorations.inventorySlot as BoxDecoration).border,
@@ -52,6 +55,22 @@ class EquipSlot extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Image.asset(item!.image),
+                  ),
+                if (item != null && (item is Weapon || item is Armor))
+                  Positioned(
+                    right: 8,
+                    bottom: 8,
+                    child: Text(
+                      (item is Weapon && (item as Weapon).enchantLevel > 0)
+                          ? "+${(item as Weapon).enchantLevel}"
+                          : (item is Armor && (item as Armor).enchantLevel > 0)
+                              ? "+${(item as Armor).enchantLevel}"
+                              : "",
+                      style: AppTypography.attributeLabel.copyWith(
+                        fontSize: 10,
+                        color: AppColors.accentYellow,
+                      ),
+                    ),
                   ),
               ],
             ),

@@ -1,6 +1,9 @@
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
+import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
+import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
 import 'package:enchantment_game/runner.dart';
+import 'package:enchantment_game/shared/settings_dialog.dart';
 import 'package:enchantment_game/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +15,8 @@ class GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharacterBloc, CharacterState>(builder: (context, state) {
+    return BlocBuilder<CharacterBloc, CharacterState>(
+        builder: (context, state) {
       final character = state.character;
 
       return Column(
@@ -22,7 +26,9 @@ class GameHeader extends StatelessWidget {
             versionLabel: 'alpha v.$appVersion',
             gold: character.gold,
             level: character.level,
-            experienceProgress: character.maxExp > 0 ? character.currentExp / character.maxExp : 0,
+            experienceProgress: character.maxExp > 0
+                ? character.currentExp / character.maxExp
+                : 0,
             skillPoints: character.skillPoints,
           ),
           Expanded(
@@ -64,7 +70,10 @@ class _PersistentHeader extends StatelessWidget {
         bottom: false,
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(color: AppColors.overlayDark, border: Border.symmetric(horizontal: BorderSide(color: AppColors.borderHighlight))),
+          decoration: BoxDecoration(
+              color: AppColors.overlayDark,
+              border: Border.symmetric(
+                  horizontal: BorderSide(color: AppColors.borderHighlight))),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -73,7 +82,8 @@ class _PersistentHeader extends StatelessWidget {
                   children: [
                     Text(
                       versionLabel,
-                      style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
+                      style: AppTypography.attributeLabel
+                          .copyWith(color: AppColors.accentYellow),
                     ),
                     const Spacer(),
                     Row(
@@ -147,7 +157,8 @@ class _PersistentHeader extends StatelessWidget {
                           LinearProgressIndicator(
                             value: clampedProgress,
                             minHeight: 8,
-                            backgroundColor: AppColors.accentYellow.withValues(alpha: 0.2),
+                            backgroundColor:
+                                AppColors.accentYellow.withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(
                               AppColors.accentYellow,
                             ),
@@ -192,6 +203,30 @@ class _PersistentHeader extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  final particleBloc = context.read<ParticleSettingBloc>();
+                  final characterBloc = context.read<CharacterBloc>();
+                  final inventoryBloc = context.read<InventoryBloc>();
+
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (_) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: particleBloc),
+                        BlocProvider.value(value: characterBloc),
+                        BlocProvider.value(value: inventoryBloc),
+                      ],
+                      child: const SettingsDialog(),
+                    ),
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(Icons.settings, color: AppColors.accentYellow),
                 ),
               ),
             ],

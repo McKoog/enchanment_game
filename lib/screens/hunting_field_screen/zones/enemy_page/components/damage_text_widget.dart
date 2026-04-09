@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class DamageTextData {
   final String id;
-  final int damage;
+  final double damage;
   final double randomX;
   final double randomY;
   final bool isHeal;
@@ -18,7 +18,7 @@ class DamageTextData {
 }
 
 class DamageTextWidget extends StatefulWidget {
-  final int damage;
+  final double damage;
   final VoidCallback onComplete;
   final bool flyUp;
   final bool isHeal;
@@ -79,7 +79,9 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
           child: Opacity(
             opacity: _opacityAnimation.value,
             child: Text(
-              widget.isHeal ? '+ ${widget.damage}' : '- ${widget.damage}',
+              widget.isHeal
+                  ? '+ ${widget.damage.toStringAsFixed(1)}'
+                  : '- ${widget.damage.toStringAsFixed(1)}',
               style: TextStyle(
                 color: widget.isHeal ? AppColors.success : AppColors.error,
                 fontSize: 28,

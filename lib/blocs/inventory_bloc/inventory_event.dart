@@ -46,3 +46,5 @@ class InventoryEvent$SplitScrollStack extends InventoryEvent {
   final int toIndex;
   final int quantity;
 }
+
+class InventoryEvent$Reset extends InventoryEvent {}

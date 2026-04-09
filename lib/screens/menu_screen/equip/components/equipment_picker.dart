@@ -69,16 +69,21 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
         final allItems = inventoryBloc.state.inventory.items;
         for (final item in allItems) {
           if (item == null) continue;
-          if (widget.selectedSlot == SelectedSlot.weapon && item.type == ItemType.weapon) {
+          if (widget.selectedSlot == SelectedSlot.weapon &&
+              item.type == ItemType.weapon) {
             availableItems.add(item);
           } else if (item.type == ItemType.armor && item is Armor) {
-            if (widget.selectedSlot == SelectedSlot.helmet && item.armorType == ArmorType.helmet) {
+            if (widget.selectedSlot == SelectedSlot.helmet &&
+                item.armorType == ArmorType.helmet) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.chestplate && item.armorType == ArmorType.chestplate) {
+            } else if (widget.selectedSlot == SelectedSlot.chestplate &&
+                item.armorType == ArmorType.chestplate) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.leggings && item.armorType == ArmorType.leggings) {
+            } else if (widget.selectedSlot == SelectedSlot.leggings &&
+                item.armorType == ArmorType.leggings) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.boots && item.armorType == ArmorType.boots) {
+            } else if (widget.selectedSlot == SelectedSlot.boots &&
+                item.armorType == ArmorType.boots) {
               availableItems.add(item);
             }
           }
@@ -92,12 +97,13 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
           if (a == null && b == null) return 0;
           if (a == null) return -1;
           if (b == null) return 1;
-          if (a.id == 'fist') return -1;
-          if (b.id == 'fist') return 1;
+          if (a.id == 'fist' || a.id == 'template') return -1;
+          if (b.id == 'fist' || b.id == 'template') return 1;
           return a.id.compareTo(b.id);
         });
 
-        initialIndex = availableItems.indexWhere((i) => i?.id == currentlyEquipped!.id);
+        initialIndex =
+            availableItems.indexWhere((i) => i?.id == currentlyEquipped!.id);
         if (initialIndex == -1) initialIndex = 0;
       }
     }
@@ -135,16 +141,21 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
     for (final item in allItems) {
       if (item == null) continue;
 
-      if (widget.selectedSlot == SelectedSlot.weapon && item.type == ItemType.weapon) {
+      if (widget.selectedSlot == SelectedSlot.weapon &&
+          item.type == ItemType.weapon) {
         availableItems.add(item);
       } else if (item.type == ItemType.armor && item is Armor) {
-        if (widget.selectedSlot == SelectedSlot.helmet && item.armorType == ArmorType.helmet) {
+        if (widget.selectedSlot == SelectedSlot.helmet &&
+            item.armorType == ArmorType.helmet) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.chestplate && item.armorType == ArmorType.chestplate) {
+        } else if (widget.selectedSlot == SelectedSlot.chestplate &&
+            item.armorType == ArmorType.chestplate) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.leggings && item.armorType == ArmorType.leggings) {
+        } else if (widget.selectedSlot == SelectedSlot.leggings &&
+            item.armorType == ArmorType.leggings) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.boots && item.armorType == ArmorType.boots) {
+        } else if (widget.selectedSlot == SelectedSlot.boots &&
+            item.armorType == ArmorType.boots) {
           availableItems.add(item);
         }
       }
@@ -171,7 +182,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
         break;
     }
 
-    if (currentlyEquipped != null && !availableItems.any((i) => i?.id == currentlyEquipped?.id)) {
+    if (currentlyEquipped != null &&
+        !availableItems.any((i) => i?.id == currentlyEquipped?.id)) {
       availableItems.add(currentlyEquipped);
     }
 
@@ -180,8 +192,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
       if (a == null && b == null) return 0;
       if (a == null) return -1;
       if (b == null) return 1;
-      if (a.id == 'fist') return -1;
-      if (b.id == 'fist') return 1;
+      if (a.id == 'fist' || a.id == 'template') return -1;
+      if (b.id == 'fist' || b.id == 'template') return 1;
       return a.id.compareTo(b.id);
     });
 
@@ -218,12 +230,14 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
 
             if (equippedNow?.id == itemToEquip?.id) return;
 
-            if (equippedNow != null && equippedNow.id != 'fist') {
+            if (equippedNow != null &&
+                equippedNow.id != 'fist' &&
+                equippedNow.id != 'template') {
               inventoryBloc.add(InventoryEvent$AddItem(item: equippedNow));
             }
 
             if (itemToEquip != null) {
-              if (itemToEquip.id != 'fist') {
+              if (itemToEquip.id != 'fist' && itemToEquip.id != 'template') {
                 inventoryBloc.add(InventoryEvent$RemoveItem(item: itemToEquip));
               }
 
@@ -241,7 +255,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
                   characterBloc.add(CharacterUnequipArmor(ArmorType.helmet));
                   break;
                 case SelectedSlot.chestplate:
-                  characterBloc.add(CharacterUnequipArmor(ArmorType.chestplate));
+                  characterBloc
+                      .add(CharacterUnequipArmor(ArmorType.chestplate));
                   break;
                 case SelectedSlot.leggings:
                   characterBloc.add(CharacterUnequipArmor(ArmorType.leggings));

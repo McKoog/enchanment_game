@@ -20,8 +20,8 @@ class Weapon extends Item {
 
   String name;
   WeaponType weaponType;
-  int lowerDamage;
-  int higherDamage;
+  double lowerDamage;
+  double higherDamage;
   int critRate;
   int critPower;
   double attackSpeed;
@@ -53,8 +53,8 @@ class Weapon extends Item {
       buyPrice: json['buyPrice'] ?? 0,
       name: json['name'],
       weaponType: WeaponType.values.byName(json['weaponType']),
-      lowerDamage: json['lowerDamage'],
-      higherDamage: json['higherDamage'],
+      lowerDamage: json['lowerDamage']?.toDouble() ?? 0.0,
+      higherDamage: json['higherDamage']?.toDouble() ?? 0.0,
       critRate: json['critRate'],
       critPower: json['critPower'],
       attackSpeed: json['attackSpeed']?.toDouble() ?? 1.0,

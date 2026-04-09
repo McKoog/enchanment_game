@@ -49,10 +49,10 @@ class Character {
   double get attackSpeed =>
       equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
 
-  int get lowerDamage =>
+  double get lowerDamage =>
       equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
 
-  int get higherDamage =>
+  double get higherDamage =>
       equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
 
   int get defense {
