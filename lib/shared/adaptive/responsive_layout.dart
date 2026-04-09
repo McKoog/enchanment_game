@@ -19,6 +19,11 @@ class ResponsiveLayout extends StatefulWidget {
 }
 
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  // --- GlobalKeys to preserve state across layout switches ---
+  final GlobalKey _menuKey = GlobalKey();
+  final GlobalKey _enchantKey = GlobalKey();
+  final GlobalKey _huntingKey = GlobalKey();
+
   // --- Medium mode (2 panels) ---
   ScrollController? _scrollController;
   double _lastPanelWidth = 0;
@@ -34,8 +39,12 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Precache all common backgrounds at the root level
-    precacheImage(const AssetImage('assets/background/dark_hall_background.png'), context);
-    precacheImage(const AssetImage('assets/background/town_center_background.png'), context);
+    precacheImage(
+        const AssetImage('assets/background/dark_hall_background.png'),
+        context);
+    precacheImage(
+        const AssetImage('assets/background/town_center_background.png'),
+        context);
   }
 
   @override
@@ -128,7 +137,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   }
 
   void _onMediumScrollEnd() {
-    if (_scrollController == null || !_scrollController!.hasClients || _lastPanelWidth == 0) {
+    if (_scrollController == null ||
+        !_scrollController!.hasClients ||
+        _lastPanelWidth == 0) {
       return;
     }
 
@@ -177,9 +188,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     final panelWidth = totalWidth / 3;
     return Row(
       children: [
-        MenuScreen(width: panelWidth),
-        EnchantScreen(width: panelWidth),
-        HuntingFieldScreen(width: panelWidth),
+        MenuScreen(key: _menuKey, width: panelWidth),
+        EnchantScreen(key: _enchantKey, width: panelWidth),
+        HuntingFieldScreen(key: _huntingKey, width: panelWidth),
       ],
     );
   }
@@ -203,9 +214,17 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               width: panelWidth * 3,
               child: Row(
                 children: [
-                  SizedBox(width: panelWidth, child: MenuScreen(width: panelWidth)),
-                  SizedBox(width: panelWidth, child: EnchantScreen(width: panelWidth)),
-                  SizedBox(width: panelWidth, child: HuntingFieldScreen(width: panelWidth)),
+                  SizedBox(
+                      width: panelWidth,
+                      child: MenuScreen(key: _menuKey, width: panelWidth)),
+                  SizedBox(
+                      width: panelWidth,
+                      child:
+                          EnchantScreen(key: _enchantKey, width: panelWidth)),
+                  SizedBox(
+                      width: panelWidth,
+                      child: HuntingFieldScreen(
+                          key: _huntingKey, width: panelWidth)),
                 ],
               ),
             ),
@@ -227,10 +246,10 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               _currentIndex = page;
             });
           },
-          children: const [
-            MenuScreen(),
-            EnchantScreen(),
-            HuntingFieldScreen(),
+          children: [
+            _KeepAliveWrapper(child: MenuScreen(key: _menuKey)),
+            _KeepAliveWrapper(child: EnchantScreen(key: _enchantKey)),
+            _KeepAliveWrapper(child: HuntingFieldScreen(key: _huntingKey)),
           ],
         ),
         _buildArrows(mode),
@@ -283,25 +302,31 @@ class _SnapScrollPhysics extends ScrollPhysics {
 
   @override
   _SnapScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return _SnapScrollPhysics(snapSize: snapSize, parent: buildParent(ancestor));
+    return _SnapScrollPhysics(
+        snapSize: snapSize, parent: buildParent(ancestor));
   }
 
-  double _getTargetPixels(ScrollMetrics position, Tolerance tolerance, double velocity) {
+  double _getTargetPixels(
+      ScrollMetrics position, Tolerance tolerance, double velocity) {
     double page = position.pixels / snapSize;
     if (velocity < -tolerance.velocity) {
       page -= 0.5;
     } else if (velocity > tolerance.velocity) {
       page += 0.5;
     }
-    return (page.roundToDouble() * snapSize).clamp(position.minScrollExtent, position.maxScrollExtent);
+    return (page.roundToDouble() * snapSize)
+        .clamp(position.minScrollExtent, position.maxScrollExtent);
   }
 
   @override
-  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
-    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) || (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
+  Simulation? createBallisticSimulation(
+      ScrollMetrics position, double velocity) {
+    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) ||
+        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
       return super.createBallisticSimulation(position, velocity);
     }
-    final double target = _getTargetPixels(position, toleranceFor(position), velocity);
+    final double target =
+        _getTargetPixels(position, toleranceFor(position), velocity);
     if (target != position.pixels) {
       return ScrollSpringSimulation(
         spring,
@@ -316,4 +341,26 @@ class _SnapScrollPhysics extends ScrollPhysics {
 
   @override
   bool get allowImplicitScrolling => false;
+}
+
+/// A wrapper that registers [AutomaticKeepAliveClientMixin] to keep its child alive
+/// inside a [PageView] or other keep-alive supporting scrollable.
+class _KeepAliveWrapper extends StatefulWidget {
+  const _KeepAliveWrapper({required this.child});
+  final Widget child;
+
+  @override
+  State<_KeepAliveWrapper> createState() => _KeepAliveWrapperState();
+}
+
+class _KeepAliveWrapperState extends State<_KeepAliveWrapper>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
+  }
 }
