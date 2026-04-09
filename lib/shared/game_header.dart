@@ -69,115 +69,105 @@ class _PersistentHeader extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(color: AppColors.overlayDark, border: Border.symmetric(horizontal: BorderSide(color: AppColors.borderHighlight))),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Text(
-                      versionLabel,
-                      style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
-                    ),
-                    const Spacer(),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.monetization_on,
-                          size: 20,
-                          color: AppColors.accentYellow,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          '$gold',
-                          style: AppTypography.titleSmallPrimary.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
+              Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: RadialGradient(
-                        colors: [
-                          AppColors.panelBorder,
-                          AppColors.panelBorder.withValues(alpha: 0.7),
-                          AppColors.panelBorder.withValues(alpha: 0.5),
-                        ],
-                        stops: const [0.0, 0.55, 1.0],
-                        center: const Alignment(-0.25, -0.25),
-                        radius: 0.95,
-                      ),
-                      border: Border.all(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.monetization_on,
+                        size: 20,
                         color: AppColors.accentYellow,
-                        width: 1,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.overlayMedium,
-                          blurRadius: 10,
-                          offset: Offset(0, 6),
+                      const SizedBox(width: 6),
+                      Text(
+                        '$gold',
+                        style: AppTypography.titleSmallPrimary.copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$level',
-                      style: AppTypography.attributeLabel.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.accentYellow,
                       ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: 70,
-                    height: 8,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Stack(
-                        children: [
-                          LinearProgressIndicator(
-                            value: clampedProgress,
-                            minHeight: 8,
-                            backgroundColor: AppColors.accentYellow.withValues(alpha: 0.2),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColors.accentYellow,
-                            ),
+                  const SizedBox(width: 12),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              AppColors.panelBorder,
+                              AppColors.panelBorder.withValues(alpha: 0.7),
+                              AppColors.panelBorder.withValues(alpha: 0.5),
+                            ],
+                            stops: const [0.0, 0.55, 1.0],
+                            center: const Alignment(-0.25, -0.25),
+                            radius: 0.95,
                           ),
-                          Positioned.fill(
-                            child: Center(
-                              child: Text(
-                                percentLabel,
-                                style: const TextStyle(
-                                  fontSize: 7,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.darkText,
+                          border: Border.all(
+                            color: AppColors.accentYellow,
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.overlayMedium,
+                              blurRadius: 10,
+                              offset: Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '$level',
+                          style: AppTypography.attributeLabel.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.accentYellow,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: 70,
+                        height: 8,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Stack(
+                            children: [
+                              LinearProgressIndicator(
+                                value: clampedProgress,
+                                minHeight: 8,
+                                backgroundColor: AppColors.accentYellow.withValues(alpha: 0.2),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColors.accentYellow,
                                 ),
                               ),
-                            ),
+                              Positioned.fill(
+                                child: Center(
+                                  child: Text(
+                                    percentLabel,
+                                    style: const TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.darkText,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
+                  const SizedBox(width: 12),
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
@@ -195,30 +185,40 @@ class _PersistentHeader extends StatelessWidget {
                       ),
                     ],
                   ),
+                ],
+              ),
+              Positioned(
+                left: 0,
+                child: Text(
+                  versionLabel,
+                  style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  final visualSettingsBloc = context.read<VisualSettingsBloc>();
-                  final characterBloc = context.read<CharacterBloc>();
-                  final inventoryBloc = context.read<InventoryBloc>();
+              Positioned(
+                right: 0,
+                child: InkWell(
+                  onTap: () {
+                    final visualSettingsBloc = context.read<VisualSettingsBloc>();
+                    final characterBloc = context.read<CharacterBloc>();
+                    final inventoryBloc = context.read<InventoryBloc>();
 
-                  showDialog(
-                    context: context,
-                    useRootNavigator: true,
-                    builder: (_) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: visualSettingsBloc),
-                        BlocProvider.value(value: characterBloc),
-                        BlocProvider.value(value: inventoryBloc),
-                      ],
-                      child: const SettingsDialog(),
-                    ),
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Icon(Icons.settings, color: AppColors.accentYellow),
+                    showDialog(
+                      context: context,
+                      useRootNavigator: true,
+                      builder: (_) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: visualSettingsBloc),
+                          BlocProvider.value(value: characterBloc),
+                          BlocProvider.value(value: inventoryBloc),
+                        ],
+                        child: const SettingsDialog(),
+                      ),
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.only(left: 8.0),
+                    child: Icon(Icons.settings, color: AppColors.accentYellow),
+                  ),
                 ),
               ),
             ],
