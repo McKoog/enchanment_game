@@ -33,6 +33,7 @@ class DraggableWeaponSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final characterAttackSpeed = context.read<CharacterBloc>().state.character.attackSpeed;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onHorizontalDragUpdate: (details) {
@@ -52,26 +53,55 @@ class DraggableWeaponSlot extends StatelessWidget {
             AnimatedBuilder(
               animation: pulseController,
               builder: (context, child) {
+                final charState = context.watch<CharacterBloc>().state;
+                final escapeTime = charState.character.escapeCooldownEndTime;
+                final isAllowedToEscape = (escapeTime != null && DateTime.now().isAfter(escapeTime));
+
                 return Transform.translate(
-                  offset: Offset(isExpanded ? (pulseController.value * 5) : (-pulseController.value * 15), 0),
+                  offset: Offset(isExpanded ? (pulseController.value * -5) : (-pulseController.value * 10), 0),
                   child: Column(
-                    children: [
-                      Text(isExpanded ? '>>>>>>' : '<<<<<<', style: AppTypography.attributeLabel.copyWith(color: AppColors.error)),
-                      Text(isExpanded ? '>>>>>>' : '<<<<<<', style: AppTypography.attributeLabel.copyWith(color: AppColors.error)),
-                      Text(isExpanded ? '>>>>>>' : '<<<<<<', style: AppTypography.attributeLabel.copyWith(color: AppColors.error)),
-                    ],
+                    children: List<Widget>.generate(3, (index) {
+                      return Row(
+                        children: [
+                          Icon(
+                            isExpanded
+                                ? isDragging || !isAllowedToEscape
+                                    ? Icons.close
+                                    : Icons.arrow_forward_rounded
+                                : Icons.arrow_back_rounded,
+                            size: 24,
+                            color: AppColors.error,
+                          ),
+                          if (!isDragging && isAllowedToEscape)
+                            Icon(
+                              isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
+                              size: 24,
+                              color: AppColors.error,
+                            ),
+                          if (!isDragging && isAllowedToEscape)
+                            Icon(
+                              isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
+                              size: 24,
+                              color: AppColors.error,
+                            ),
+                        ],
+                      );
+                    }),
                   ),
                 );
               },
             ),
             // Silhouette when collapsed
             if (!isExpanded)
-              ColorFiltered(
-                colorFilter: const ColorFilter.mode(AppColors.error, BlendMode.srcIn),
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Image.asset('assets/icons/slot_slider_icon.png', gaplessPlayback: true, fit: BoxFit.contain),
+              Container(
+                decoration: BoxDecoration(color: AppColors.overlayMedium, borderRadius: BorderRadius.circular(15)),
+                child: ColorFiltered(
+                  colorFilter: const ColorFilter.mode(AppColors.error, BlendMode.srcIn),
+                  child: SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Image.asset('assets/icons/slot_slider_icon.png', gaplessPlayback: true, fit: BoxFit.contain),
+                  ),
                 ),
               ),
 
@@ -91,7 +121,7 @@ class DraggableWeaponSlot extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      (isDragging && attackCooldownProgress > 0) ? '${weapon.attackSpeed}/sec' : '',
+                      (isDragging && attackCooldownProgress > 0) ? '$characterAttackSpeed/sec' : '',
                       style: AppTypography.bodySmallHighlight,
                     ),
                   ),

@@ -14,11 +14,14 @@ class LootService {
   LootService._();
 
   /// Generate loot drops from a killed [enemy].
-  static LootResult generateLoot(Enemy enemy) {
+  static LootResult generateLoot(Enemy enemy, {double dropChanceBonus = 0.0}) {
     final List<Item> loot = [];
 
     for (final drop in enemy.dropList) {
-      if (GameRandom.chance(drop.chance)) {
+      double chance = drop.chance + (drop.chance * dropChanceBonus);
+      if (chance > 100.0) chance = 100.0;
+      
+      if (GameRandom.chance(chance)) {
         final quantity = drop.minQuantity == drop.maxQuantity
             ? drop.minQuantity
             : drop.minQuantity +

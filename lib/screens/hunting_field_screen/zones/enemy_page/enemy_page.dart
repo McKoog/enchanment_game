@@ -14,6 +14,7 @@ import 'package:enchantment_game/models/enemy.dart';
 import 'package:enchantment_game/models/gold_item.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
+import 'package:enchantment_game/models/skills/skill_type.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
 import 'package:enchantment_game/services/combat_service.dart';
@@ -31,8 +32,6 @@ import 'components/enemy_header.dart';
 import 'components/player_hp_bar.dart';
 import 'components/recent_loot_list.dart';
 
-import 'package:enchantment_game/models/skills/skill_type.dart';
-
 class EnemyPage extends StatefulWidget {
   const EnemyPage({
     super.key,
@@ -49,8 +48,7 @@ class EnemyPage extends StatefulWidget {
   State<EnemyPage> createState() => _EnemyPageState();
 }
 
-class _EnemyPageState extends State<EnemyPage>
-    with SingleTickerProviderStateMixin {
+class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMixin {
   bool _showDropList = false;
   late double _enemyCurrentHP;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
@@ -59,6 +57,7 @@ class _EnemyPageState extends State<EnemyPage>
   final List<DamageTextData> _enemyDamageTexts = [];
   final List<DamageTextData> _playerDamageTexts = [];
   final Random _random = Random();
+  final GlobalKey<EnemyFieldState> _enemyFieldKey = GlobalKey<EnemyFieldState>();
 
   bool _isWeaponSlotExpanded = false;
   bool _isCombatActive = false;
@@ -96,7 +95,7 @@ class _EnemyPageState extends State<EnemyPage>
 
           if (!_isWeaponSlotExpanded) {
             // Weapon slot closed
-            healAmount = 3 * restLevel;
+            healAmount = 3 + (3 * restLevel);
           } else if (!_isWeaponDragging && !_isWeaponOnEnemy) {
             // Weapon slot opened but weapon is not taken
             healAmount = 1 * restLevel;
@@ -134,8 +133,7 @@ class _EnemyPageState extends State<EnemyPage>
     if (_isCombatActive) return;
     _isCombatActive = true;
     final intervalMs = (widget.enemy.attackSpeed * 1000).toInt();
-    _enemyAttackTimer =
-        Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
+    _enemyAttackTimer = Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
       _enemyAttack();
     });
   }
@@ -155,17 +153,22 @@ class _EnemyPageState extends State<EnemyPage>
     final charState = characterBloc.state as CharacterLoaded;
     if (charState.character.currentHealth <= 0) return;
 
-    double maxDamageBlocked = widget.enemy.attackDamage * 0.8;
-    double actualDamageBlocked = charState.character.defense.toDouble();
+    bool isBlocked = _random.nextDouble() < charState.character.blockChance;
+    double damageTaken = 0;
 
-    if (actualDamageBlocked > maxDamageBlocked) {
-      actualDamageBlocked = maxDamageBlocked;
+    if (!isBlocked) {
+      double maxDamageBlocked = widget.enemy.attackDamage * 0.8;
+      double actualDamageBlocked = charState.character.defense.toDouble();
+
+      if (actualDamageBlocked > maxDamageBlocked) {
+        actualDamageBlocked = maxDamageBlocked;
+      }
+
+      damageTaken = widget.enemy.attackDamage - actualDamageBlocked;
+      if (damageTaken < 0) damageTaken = 0;
+
+      characterBloc.add(CharacterTakeDamage(widget.enemy.attackDamage));
     }
-
-    double damageTaken = widget.enemy.attackDamage - actualDamageBlocked;
-    if (damageTaken < 0) damageTaken = 0;
-
-    characterBloc.add(CharacterTakeDamage(widget.enemy.attackDamage));
 
     final id = UniqueKey().toString();
     setState(() {
@@ -174,6 +177,7 @@ class _EnemyPageState extends State<EnemyPage>
         damage: damageTaken,
         randomX: 0,
         randomY: _random.nextDouble() * 40 - 20,
+        isBlock: isBlocked,
       ));
     });
   }
@@ -202,8 +206,7 @@ class _EnemyPageState extends State<EnemyPage>
     _performSingleAttack();
 
     final setEffect = ArmorSetService.getEffect(character.activeSetType);
-    if (setEffect != null &&
-        setEffect.hasDoubleAttackChance(widget.weapon.weaponType)) {
+    if (setEffect != null && setEffect.hasDoubleAttackChance(widget.weapon.weaponType)) {
       final chance = setEffect.getDoubleAttackChance(widget.weapon.weaponType);
       if (_random.nextDouble() < chance) {
         Future.delayed(const Duration(milliseconds: 150), () {
@@ -216,7 +219,15 @@ class _EnemyPageState extends State<EnemyPage>
   }
 
   void _performSingleAttack() {
-    final result = CombatService.calculateDamage(widget.weapon);
+    final characterBloc = context.read<CharacterBloc>();
+    if (characterBloc.state is! CharacterLoaded) return;
+    final character = (characterBloc.state as CharacterLoaded).character;
+
+    final result = CombatService.calculateDamage(character);
+
+    // Trigger shake animation on attack
+    _enemyFieldKey.currentState?.shake();
+
     setState(() {
       _enemyCurrentHP -= result.damage;
       final id = UniqueKey().toString();
@@ -225,30 +236,47 @@ class _EnemyPageState extends State<EnemyPage>
         damage: result.damage,
         randomX: _random.nextDouble() * 100 - 50,
         randomY: _random.nextDouble() * 100 - 50,
+        isCrit: result.isCrit,
       ));
     });
+
+    if (character.lifesteal > 0 && result.damage > 0) {
+      double lsAmount = result.damage * character.lifesteal;
+      int heal = lsAmount.toInt();
+      if (heal > 0) {
+        characterBloc.add(CharacterHeal(heal));
+
+        final healId = UniqueKey().toString();
+        setState(() {
+          _playerDamageTexts.add(DamageTextData(
+            id: healId,
+            damage: heal.toDouble(),
+            randomX: _random.nextDouble() * 40 - 20,
+            randomY: 0,
+            isHeal: true,
+          ));
+        });
+      }
+    }
 
     if (_enemyCurrentHP <= 0) {
       _enemyCurrentHP = widget.enemy.hp.toDouble();
 
       if (widget.enemy.expReward > 0 || widget.enemy.spReward > 0) {
-        context.read<CharacterBloc>().add(CharacterAddExp(
-            widget.enemy.expReward,
-            spAmount: widget.enemy.spReward));
+        characterBloc.add(CharacterAddExp(widget.enemy.expReward, spAmount: widget.enemy.spReward));
       }
 
-      final loot = LootService.generateLoot(widget.enemy);
+      final loot = LootService.generateLoot(widget.enemy, dropChanceBonus: character.dropChanceBonus);
       final inventoryBloc = context.read<InventoryBloc>();
 
       for (final item in loot.items) {
         if (item is GoldItem) {
-          context.read<CharacterBloc>().add(CharacterAddGold(item.amount));
+          characterBloc.add(CharacterAddGold(item.amount));
         } else if (!inventoryBloc.state.inventory.isFull) {
           inventoryBloc.add(InventoryEvent$AddItem(item: item));
         }
         _dropHistory.insert(0, item);
-        _listKey.currentState
-            ?.insertItem(0, duration: const Duration(milliseconds: 300));
+        _listKey.currentState?.insertItem(0, duration: const Duration(milliseconds: 300));
       }
     }
   }
@@ -256,14 +284,10 @@ class _EnemyPageState extends State<EnemyPage>
   String _getItemName(Item item) {
     if (item is GoldItem) return '${item.amount} Gold';
     if (item is Weapon) {
-      return item.enchantLevel > 0
-          ? "${item.name} +${item.enchantLevel}"
-          : item.name;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Armor) {
-      return item.enchantLevel > 0
-          ? "${item.name} +${item.enchantLevel}"
-          : item.name;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Scroll) return item.name;
     return 'Unknown Item';
@@ -281,8 +305,7 @@ class _EnemyPageState extends State<EnemyPage>
     });
     _scheduleCombatStart();
     _playerAttackTimer?.cancel();
-    _playerAttackTimer =
-        Timer.periodic(const Duration(milliseconds: 16), (timer) {
+    _playerAttackTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!mounted || !_isWeaponSlotExpanded) {
         timer.cancel();
         return;
@@ -318,8 +341,7 @@ class _EnemyPageState extends State<EnemyPage>
   }
 
   void _onWeaponSlotCollapsed() {
-    final escapeTime =
-        context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
+    final escapeTime = context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
     if (escapeTime == null || DateTime.now().isAfter(escapeTime)) {
       setState(() {
         _isWeaponSlotExpanded = false;
@@ -375,24 +397,20 @@ class _EnemyPageState extends State<EnemyPage>
     return BlocListener<CharacterBloc, CharacterState>(
       listenWhen: (previous, current) {
         if (previous is CharacterLoaded && current is CharacterLoaded) {
-          return current.character.currentHealth !=
-              previous.character.currentHealth;
+          return current.character.currentHealth != previous.character.currentHealth;
         }
         return false;
       },
       listener: (context, state) {
         if (state is CharacterLoaded) {
-          final healAmount =
-              state.character.currentHealth - _previousPlayerHealth;
+          final healAmount = state.character.currentHealth - _previousPlayerHealth;
           if (healAmount > 0 && _previousPlayerHealth != -1) {
             final id = UniqueKey().toString();
             setState(() {
               _playerDamageTexts.add(DamageTextData(
                 id: id,
                 damage: healAmount.toDouble(),
-                randomX: _isWeaponSlotExpanded
-                    ? (_random.nextDouble() * 40 - 20)
-                    : 0,
+                randomX: _isWeaponSlotExpanded ? (_random.nextDouble() * 40 - 20) : 0,
                 randomY: _random.nextDouble() * 40 - 20,
                 isHeal: true,
               ));
@@ -413,10 +431,7 @@ class _EnemyPageState extends State<EnemyPage>
           return Container(
             decoration: const BoxDecoration(
               color: AppColors.panelBackground,
-              image: DecorationImage(
-                  image: AssetImage(
-                      'assets/background/forest_enemy_background.png'),
-                  fit: BoxFit.cover),
+              image: DecorationImage(image: AssetImage('assets/background/forest_enemy_background.png'), fit: BoxFit.cover),
             ),
             width: widget.width,
             child: LayoutBuilder(
@@ -463,8 +478,7 @@ class _EnemyPageState extends State<EnemyPage>
                                       damage: dt.damage,
                                       flyUp: false,
                                       isHeal: dt.isHeal,
-                                      onComplete: () =>
-                                          _onPlayerDamageTextComplete(dt.id),
+                                      onComplete: () => _onPlayerDamageTextComplete(dt.id),
                                     ),
                                   ),
                                 );
@@ -485,8 +499,7 @@ class _EnemyPageState extends State<EnemyPage>
                           child: EnemyHpBar(
                             width: widget.width,
                             enemy: widget.enemy,
-                            widthOfOneHP:
-                                (widget.width - 200) / widget.enemy.hp,
+                            widthOfOneHP: (widget.width - 200) / widget.enemy.hp,
                             currentHP: _enemyCurrentHP,
                             heightFactor: enemyHpHeight,
                           ),
@@ -509,6 +522,7 @@ class _EnemyPageState extends State<EnemyPage>
                                 alignment: Alignment.center,
                                 children: [
                                   EnemyField(
+                                    key: _enemyFieldKey,
                                     width: widget.width,
                                     assetImageLink: widget.enemy.image,
                                     availableHeight: enemyFieldHeight,
@@ -521,8 +535,8 @@ class _EnemyPageState extends State<EnemyPage>
                                         child: DamageTextWidget(
                                           damage: dt.damage,
                                           flyUp: true,
-                                          onComplete: () =>
-                                              _onEnemyDamageTextComplete(dt.id),
+                                          isCrit: dt.isCrit,
+                                          onComplete: () => _onEnemyDamageTextComplete(dt.id),
                                         ),
                                       ),
                                     );
@@ -541,7 +555,7 @@ class _EnemyPageState extends State<EnemyPage>
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
                       right: _isWeaponSlotExpanded ? 4 : -88,
-                      top: headerHeight - 16,
+                      bottom: enemyFieldHeight - enemyHpHeight * 2,
                       child: DraggableWeaponSlot(
                         isExpanded: _isWeaponSlotExpanded,
                         isDragging: _isWeaponDragging,
@@ -573,27 +587,17 @@ class _EnemyPageState extends State<EnemyPage>
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: widget.enemy.dropList.map((drop) {
-                                final item = ItemRegistry.createItem(
-                                    drop.itemType,
-                                    weaponType: drop.weaponType,
-                                    armorType: drop.armorType,
-                                    scrollType: drop.scrollType);
+                                final item =
+                                    ItemRegistry.createItem(drop.itemType, weaponType: drop.weaponType, armorType: drop.armorType, scrollType: drop.scrollType);
                                 String titleText = _getItemName(item);
                                 if (item is GoldItem) {
-                                  titleText = drop.minQuantity ==
-                                          drop.maxQuantity
-                                      ? '${drop.minQuantity} Gold'
-                                      : '${drop.minQuantity}-${drop.maxQuantity} Gold';
+                                  titleText =
+                                      drop.minQuantity == drop.maxQuantity ? '${drop.minQuantity} Gold' : '${drop.minQuantity}-${drop.maxQuantity} Gold';
                                 }
                                 return ListTile(
-                                  leading: Image.asset(item.image,
-                                      width: 40,
-                                      height: 40,
-                                      gaplessPlayback: true),
-                                  title: Text(titleText,
-                                      style: AppTypography.bodyMediumPrimary),
-                                  trailing: Text('${drop.chance}%',
-                                      style: AppTypography.bodyLargeHighlight),
+                                  leading: Image.asset(item.image, width: 40, height: 40, gaplessPlayback: true),
+                                  title: Text(titleText, style: AppTypography.bodyMediumPrimary),
+                                  trailing: Text('${drop.chance}%', style: AppTypography.bodyLargeHighlight),
                                 );
                               }).toList(),
                             ),
@@ -612,8 +616,7 @@ class _EnemyPageState extends State<EnemyPage>
                               children: [
                                 Text(
                                   'YOU ARE DEAD',
-                                  style:
-                                      AppTypography.titleLargePrimary.copyWith(
+                                  style: AppTypography.titleLargePrimary.copyWith(
                                     color: AppColors.error,
                                     fontSize: 48,
                                     fontWeight: FontWeight.bold,
@@ -630,8 +633,7 @@ class _EnemyPageState extends State<EnemyPage>
                                 Text(
                                   'You lost:\n-25% exp\n-50% gold\n-25 SP\n\nHunting is now unavailable for 15 seconds.',
                                   textAlign: TextAlign.center,
-                                  style:
-                                      AppTypography.titleMediumPrimary.copyWith(
+                                  style: AppTypography.titleMediumPrimary.copyWith(
                                     color: AppColors.enemyHp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -641,20 +643,15 @@ class _EnemyPageState extends State<EnemyPage>
                                   onPressed: _onRebornPressed,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.success,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 40, vertical: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
-                                      side: BorderSide(
-                                          color: AppColors.primaryText
-                                              .withValues(alpha: 0.24),
-                                          width: 2),
+                                      side: BorderSide(color: AppColors.primaryText.withValues(alpha: 0.24), width: 2),
                                     ),
                                   ),
                                   child: Text(
                                     'REBORN',
-                                    style: AppTypography.titleLargePrimary
-                                        .copyWith(
+                                    style: AppTypography.titleLargePrimary.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

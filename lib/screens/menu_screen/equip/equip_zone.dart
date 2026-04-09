@@ -2,6 +2,7 @@ import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/character.dart';
+import 'package:enchantment_game/models/rarity.dart';
 import 'package:enchantment_game/models/skills/skill_type.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/components/equip_slot.dart';
 import 'package:enchantment_game/screens/menu_screen/equip/components/equipment_picker.dart';
@@ -96,6 +97,45 @@ class _EquipZoneState extends State<EquipZone> {
           character.activeSetEnchantLevel, weapon));
     }
 
+    final rarityEffectsWidgets = <Widget>[];
+    for (final effect in RarityEffect.values) {
+      final multiplier = character.getRarityEffectMultiplier(effect);
+      if (multiplier > 0) {
+        rarityEffectsWidgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              effect.getDescription(multiplier),
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 13,
+                fontFamily: 'PT Sans',
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    if (rarityEffectsWidgets.isNotEmpty) {
+      effects.add(const SizedBox(height: 8));
+      effects.add(
+        const Padding(
+          padding: EdgeInsets.only(bottom: 4.0),
+          child: Text(
+            'Rarity effects:',
+            style: TextStyle(
+              color: AppColors.accentYellow,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontFamily: 'PT Sans',
+            ),
+          ),
+        ),
+      );
+      effects.addAll(rarityEffectsWidgets);
+    }
+
     if (effects.isEmpty) {
       effects.add(const Text(
         'No active effects',
@@ -167,6 +207,9 @@ class _EquipZoneState extends State<EquipZone> {
                                     const SizedBox(height: 8),
                                     _StatRow('Crit Chance',
                                         '${character.critRate}%'),
+                                    const SizedBox(height: 8),
+                                    _StatRow('Crit Power',
+                                        '${character.critPower}%'),
                                     const SizedBox(height: 8),
                                     _StatRow('Defense', '${character.defense}'),
                                     const SizedBox(height: 8),

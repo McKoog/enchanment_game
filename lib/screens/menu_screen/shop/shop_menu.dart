@@ -72,13 +72,13 @@ class _ShopMenuState extends State<ShopMenu> {
   String _getItemName(Item item) {
     if (item is Weapon) {
       return item.enchantLevel > 0
-          ? "${item.name} +${item.enchantLevel}"
-          : item.name;
+          ? "${item.displayName} +${item.enchantLevel}"
+          : item.displayName;
     }
     if (item is Armor) {
       return item.enchantLevel > 0
-          ? "${item.name} +${item.enchantLevel}"
-          : item.name;
+          ? "${item.displayName} +${item.enchantLevel}"
+          : item.displayName;
     }
     if (item is Scroll) return item.name;
     return 'Item';

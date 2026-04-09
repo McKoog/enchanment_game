@@ -83,12 +83,12 @@ class EquipSlot extends StatelessWidget {
                   ? "Empty"
                   : (item is Weapon
                       ? ((item as Weapon).enchantLevel > 0
-                          ? "${(item as Weapon).name} +${(item as Weapon).enchantLevel}"
-                          : (item as Weapon).name)
+                          ? "${(item as Weapon).displayName} +${(item as Weapon).enchantLevel}"
+                          : (item as Weapon).displayName)
                       : (item is Armor
                           ? ((item as Armor).enchantLevel > 0
-                              ? "${(item as Armor).name} +${(item as Armor).enchantLevel}"
-                              : (item as Armor).name)
+                              ? "${(item as Armor).displayName} +${(item as Armor).enchantLevel}"
+                              : (item as Armor).displayName)
                           : '')),
               style: const TextStyle(
                 fontSize: 12,

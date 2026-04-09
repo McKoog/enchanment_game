@@ -1,5 +1,7 @@
 import 'package:enchantment_game/theme/app_typography.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/rarity.dart';
 import 'package:flutter/material.dart';
 
 class WeaponInfoField extends StatelessWidget {
@@ -19,12 +21,23 @@ class WeaponInfoField extends StatelessWidget {
           children: [
             Text(
                 weapon.enchantLevel > 0
-                    ? "${weapon.name} +${weapon.enchantLevel}"
-                    : weapon.name,
+                    ? "${weapon.displayName} +${weapon.enchantLevel}"
+                    : weapon.displayName,
                 style: AppTypography.titleLargeHighlight),
             const SizedBox(
               height: 16,
             ),
+            if (weapon.rarity > 0) ...[
+              Text(
+                "Rarity: ${weapon.rarity.toStringAsFixed(1)}%",
+                style: const TextStyle(
+                  color: AppColors.accentYellow,
+                  fontSize: 16,
+                  fontFamily: 'PT Sans',
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             Text(
               "Damage: ${weapon.lowerDamage.toStringAsFixed(1)}-${weapon.higherDamage.toStringAsFixed(1)}",
               style: AppTypography.titleSmallPrimary,
@@ -49,7 +62,31 @@ class WeaponInfoField extends StatelessWidget {
             Text(
               "Critical hit power: ${weapon.critPower}%",
               style: AppTypography.titleSmallPrimary,
-            )
+            ),
+            if (weapon.rarityEffects.isNotEmpty) ...[
+              const SizedBox(height: 24),
+              const Text(
+                'Rarity Effects',
+                style: TextStyle(
+                  color: AppColors.accentYellow,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'PT Sans',
+                ),
+              ),
+              const SizedBox(height: 8),
+              ...weapon.rarityEffects.map((effect) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(
+                      effect.getDescription(weapon.rarityTier.effectMultiplier),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                        fontFamily: 'PT Sans',
+                      ),
+                    ),
+                  )),
+            ],
           ],
         ),
       ),

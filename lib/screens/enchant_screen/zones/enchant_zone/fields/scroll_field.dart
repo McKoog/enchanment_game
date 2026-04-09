@@ -138,10 +138,10 @@ class _ScrollHeader extends StatelessWidget {
     String itemName = '';
     int enchantLevel = 0;
     if (insertedItem is Weapon) {
-      itemName = (insertedItem as Weapon).name;
+      itemName = (insertedItem as Weapon).displayName;
       enchantLevel = (insertedItem as Weapon).enchantLevel;
     } else if (insertedItem is Armor) {
-      itemName = (insertedItem as Armor).name;
+      itemName = (insertedItem as Armor).displayName;
       enchantLevel = (insertedItem as Armor).enchantLevel;
     }
 

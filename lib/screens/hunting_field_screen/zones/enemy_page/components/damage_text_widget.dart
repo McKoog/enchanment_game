@@ -7,6 +7,8 @@ class DamageTextData {
   final double randomX;
   final double randomY;
   final bool isHeal;
+  final bool isBlock;
+  final bool isCrit;
 
   DamageTextData({
     required this.id,
@@ -14,6 +16,8 @@ class DamageTextData {
     required this.randomX,
     required this.randomY,
     this.isHeal = false,
+    this.isBlock = false,
+    this.isCrit = false,
   });
 }
 
@@ -22,6 +26,8 @@ class DamageTextWidget extends StatefulWidget {
   final VoidCallback onComplete;
   final bool flyUp;
   final bool isHeal;
+  final bool isBlock;
+  final bool isCrit;
 
   const DamageTextWidget({
     super.key,
@@ -29,6 +35,8 @@ class DamageTextWidget extends StatefulWidget {
     required this.onComplete,
     this.flyUp = true,
     this.isHeal = false,
+    this.isBlock = false,
+    this.isCrit = false,
   });
 
   @override
@@ -78,23 +86,56 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
           offset: _positionAnimation.value,
           child: Opacity(
             opacity: _opacityAnimation.value,
-            child: Text(
-              widget.isHeal
-                  ? '+ ${widget.damage.toStringAsFixed(1)}'
-                  : '- ${widget.damage.toStringAsFixed(1)}',
-              style: TextStyle(
-                color: widget.isHeal ? AppColors.success : AppColors.error,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'PT Sans',
-                shadows: const [
-                  Shadow(
-                    color: AppColors.black,
-                    blurRadius: 4,
-                    offset: Offset(1, 1),
-                  )
-                ],
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  widget.isBlock
+                      ? 'Blocked'
+                      : widget.isHeal
+                          ? '+ ${widget.damage.toStringAsFixed(1)}'
+                          : '- ${widget.damage.toStringAsFixed(1)}',
+                  style: TextStyle(
+                    color: widget.isBlock
+                        ? Colors.grey
+                        : widget.isHeal
+                            ? AppColors.success
+                            : AppColors.error,
+                    fontSize: widget.isBlock ? 24 : 28,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'PT Sans',
+                    shadows: const [
+                      Shadow(
+                        color: AppColors.black,
+                        blurRadius: 4,
+                        offset: Offset(1, 1),
+                      )
+                    ],
+                  ),
+                ),
+                if (widget.isCrit)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, bottom: 2.0),
+                    child: Text(
+                      'crit',
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'PT Sans',
+                        fontStyle: FontStyle.italic,
+                        shadows: const [
+                          Shadow(
+                            color: AppColors.black,
+                            blurRadius: 4,
+                            offset: Offset(1, 1),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         );

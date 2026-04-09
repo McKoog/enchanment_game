@@ -3,6 +3,7 @@ import 'package:enchantment_game/models/gold_item.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/services/rarity_service.dart';
 import 'package:uuid/uuid.dart';
 
 /// Single source of truth for all item templates.
@@ -36,7 +37,7 @@ class ItemRegistry {
       id: 'template',
       type: ItemType.weapon,
       image: 'assets/icons/weapons/sword.png',
-      name: 'Basic Sword',
+      name: 'Sword',
       weaponType: WeaponType.sword,
       lowerDamage: 2.0,
       higherDamage: 5.0,
@@ -167,24 +168,31 @@ class ItemRegistry {
   static Weapon get fist => _weaponTemplates[WeaponType.fist]!;
 
   /// Create a new weapon instance with a unique id.
-  static Weapon createWeapon(WeaponType weaponType) {
+  static Weapon createWeapon(WeaponType weaponType,
+      {bool generateRarity = true}) {
     final template = _weaponTemplates[weaponType];
     if (template == null) {
       throw ArgumentError('No weapon template for type: $weaponType');
     }
     final weapon = Weapon.copyWith(template);
     weapon.id = _uuid.v1();
+    if (generateRarity) {
+      RarityService.generateRarityForWeapon(weapon);
+    }
     return weapon;
   }
 
   /// Create a new armor instance with a unique id.
-  static Armor createArmor(ArmorType armorType) {
+  static Armor createArmor(ArmorType armorType, {bool generateRarity = true}) {
     final template = _armorTemplates[armorType];
     if (template == null) {
       throw ArgumentError('No armor template for type: $armorType');
     }
     final armor = Armor.copyWith(template);
     armor.id = _uuid.v1();
+    if (generateRarity) {
+      RarityService.generateRarityForArmor(armor);
+    }
     return armor;
   }
 
@@ -203,17 +211,22 @@ class ItemRegistry {
   ///
   /// Replaces the old `getNewStockItem` function.
   static Item createItem(ItemType type,
-      {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType}) {
+      {WeaponType? weaponType,
+      ArmorType? armorType,
+      ScrollType? scrollType,
+      bool generateRarity = true}) {
     if (type == ItemType.scroll) {
       return createScroll(scrollType ?? ScrollType.weapon);
     }
     if (type == ItemType.armor) {
-      return createArmor(armorType ?? ArmorType.chestplate);
+      return createArmor(armorType ?? ArmorType.chestplate,
+          generateRarity: generateRarity);
     }
     if (type == ItemType.gold) {
       return createGold(1);
     }
-    return createWeapon(weaponType ?? WeaponType.sword);
+    return createWeapon(weaponType ?? WeaponType.sword,
+        generateRarity: generateRarity);
   }
 
   static GoldItem createGold(int amount) {

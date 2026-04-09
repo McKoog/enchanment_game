@@ -20,10 +20,10 @@ class RecentLootList extends StatelessWidget {
   String _getItemName(Item item) {
     if (item is GoldItem) return '${item.amount} Gold';
     if (item is Weapon) {
-      return item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Armor) {
-      return item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Scroll) return item.name;
     return 'Unknown Item';

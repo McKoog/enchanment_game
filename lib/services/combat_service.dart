@@ -1,4 +1,4 @@
-import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/character.dart';
 import 'package:enchantment_game/utils/game_random.dart';
 
 /// Result of a single attack.
@@ -16,19 +16,20 @@ class AttackResult {
 class CombatService {
   CombatService._();
 
-  /// Calculate damage dealt by [weapon].
+  /// Calculate damage dealt by [character].
   ///
   /// Preserves the original damage distribution:
   /// roll [0, higherDamage], clamp to lowerDamage minimum, then apply crit.
-  static AttackResult calculateDamage(Weapon weapon) {
-    double damage = GameRandom.nextInt(weapon.higherDamage.toInt() + 1).toDouble();
-    if (damage < weapon.lowerDamage) {
-      damage = weapon.lowerDamage;
+  static AttackResult calculateDamage(Character character) {
+    double damage =
+        GameRandom.nextInt(character.higherDamage.toInt() + 1).toDouble();
+    if (damage < character.lowerDamage) {
+      damage = character.lowerDamage;
     }
 
-    bool isCrit = GameRandom.chance(weapon.critRate.toDouble());
+    bool isCrit = GameRandom.chance(character.critRate.toDouble());
     if (isCrit) {
-      double critBonus = damage * (weapon.critPower / 100);
+      double critBonus = damage * (character.critPower / 100);
       damage += critBonus;
     }
 

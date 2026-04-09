@@ -1,5 +1,6 @@
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/armor.dart';
+import 'package:enchantment_game/models/rarity.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
 import 'package:enchantment_game/services/skill_service.dart';
@@ -77,6 +78,23 @@ class Character {
     return exp.toInt();
   }
 
+  int getRarityEffectMultiplier(RarityEffect effect) {
+    int total = 0;
+    void check(List<RarityEffect>? effects, RarityTier? tier) {
+      if (effects != null && tier != null && effects.contains(effect)) {
+        total += tier.effectMultiplier;
+      }
+    }
+
+    check(equippedWeapon?.rarityEffects, equippedWeapon?.rarityTier);
+    check(equippedHelmet?.rarityEffects, equippedHelmet?.rarityTier);
+    check(equippedChestplate?.rarityEffects, equippedChestplate?.rarityTier);
+    check(equippedLeggings?.rarityEffects, equippedLeggings?.rarityTier);
+    check(equippedBoots?.rarityEffects, equippedBoots?.rarityTier);
+
+    return total;
+  }
+
   double get attackSpeed {
     double speed = equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
     final setEffect = ArmorSetService.getEffect(activeSetType);
@@ -86,6 +104,13 @@ class Character {
           setEffect.getAttackSpeedMultiplier(activeSetEnchantLevel, weaponType);
     }
     speed += SkillService.getAttackSpeedBonus(learnedSkills, weaponType);
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.attackSpeed);
+    if (rarityMult > 0) {
+      speed -= speed * (rarityMult * 0.05); // Attack speed decrease is better
+    }
+
     return speed;
   }
 
@@ -103,6 +128,13 @@ class Character {
             learnedSkills, equippedWeapon!.enchantLevel)
         : 0.0;
     damage += damage * bonusMultiplier;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.bonusDamage);
+    if (rarityMult > 0) {
+      damage += damage * (rarityMult * 0.05);
+    }
+
     return damage;
   }
 
@@ -120,6 +152,13 @@ class Character {
             learnedSkills, equippedWeapon!.enchantLevel)
         : 0.0;
     damage += damage * bonusMultiplier;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.bonusDamage);
+    if (rarityMult > 0) {
+      damage += damage * (rarityMult * 0.05);
+    }
+
     return damage;
   }
 
@@ -136,6 +175,13 @@ class Character {
       totalDefense +=
           setEffect.getBonusDefense(activeSetEnchantLevel, weaponType);
     }
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.bonusDefense);
+    if (rarityMult > 0) {
+      totalDefense += (totalDefense * (rarityMult * 0.05)).round();
+    }
+
     return totalDefense;
   }
 
@@ -145,6 +191,13 @@ class Character {
     if (setEffect != null) {
       hp += setEffect.getBonusHealth(activeSetEnchantLevel);
     }
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.maxHp);
+    if (rarityMult > 0) {
+      hp += (hp * (rarityMult * 0.025)).round();
+    }
+
     return hp;
   }
 
@@ -154,6 +207,13 @@ class Character {
     if (setEffect != null) {
       regen += setEffect.getBonusHpRegen(activeSetEnchantLevel);
     }
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.hpRegen);
+    if (rarityMult > 0) {
+      regen += (regen * (rarityMult * 0.025)).round();
+    }
+
     return regen;
   }
 
@@ -164,7 +224,62 @@ class Character {
       final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
       rate += setEffect.getBonusCritRate(activeSetEnchantLevel, weaponType);
     }
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.critChance);
+    if (rarityMult > 0) {
+      rate += rarityMult * 5; // +5% flat
+    }
+
     return rate;
+  }
+
+  int get critPower {
+    int power = equippedWeapon?.critPower ?? ItemRegistry.fist.critPower;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.critDamage);
+    if (rarityMult > 0) {
+      power += rarityMult * 33; // +33% flat
+    }
+
+    return power;
+  }
+
+  double get blockChance {
+    double block = 0.0;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.blockChance);
+    if (rarityMult > 0) {
+      block += rarityMult * 0.03; // +3% flat
+    }
+
+    return block;
+  }
+
+  double get lifesteal {
+    double ls = 0.0;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.lifesteal);
+    if (rarityMult > 0) {
+      ls += rarityMult * 0.06; // +6% flat
+    }
+
+    return ls;
+  }
+
+  double get dropChanceBonus {
+    double bonus = 0.0;
+
+    // Rarity bonus
+    int rarityMult = getRarityEffectMultiplier(RarityEffect.dropChance);
+    if (rarityMult > 0) {
+      bonus += rarityMult * 0.01; // +1% flat
+    }
+
+    return bonus;
   }
 
   Character copyWith({

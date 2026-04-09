@@ -15,6 +15,7 @@ class ItemPicker extends StatelessWidget {
     required this.onSelectedItemChanged,
     this.height = 100,
     this.emptyIconPath,
+    this.onItemTap,
   });
 
   final FixedExtentScrollController controller;
@@ -22,6 +23,7 @@ class ItemPicker extends StatelessWidget {
   final ValueChanged<int> onSelectedItemChanged;
   final double height;
   final String? emptyIconPath;
+  final ValueChanged<Item>? onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -109,24 +111,38 @@ class ItemPicker extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: boxSize,
-                          height: boxSize,
-                          child: InventorySlot(
-                            index: 1000 + index,
-                            item: item,
-                            canBeDragged: false,
-                            canBeDragTarget: false,
+                        GestureDetector(
+                          onTap: () {
+                            if (onItemTap != null) {
+                              onItemTap!(item);
+                            }
+                          },
+                          child: SizedBox(
+                            width: boxSize,
+                            height: boxSize,
+                            child: InventorySlot(
+                              index: 1000 + index,
+                              item: item,
+                              canBeDragged: false,
+                              canBeDragTarget: false,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           item is Weapon
-                              ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
-                              : (item is Armor ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name) : ''),
-                          style: AppTypography.titleLargeHighlight.copyWith(fontSize: 12),
+                              ? (item.enchantLevel > 0
+                                  ? "${item.displayName} +${item.enchantLevel}"
+                                  : item.displayName)
+                              : (item is Armor
+                                  ? (item.enchantLevel > 0
+                                      ? "${item.displayName} +${item.enchantLevel}"
+                                      : item.displayName)
+                                  : ''),
+                          style: AppTypography.titleLargeHighlight
+                              .copyWith(fontSize: 12),
                           textAlign: TextAlign.center,
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -137,7 +153,8 @@ class ItemPicker extends StatelessWidget {
         ),
         InkWell(
           onTap: () {
-            if (controller.hasClients && controller.selectedItem < items.length - 1) {
+            if (controller.hasClients &&
+                controller.selectedItem < items.length - 1) {
               controller.animateToItem(
                 controller.selectedItem + 1,
                 duration: const Duration(milliseconds: 300),
