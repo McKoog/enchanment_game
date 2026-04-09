@@ -1,3 +1,4 @@
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class EnchantProgressBar extends StatefulWidget {
@@ -40,8 +41,8 @@ class _EnchantProgressBarState extends State<EnchantProgressBar>
             builder: (BuildContext context, Widget? child) {
               return LinearProgressIndicator(
                 minHeight: 20,
-                color: Colors.white,
-                backgroundColor: const Color.fromRGBO(130, 130, 130, 1),
+                color: AppColors.white,
+                backgroundColor: AppColors.panelBorder,
                 value: controller.value,
               );
             },

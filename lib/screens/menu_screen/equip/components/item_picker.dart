@@ -1,10 +1,11 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_slot.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/components/horizontal_list_wheel_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
 
 class ItemPicker extends StatelessWidget {
   const ItemPicker({
@@ -52,7 +53,7 @@ class ItemPicker extends StatelessWidget {
                           width: boxSize,
                           height: boxSize,
                           decoration: BoxDecoration(
-                            color: const Color.fromRGBO(85, 85, 85, 1),
+                            color: AppColors.slotBackground,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: Colors.grey, width: 2),
                           ),
@@ -109,7 +110,7 @@ class ItemPicker extends StatelessWidget {
                               : (item is Armor
                                   ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
                                   : ''),
-                          style: weaponNameDecoration.copyWith(fontSize: 12),
+                          style: AppTypography.titleLargeHighlight.copyWith(fontSize: 12),
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,

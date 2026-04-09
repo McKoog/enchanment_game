@@ -1,4 +1,4 @@
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 
@@ -20,34 +20,34 @@ class WeaponInfoField extends StatelessWidget {
               weapon.enchantLevel > 0
                   ? "${weapon.name} +${weapon.enchantLevel}"
                   : weapon.name,
-              style: weaponNameDecoration),
+              style: AppTypography.titleLargeHighlight),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Damage: ${weapon.lowerDamage}-${weapon.higherDamage}",
-            style: weaponInfoTextDecoration,
+            style: AppTypography.titleSmallPrimary,
           ),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Attack Speed: ${weapon.attackSpeed}/s",
-            style: weaponInfoTextDecoration,
+            style: AppTypography.titleSmallPrimary,
           ),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Critical hit chance: ${weapon.critRate}%",
-            style: weaponInfoTextDecoration,
+            style: AppTypography.titleSmallPrimary,
           ),
           const SizedBox(
             height: 16,
           ),
           Text(
             "Critical hit power: ${weapon.critPower}%",
-            style: weaponInfoTextDecoration,
+            style: AppTypography.titleSmallPrimary,
           )
         ],
       ),

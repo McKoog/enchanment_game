@@ -1,4 +1,4 @@
-import 'package:enchantment_game/decorations/slots_decorations.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
@@ -28,10 +28,10 @@ class EquipSlot extends StatelessWidget {
           Container(
             width: 80,
             height: 80,
-            decoration: (inventorySlotDecoration as BoxDecoration).copyWith(
+            decoration: (AppDecorations.inventorySlot as BoxDecoration).copyWith(
               border: isSelected
                   ? Border.all(color: Colors.yellow, width: 2)
-                  : (inventorySlotDecoration as BoxDecoration).border,
+                  : (AppDecorations.inventorySlot as BoxDecoration).border,
             ),
             child: Stack(
               alignment: Alignment.center,

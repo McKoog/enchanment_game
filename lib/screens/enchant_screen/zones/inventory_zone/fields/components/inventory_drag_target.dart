@@ -6,6 +6,8 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -146,7 +148,7 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
               followerAnchor: Alignment.bottomCenter,
               offset: const Offset(0, -6),
               child: Material(
-                color: Colors.transparent,
+                color: AppColors.transparent,
                 child: GestureDetector(
                   onTap: () {},
                   child: StatefulBuilder(builder: (context, setState) {
@@ -154,10 +156,10 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                       width: 166,
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color.fromRGBO(30, 30, 30, 0.95),
+                        color: AppColors.overlayVeryDark,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: const Color.fromRGBO(120, 120, 120, 1),
+                            color: AppColors.panelBorder,
                             width: 1),
                       ),
                       child: Row(
@@ -168,8 +170,7 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                             children: [
                               Text(
                                 '$selected/$maxQuantity',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                style: AppTypography.attributeLabel.copyWith(color: AppColors.white),
                               ),
                               SizedBox(
                                 height: 22,
@@ -181,10 +182,10 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                                         enabledThumbRadius: 6),
                                     overlayShape: const RoundSliderOverlayShape(
                                         overlayRadius: 10),
-                                    activeTrackColor: Colors.white,
+                                    activeTrackColor: AppColors.white,
                                     inactiveTrackColor:
-                                        const Color.fromRGBO(90, 90, 90, 1),
-                                    thumbColor: Colors.white,
+                                        AppColors.slotBackground,
+                                    thumbColor: AppColors.white,
                                   ),
                                   child: Slider(
                                     value: selected.toDouble(),
@@ -208,7 +209,7 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                             child: const Padding(
                               padding: EdgeInsets.all(4),
                               child: Icon(Icons.check,
-                                  size: 24, color: Colors.white),
+                                  size: 24, color: AppColors.white),
                             ),
                           ),
                         ],

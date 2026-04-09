@@ -1,9 +1,11 @@
-import 'package:enchantment_game/decorations/enchanted_weapons_glow_colors.dart';
-import 'package:enchantment_game/decorations/slots_decorations.dart';
+import 'package:enchantment_game/theme/enchanted_weapons_glow_colors.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/models/armor.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_drag_target.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_draggable_item.dart';
 import 'package:flutter/material.dart';
@@ -44,14 +46,14 @@ class InventorySlot extends StatelessWidget {
             decoration: (weapon != null || armor != null)
                 ? BoxDecoration(
                     color: enchantLevel < 16
-                        ? Color.fromRGBO(85, 85, 85, 1)
+                        ? AppColors.slotBackground
                             .withValues(alpha: 1 - (0.0666 * enchantLevel))
                         : enchantLevel < 21
-                            ? Color.fromRGBO(85, 85, 85, 1).withValues(
+                            ? AppColors.slotBackground.withValues(
                                 alpha: 0.5 - (0.06 * (enchantLevel % 16)))
                             : Colors.grey.shade900.withValues(alpha: 0.25),
                     border: Border.fromBorderSide(BorderSide(
-                        color: Color.fromRGBO(130, 130, 130, 1), width: 2)),
+                        color: AppColors.panelBorder, width: 2)),
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: enchantLevel == 0
                         ? null
@@ -67,7 +69,7 @@ class InventorySlot extends StatelessWidget {
                                         enchantLevel],
                                     spreadRadius: 0.3)
                               ])
-                : inventorySlotDecoration,
+                : AppDecorations.inventorySlot,
             child: item != null
                 ? InventoryDragTarget(
                     inventoryIndex: index,
@@ -89,7 +91,7 @@ class InventorySlot extends StatelessWidget {
               bottom: 8,
               child: Text(
                 enchantLevel > 0 ? "+$enchantLevel" : "",
-                style: const TextStyle(fontSize: 10, color: Colors.yellow),
+                style: AppTypography.attributeLabel.copyWith(fontSize: 10, color: AppColors.accentYellow),
               )),
         if (scroll != null)
           Positioned(
@@ -98,17 +100,17 @@ class InventorySlot extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color.fromRGBO(0, 0, 0, 0.4),
+                  color: AppColors.overlayMedium,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.fromBorderSide(
-                      BorderSide(color: Colors.black.withValues(alpha: 0.2))),
+                      BorderSide(color: AppColors.overlayLight)),
                 ),
                 child: Text(
                   scroll.scrollType == ScrollType.weapon ? "W" : "A",
-                  style: TextStyle(
+                  style: AppTypography.attributeLabel.copyWith(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.yellow,
+                    color: AppColors.accentYellow,
                   ),
                 ),
               )),
@@ -119,14 +121,14 @@ class InventorySlot extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: const Color.fromRGBO(0, 0, 0, 0.4),
+                  color: AppColors.overlayMedium,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.fromBorderSide(
-                      BorderSide(color: Colors.black.withValues(alpha: 0.2))),
+                      BorderSide(color: AppColors.overlayLight)),
                 ),
                 child: Text(
                   "${scroll.quantity}",
-                  style: const TextStyle(fontSize: 10, color: Colors.yellow),
+                  style: AppTypography.attributeLabel.copyWith(fontSize: 10, color: AppColors.accentYellow),
                 ),
               ))
       ],

@@ -1,7 +1,7 @@
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
-import 'package:enchantment_game/decorations/slots_decorations.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/slot_particles.dart';
@@ -46,13 +46,13 @@ class ScrollEnchantSlot extends StatelessWidget {
           child: AnimatedContainer(
             decoration: switch (currentEnchantState) {
               EnchantState$Result result => result.isSuccess
-                  ? scrollEnchantSlotSuccessDecoration
-                  : scrollEnchantSlotFailedDecoration,
+                  ? AppDecorations.enchantSlotSuccess
+                  : AppDecorations.enchantSlotFailed,
               EnchantState$Idle idle => idle.insertedItem == null
-                  ? scrollEnchantSlotDecoration
-                  : scrollEnchantSlotInsertedDecoration,
+                  ? AppDecorations.enchantSlotDefault
+                  : AppDecorations.enchantSlotInserted,
               EnchantState$EnchantmentInProgress() =>
-                scrollEnchantProgressSlotDecoration,
+                AppDecorations.enchantSlotProgress,
             },
             height: currentSideSize,
             width: currentSideSize,

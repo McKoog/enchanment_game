@@ -1,9 +1,10 @@
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_bloc.dart' show HuntingFieldsBloc;
 import 'package:enchantment_game/blocs/hunting_fields_bloc/hunting_fields_event.dart';
-import 'package:enchantment_game/decorations/bottons_decoration.dart';
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/enemy.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,7 +51,7 @@ class EnemyHeader extends StatelessWidget {
                               child: Container(
                                   alignment: Alignment.center,
                                   height: nameFieldHeight,
-                                  decoration: enemyNameFieldDecoration,
+                                  decoration: AppDecorations.darkGlowBorder,
                                   child: FittedBox(
                                     fit: BoxFit.scaleDown,
                                     child: Column(
@@ -58,11 +59,11 @@ class EnemyHeader extends StatelessWidget {
                                       children: [
                                         Text(
                                           enemy.name,
-                                          style: farmEnemyNameTextDecoration,
+                                          style: AppTypography.titleMediumHighlight,
                                         ),
-                                        const Text(
+                                        Text(
                                           "show droplist",
-                                          style: TextStyle(color: Colors.yellow),
+                                          style: AppTypography.attributeLabel.copyWith(color: AppColors.accentYellow),
                                         ),
                                       ],
                                     ),
@@ -80,7 +81,7 @@ class EnemyHeader extends StatelessWidget {
                           child: Icon(
                             Icons.close,
                             size: iconSize,
-                            color: Colors.yellow,
+                            color: AppColors.accentYellow,
                           )),
                     ),
                 ],

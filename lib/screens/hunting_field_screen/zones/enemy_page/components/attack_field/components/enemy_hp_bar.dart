@@ -1,5 +1,5 @@
-import 'package:enchantment_game/decorations/components_decoration.dart';
-import 'package:enchantment_game/decorations/text_decoration.dart';
+import 'package:enchantment_game/theme/app_decorations.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/enemy.dart';
 import 'package:flutter/material.dart';
 
@@ -40,18 +40,18 @@ class EnemyHpBar extends StatelessWidget {
                 alignment: Alignment.center,
                 height: barHeight,
                 width: widthOfOneHP * currentHP,
-                decoration: enemyHpBarDecoration,
+                decoration: AppDecorations.enemyHpBar,
               ),
               Container(
                   alignment: Alignment.center,
                   height: barHeight,
                   width: widthOfOneHP * enemy.hp,
-                  decoration: enemyHpBarDecoration,
+                  decoration: AppDecorations.enemyHpBar,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
                       "$currentHP / ${enemy.hp}",
-                      style: farmEnemyHpTextDecoration,
+                      style: AppTypography.titleMediumDark,
                     ),
                   )),
             ],

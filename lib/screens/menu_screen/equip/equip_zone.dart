@@ -5,6 +5,7 @@ import 'package:enchantment_game/screens/menu_screen/equip/components/equip_slot
 import 'package:enchantment_game/screens/menu_screen/equip/components/equipment_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:enchantment_game/theme/app_colors.dart';
 
 class EquipZone extends StatefulWidget {
   const EquipZone({super.key, required this.height, required this.width});
@@ -28,9 +29,9 @@ class _EquipZoneState extends State<EquipZone> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(52, 52, 52, 1),
+            color: AppColors.panelBackground,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color.fromRGBO(100, 100, 100, 1)),
+            border: Border.all(color: AppColors.panelBorder),
           ),
           child: Column(
             children: [
@@ -54,7 +55,7 @@ class _EquipZoneState extends State<EquipZone> {
                   ),
                 ),
               ),
-              const Divider(color: Color.fromRGBO(100, 100, 100, 1), height: 1),
+              Divider(color: AppColors.panelBorder, height: 1),
               // Equipment Slots Section (Single Row)
               Expanded(
                 flex: 2,
@@ -168,7 +169,7 @@ class _EquipZoneState extends State<EquipZone> {
                   ),
                 ),
               ),
-              const Divider(color: Color.fromRGBO(100, 100, 100, 1), height: 1),
+              Divider(color: AppColors.panelBorder, height: 1),
               // Equipment Picker Carousel
               Expanded(
                 flex: 3,
