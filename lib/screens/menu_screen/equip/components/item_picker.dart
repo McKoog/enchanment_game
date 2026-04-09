@@ -1,11 +1,11 @@
-import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_slot.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/zones/hunting_field_menu/components/enemy_picker/components/horizontal_list_wheel_scroll_view.dart';
-import 'package:flutter/material.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
+import 'package:enchantment_game/theme/app_typography.dart';
+import 'package:flutter/material.dart';
 
 class ItemPicker extends StatelessWidget {
   const ItemPicker({
@@ -31,6 +31,22 @@ class ItemPicker extends StatelessWidget {
 
     return Row(
       children: [
+        InkWell(
+          onTap: () {
+            if (controller.hasClients && controller.selectedItem > 0) {
+              controller.animateToItem(
+                controller.selectedItem - 1,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          },
+          child: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.accentYellow,
+            size: 40,
+          ),
+        ),
         Expanded(
           child: SizedBox(
             height: height,
@@ -107,9 +123,7 @@ class ItemPicker extends StatelessWidget {
                         Text(
                           item is Weapon
                               ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
-                              : (item is Armor
-                                  ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name)
-                                  : ''),
+                              : (item is Armor ? (item.enchantLevel > 0 ? "${item.name} +${item.enchantLevel}" : item.name) : ''),
                           style: AppTypography.titleLargeHighlight.copyWith(fontSize: 12),
                           textAlign: TextAlign.center,
                           maxLines: 2,
@@ -119,6 +133,22 @@ class ItemPicker extends StatelessWidget {
                     ));
               },
             ),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            if (controller.hasClients && controller.selectedItem < items.length - 1) {
+              controller.animateToItem(
+                controller.selectedItem + 1,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          },
+          child: const Icon(
+            Icons.arrow_forward_ios,
+            color: AppColors.accentYellow,
+            size: 40,
           ),
         ),
       ],

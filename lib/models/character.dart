@@ -1,6 +1,7 @@
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/services/armor_set_service.dart';
 
 class Character {
   Character({
@@ -38,6 +39,32 @@ class Character {
   final DateTime? escapeCooldownEndTime;
   final DateTime? deathCooldownEndTime;
 
+  ArmorSetType get activeSetType {
+    if (equippedHelmet != null &&
+        equippedChestplate != null &&
+        equippedLeggings != null &&
+        equippedBoots != null) {
+      final setType = equippedHelmet!.setType;
+      if (setType != ArmorSetType.none &&
+          equippedChestplate!.setType == setType &&
+          equippedLeggings!.setType == setType &&
+          equippedBoots!.setType == setType) {
+        return setType;
+      }
+    }
+    return ArmorSetType.none;
+  }
+
+  int get activeSetEnchantLevel {
+    if (activeSetType != ArmorSetType.none) {
+      return equippedHelmet!.enchantLevel +
+          equippedChestplate!.enchantLevel +
+          equippedLeggings!.enchantLevel +
+          equippedBoots!.enchantLevel;
+    }
+    return 0;
+  }
+
   int get maxExp {
     double exp = 100;
     for (int i = 1; i < level; i++) {
@@ -46,14 +73,40 @@ class Character {
     return exp.toInt();
   }
 
-  double get attackSpeed =>
-      equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
+  double get attackSpeed {
+    double speed = equippedWeapon?.attackSpeed ?? ItemRegistry.fist.attackSpeed;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
+      speed *=
+          setEffect.getAttackSpeedMultiplier(activeSetEnchantLevel, weaponType);
+    }
+    return speed;
+  }
 
-  double get lowerDamage =>
-      equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
+  double get lowerDamage {
+    double damage =
+        equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
+      damage +=
+          setEffect.getBonusLowerDamage(activeSetEnchantLevel, weaponType);
+    }
+    return damage;
+  }
 
-  double get higherDamage =>
-      equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
+  double get higherDamage {
+    double damage =
+        equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
+      damage +=
+          setEffect.getBonusHigherDamage(activeSetEnchantLevel, weaponType);
+    }
+    return damage;
+  }
 
   int get defense {
     int totalDefense = 0;
@@ -61,10 +114,43 @@ class Character {
     if (equippedChestplate != null) totalDefense += equippedChestplate!.defense;
     if (equippedLeggings != null) totalDefense += equippedLeggings!.defense;
     if (equippedBoots != null) totalDefense += equippedBoots!.defense;
+
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
+      totalDefense +=
+          setEffect.getBonusDefense(activeSetEnchantLevel, weaponType);
+    }
     return totalDefense;
   }
 
-  int get health => baseHealth;
+  int get health {
+    int hp = baseHealth;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      hp += setEffect.getBonusHealth(activeSetEnchantLevel);
+    }
+    return hp;
+  }
+
+  int get totalHpRegen {
+    int regen = hpRegen;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      regen += setEffect.getBonusHpRegen(activeSetEnchantLevel);
+    }
+    return regen;
+  }
+
+  int get critRate {
+    int rate = equippedWeapon?.critRate ?? ItemRegistry.fist.critRate;
+    final setEffect = ArmorSetService.getEffect(activeSetType);
+    if (setEffect != null) {
+      final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
+      rate += setEffect.getBonusCritRate(activeSetEnchantLevel, weaponType);
+    }
+    return rate;
+  }
 
   Character copyWith({
     int? level,

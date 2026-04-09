@@ -15,6 +15,7 @@ import 'package:enchantment_game/models/gold_item.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/services/armor_set_service.dart';
 import 'package:enchantment_game/services/combat_service.dart';
 import 'package:enchantment_game/services/loot_service.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
@@ -88,7 +89,7 @@ class _EnemyPageState extends State<EnemyPage>
       if (!_isWeaponSlotExpanded) {
         if (characterBloc.state is CharacterLoaded) {
           final char = (characterBloc.state as CharacterLoaded).character;
-          if (char.currentHealth > 0 && char.currentHealth < char.baseHealth) {
+          if (char.currentHealth > 0 && char.currentHealth < char.health) {
             characterBloc.add(CharacterHeal(4));
           }
         }
@@ -181,6 +182,27 @@ class _EnemyPageState extends State<EnemyPage>
   }
 
   void _onAttack() {
+    final characterBloc = context.read<CharacterBloc>();
+    if (characterBloc.state is! CharacterLoaded) return;
+    final character = (characterBloc.state as CharacterLoaded).character;
+
+    _performSingleAttack();
+
+    final setEffect = ArmorSetService.getEffect(character.activeSetType);
+    if (setEffect != null &&
+        setEffect.hasDoubleAttackChance(widget.weapon.weaponType)) {
+      final chance = setEffect.getDoubleAttackChance(widget.weapon.weaponType);
+      if (_random.nextDouble() < chance) {
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted && _isCombatActive) {
+            _performSingleAttack();
+          }
+        });
+      }
+    }
+  }
+
+  void _performSingleAttack() {
     final result = CombatService.calculateDamage(widget.weapon);
     setState(() {
       _enemyCurrentHP -= result.damage;
@@ -415,7 +437,7 @@ class _EnemyPageState extends State<EnemyPage>
                               PlayerHpBar(
                                 width: widget.width,
                                 currentHP: character.currentHealth,
-                                maxHP: character.baseHealth,
+                                maxHP: character.health,
                                 heightFactor: playerHpHeight,
                               ),
                               ..._playerDamageTexts.map((dt) {

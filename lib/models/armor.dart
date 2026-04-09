@@ -1,6 +1,7 @@
 import 'package:enchantment_game/models/item.dart';
 
 enum ArmorType { helmet, chestplate, leggings, boots }
+enum ArmorSetType { none, leather }
 
 class Armor extends Item {
   Armor({
@@ -13,18 +14,21 @@ class Armor extends Item {
     required this.armorType,
     required this.defense,
     required this.enchantLevel,
+    this.setType = ArmorSetType.none,
   });
 
   String name;
   ArmorType armorType;
   int defense;
   int enchantLevel;
+  ArmorSetType setType;
 
   Armor.copyWith(Armor other)
       : name = other.name,
         armorType = other.armorType,
         defense = other.defense,
         enchantLevel = other.enchantLevel,
+        setType = other.setType,
         super(
           id: other.id,
           type: other.type,
@@ -44,6 +48,7 @@ class Armor extends Item {
         'armorType': armorType.name,
         'defense': defense,
         'enchantLevel': enchantLevel,
+        'setType': setType.name,
       };
 
   factory Armor.fromJson(Map<String, dynamic> json) {
@@ -57,6 +62,7 @@ class Armor extends Item {
       armorType: ArmorType.values.byName(json['armorType']),
       defense: json['defense'],
       enchantLevel: json['enchantLevel'],
+      setType: json['setType'] != null ? ArmorSetType.values.byName(json['setType']) : ArmorSetType.none,
     );
   }
 }

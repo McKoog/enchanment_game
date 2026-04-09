@@ -39,8 +39,8 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState>
         final currentState = state as CharacterLoaded;
         if (currentState.character.currentHealth > 0 &&
             currentState.character.currentHealth <
-                currentState.character.baseHealth) {
-          add(CharacterHeal(currentState.character.hpRegen));
+                currentState.character.health) {
+          add(CharacterHeal(currentState.character.totalHpRegen));
         }
       }
     });

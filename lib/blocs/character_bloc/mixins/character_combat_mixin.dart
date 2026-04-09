@@ -32,7 +32,8 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
       int newSp = currentState.character.skillPoints - 25;
       if (newSp < 0) newSp = 0;
 
-      int totalExp = LevelingService.getTotalExp(currentState.character.level, currentState.character.currentExp);
+      int totalExp = LevelingService.getTotalExp(
+          currentState.character.level, currentState.character.currentExp);
       int newTotalExp = (totalExp * 0.75).toInt();
 
       int newLevel = 1;
@@ -64,8 +65,8 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
     int newHealth = currentState.character.currentHealth + event.amount;
-    if (newHealth > currentState.character.baseHealth) {
-      newHealth = currentState.character.baseHealth;
+    if (newHealth > currentState.character.health) {
+      newHealth = currentState.character.health;
     }
 
     final newCharacter = currentState.character.copyWith(
@@ -79,14 +80,15 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
     final newCharacter = currentState.character.copyWith(
-      currentHealth: currentState.character.baseHealth,
+      currentHealth: currentState.character.health,
       deathCooldownEndTime: DateTime.now().add(const Duration(seconds: 15)),
     );
     emitter(CharacterLoaded(newCharacter));
     SaveService.saveCharacter(newCharacter);
   }
 
-  void startEscapeCooldown(CharacterStartEscapeCooldown event, Emitter<CharacterState> emitter) {
+  void startEscapeCooldown(
+      CharacterStartEscapeCooldown event, Emitter<CharacterState> emitter) {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
     final newCharacter = currentState.character.copyWith(
@@ -96,7 +98,8 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
     SaveService.saveCharacter(newCharacter);
   }
 
-  void clearEscapeCooldown(CharacterClearEscapeCooldown event, Emitter<CharacterState> emitter) {
+  void clearEscapeCooldown(
+      CharacterClearEscapeCooldown event, Emitter<CharacterState> emitter) {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
     final newCharacter = currentState.character.copyWith(

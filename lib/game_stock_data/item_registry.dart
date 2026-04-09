@@ -115,6 +115,7 @@ class ItemRegistry {
       defense: 1,
       enchantLevel: 0,
       sellPrice: 25,
+      setType: ArmorSetType.leather,
     ),
     ArmorType.chestplate: Armor(
       id: 'template',
@@ -125,6 +126,7 @@ class ItemRegistry {
       defense: 1,
       enchantLevel: 0,
       sellPrice: 25,
+      setType: ArmorSetType.leather,
     ),
     ArmorType.leggings: Armor(
       id: 'template',
@@ -135,6 +137,7 @@ class ItemRegistry {
       defense: 1,
       enchantLevel: 0,
       sellPrice: 25,
+      setType: ArmorSetType.leather,
     ),
     ArmorType.boots: Armor(
       id: 'template',
@@ -145,6 +148,7 @@ class ItemRegistry {
       defense: 1,
       enchantLevel: 0,
       sellPrice: 25,
+      setType: ArmorSetType.leather,
     ),
   };
 

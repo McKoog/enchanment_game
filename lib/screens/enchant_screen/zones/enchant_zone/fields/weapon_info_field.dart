@@ -13,43 +13,45 @@ class WeaponInfoField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-              weapon.enchantLevel > 0
-                  ? "${weapon.name} +${weapon.enchantLevel}"
-                  : weapon.name,
-              style: AppTypography.titleLargeHighlight),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            "Damage: ${weapon.lowerDamage.toStringAsFixed(1)}-${weapon.higherDamage.toStringAsFixed(1)}",
-            style: AppTypography.titleSmallPrimary,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            "Attack Speed: ${weapon.attackSpeed}/s",
-            style: AppTypography.titleSmallPrimary,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            "Critical hit chance: ${weapon.critRate}%",
-            style: AppTypography.titleSmallPrimary,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            "Critical hit power: ${weapon.critPower}%",
-            style: AppTypography.titleSmallPrimary,
-          )
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                weapon.enchantLevel > 0
+                    ? "${weapon.name} +${weapon.enchantLevel}"
+                    : weapon.name,
+                style: AppTypography.titleLargeHighlight),
+            const SizedBox(
+              height: 16,
+            ),
+            Text(
+              "Damage: ${weapon.lowerDamage.toStringAsFixed(1)}-${weapon.higherDamage.toStringAsFixed(1)}",
+              style: AppTypography.titleSmallPrimary,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text(
+              "Attack Speed: ${weapon.attackSpeed}/s",
+              style: AppTypography.titleSmallPrimary,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text(
+              "Critical hit chance: ${weapon.critRate}%",
+              style: AppTypography.titleSmallPrimary,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text(
+              "Critical hit power: ${weapon.critPower}%",
+              style: AppTypography.titleSmallPrimary,
+            )
+          ],
+        ),
       ),
     );
   }
