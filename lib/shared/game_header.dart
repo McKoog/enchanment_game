@@ -19,7 +19,7 @@ class GameHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _PersistentHeader(
-            versionLabel: 'v.$appVersion',
+            versionLabel: 'alpha v.$appVersion',
             gold: character.gold,
             level: character.level,
             experienceProgress: character.maxExp > 0 ? character.currentExp / character.maxExp : 0,
