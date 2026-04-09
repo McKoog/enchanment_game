@@ -1,6 +1,6 @@
-import 'package:enchantment_game/game_header.dart';
-import 'package:enchantment_game/responsive_layout.dart';
-import 'package:enchantment_game/shared_blocs_provider.dart';
+import 'package:enchantment_game/shared/adaptive/responsive_layout.dart';
+import 'package:enchantment_game/shared/game_header.dart';
+import 'package:enchantment_game/shared/shared_blocs_provider.dart';
 import 'package:flutter/material.dart';
 
 class EnchantmentGame extends StatelessWidget {

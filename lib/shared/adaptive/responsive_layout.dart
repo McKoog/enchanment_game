@@ -1,7 +1,7 @@
-import 'package:enchantment_game/navigation_arrow.dart';
 import 'package:enchantment_game/screens/enchant_screen/enchant_screen.dart';
 import 'package:enchantment_game/screens/hunting_field_screen/hunting_field_screen.dart';
 import 'package:enchantment_game/screens/menu_screen/menu_screen.dart';
+import 'package:enchantment_game/shared/adaptive/navigation_arrow.dart';
 import 'package:flutter/material.dart';
 
 /// Breakpoints for responsive layout.
@@ -34,12 +34,8 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Precache all common backgrounds at the root level
-    precacheImage(
-        const AssetImage('assets/background/dark_hall_background.png'),
-        context);
-    precacheImage(
-        const AssetImage('assets/background/town_center_background.png'),
-        context);
+    precacheImage(const AssetImage('assets/background/dark_hall_background.png'), context);
+    precacheImage(const AssetImage('assets/background/town_center_background.png'), context);
   }
 
   @override
@@ -132,9 +128,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
   }
 
   void _onMediumScrollEnd() {
-    if (_scrollController == null ||
-        !_scrollController!.hasClients ||
-        _lastPanelWidth == 0) {
+    if (_scrollController == null || !_scrollController!.hasClients || _lastPanelWidth == 0) {
       return;
     }
 
@@ -209,14 +203,9 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
               width: panelWidth * 3,
               child: Row(
                 children: [
-                  SizedBox(
-                      width: panelWidth, child: MenuScreen(width: panelWidth)),
-                  SizedBox(
-                      width: panelWidth,
-                      child: EnchantScreen(width: panelWidth)),
-                  SizedBox(
-                      width: panelWidth,
-                      child: HuntingFieldScreen(width: panelWidth)),
+                  SizedBox(width: panelWidth, child: MenuScreen(width: panelWidth)),
+                  SizedBox(width: panelWidth, child: EnchantScreen(width: panelWidth)),
+                  SizedBox(width: panelWidth, child: HuntingFieldScreen(width: panelWidth)),
                 ],
               ),
             ),
@@ -294,31 +283,25 @@ class _SnapScrollPhysics extends ScrollPhysics {
 
   @override
   _SnapScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return _SnapScrollPhysics(
-        snapSize: snapSize, parent: buildParent(ancestor));
+    return _SnapScrollPhysics(snapSize: snapSize, parent: buildParent(ancestor));
   }
 
-  double _getTargetPixels(
-      ScrollMetrics position, Tolerance tolerance, double velocity) {
+  double _getTargetPixels(ScrollMetrics position, Tolerance tolerance, double velocity) {
     double page = position.pixels / snapSize;
     if (velocity < -tolerance.velocity) {
       page -= 0.5;
     } else if (velocity > tolerance.velocity) {
       page += 0.5;
     }
-    return (page.roundToDouble() * snapSize)
-        .clamp(position.minScrollExtent, position.maxScrollExtent);
+    return (page.roundToDouble() * snapSize).clamp(position.minScrollExtent, position.maxScrollExtent);
   }
 
   @override
-  Simulation? createBallisticSimulation(
-      ScrollMetrics position, double velocity) {
-    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) ||
-        (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    if ((velocity <= 0.0 && position.pixels <= position.minScrollExtent) || (velocity >= 0.0 && position.pixels >= position.maxScrollExtent)) {
       return super.createBallisticSimulation(position, velocity);
     }
-    final double target =
-        _getTargetPixels(position, toleranceFor(position), velocity);
+    final double target = _getTargetPixels(position, toleranceFor(position), velocity);
     if (target != position.pixels) {
       return ScrollSpringSimulation(
         spring,
