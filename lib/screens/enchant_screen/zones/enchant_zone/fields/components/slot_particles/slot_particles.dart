@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_state.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_bloc.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_state.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/components/particles_painter.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/slot_particles/model/particle.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class _SlotParticlesState extends State<SlotParticles>
   @override
   void initState() {
     _particles =
-        genParticles(context.read<ParticleSettingBloc>().state.particlesCount);
+        genParticles(context.read<VisualSettingsBloc>().state.particlesCount);
     _ticker = createTicker((elapsed) {
       // 120 FPS = ~8.33 ms
       if (elapsed - _lastUpdateTime >= const Duration(microseconds: 8333)) {
@@ -99,7 +99,7 @@ class _SlotParticlesState extends State<SlotParticles>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ParticleSettingBloc, ParticleSettingsState>(
+    return BlocBuilder<VisualSettingsBloc, VisualSettingsState>(
         builder: (context, state) {
       if (state.particlesCount > _particles.length) {
         _particles

@@ -1,7 +1,7 @@
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_bloc.dart';
 import 'package:enchantment_game/runner.dart';
 import 'package:enchantment_game/shared/settings_dialog.dart';
 import 'package:enchantment_game/theme/app_theme.dart';
@@ -207,7 +207,7 @@ class _PersistentHeader extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  final particleBloc = context.read<ParticleSettingBloc>();
+                  final visualSettingsBloc = context.read<VisualSettingsBloc>();
                   final characterBloc = context.read<CharacterBloc>();
                   final inventoryBloc = context.read<InventoryBloc>();
 
@@ -216,7 +216,7 @@ class _PersistentHeader extends StatelessWidget {
                     useRootNavigator: true,
                     builder: (_) => MultiBlocProvider(
                       providers: [
-                        BlocProvider.value(value: particleBloc),
+                        BlocProvider.value(value: visualSettingsBloc),
                         BlocProvider.value(value: characterBloc),
                         BlocProvider.value(value: inventoryBloc),
                       ],

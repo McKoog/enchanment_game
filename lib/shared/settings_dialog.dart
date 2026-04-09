@@ -2,9 +2,9 @@ import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_event.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_state.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_bloc.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_event.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_state.dart';
 import 'package:enchantment_game/services/save_service.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
@@ -68,7 +68,7 @@ class SettingsDialog extends StatelessWidget {
       children: [
         Text('Visual', style: AppTypography.titleMediumPrimary),
         const SizedBox(height: 12),
-        BlocBuilder<ParticleSettingBloc, ParticleSettingsState>(
+        BlocBuilder<VisualSettingsBloc, VisualSettingsState>(
           builder: (context, state) {
             return Material(
               color: Colors.transparent,
@@ -76,13 +76,29 @@ class SettingsDialog extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildSettingRow(
+                    name: 'Show navigation arrows',
+                    description: 'Displays navigation arrows on the screen',
+                    trailing: Checkbox(
+                      value: state.showNavigationArrows,
+                      activeColor: AppColors.accentYellow,
+                      onChanged: (val) {
+                        context.read<VisualSettingsBloc>().add(
+                            VisualSettingsEvent$ChangeShowNavigationArrows(
+                                showNavigationArrows: val ?? true));
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSettingRow(
                     name: 'Optimized particles',
                     description: 'Enables optimized rendering for particles',
                     trailing: Checkbox(
                       value: state.isOptimized,
                       activeColor: AppColors.accentYellow,
                       onChanged: (val) {
-                        context.read<ParticleSettingBloc>().add(ParticleSettingEvent$ChangeOptimized(isOptimized: val ?? false));
+                        context.read<VisualSettingsBloc>().add(
+                            VisualSettingsEvent$ChangeOptimized(
+                                isOptimized: val ?? false));
                       },
                     ),
                   ),
@@ -101,7 +117,8 @@ class SettingsDialog extends StatelessWidget {
                     inactiveColor: AppColors.panelBorder,
                     label: state.particlesCount.toString(),
                     onChanged: (val) {
-                      context.read<ParticleSettingBloc>().add(ParticleSettingEvent$ChangeCount(count: val.toInt()));
+                      context.read<VisualSettingsBloc>().add(
+                          VisualSettingsEvent$ChangeCount(count: val.toInt()));
                     },
                   ),
                 ],
@@ -183,7 +200,8 @@ class SettingsDialog extends StatelessWidget {
       builder: (ctx) {
         return AlertDialog(
           backgroundColor: AppColors.panelBackground,
-          title: const Text('Reset Progress?', style: TextStyle(color: Colors.white)),
+          title: const Text('Reset Progress?',
+              style: TextStyle(color: Colors.white)),
           content: const Text(
             'This will delete all your progress, items, and levels. Are you sure?',
             style: TextStyle(color: Colors.white70),
@@ -191,7 +209,8 @@ class SettingsDialog extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () async {
@@ -203,7 +222,8 @@ class SettingsDialog extends StatelessWidget {
                   Navigator.of(context).pop(); // close settings
                 }
               },
-              child: const Text('Reset', style: TextStyle(color: AppColors.error)),
+              child:
+                  const Text('Reset', style: TextStyle(color: AppColors.error)),
             ),
           ],
         );

@@ -1,7 +1,7 @@
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/blocs/particle_settings_bloc/particle_setting_bloc.dart';
+import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_bloc.dart';
 import 'package:enchantment_game/game_stock_data/stock_inventory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +17,7 @@ class SharedBlocsProvider extends StatelessWidget {
       BlocProvider(
           create: (context) => InventoryBloc(initialInventory: stockInventory)),
       BlocProvider(
-        create: (context) => ParticleSettingBloc(),
+        create: (context) => VisualSettingsBloc(),
       ),
       BlocProvider(
         create: (context) => CharacterBloc(),
