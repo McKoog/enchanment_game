@@ -18,7 +18,7 @@ class InventoryZone extends StatelessWidget {
             child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: InventoryField(
-            sideSize: height - 20,
+            sideSize: height - 20 - 35,
             capacity: Inventory.defaultCapacity,
           ),
         )));

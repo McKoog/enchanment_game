@@ -3,7 +3,10 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
 import 'package:enchantment_game/game_stock_data/item_registry.dart';
 import 'package:enchantment_game/game_stock_data/stock_inventory.dart';
 import 'package:enchantment_game/models/inventory.dart';
+import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
+import 'package:enchantment_game/models/weapon.dart';
+import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/services/save_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,6 +24,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           InventoryEvent$ConsumeScroll() => _consumeScroll(event, emitter),
           InventoryEvent$SplitScrollStack() =>
             _splitScrollStack(event, emitter),
+          InventoryEvent$SortRange() => _sortRange(event, emitter),
           InventoryEvent$Reset() => _reset(event, emitter),
         });
 
@@ -37,10 +41,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
 
       var remaining = newScroll.quantity;
       while (remaining > 0) {
-        final existingIndex = invItems.indexWhere((item) =>
-            item is Scroll &&
-            _isSameScrollType(item, newScroll) &&
-            item.quantity < Scroll.maxStackSize);
+        final existingIndex = invItems.indexWhere(
+            (item) =>
+                item is Scroll &&
+                _isSameScrollType(item, newScroll) &&
+                item.quantity < Scroll.maxStackSize,
+            5);
 
         if (existingIndex != -1) {
           final existing = invItems[existingIndex] as Scroll;
@@ -54,7 +60,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
           continue;
         }
 
-        final firstEmptySlotIndex = invItems.indexWhere((item) => item == null);
+        final firstEmptySlotIndex =
+            invItems.indexWhere((item) => item == null, 5);
         if (firstEmptySlotIndex == -1) break;
 
         final stackQuantity =
@@ -70,8 +77,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       return;
     }
 
-    // Default: place in first empty slot.
-    final firstEmptySlotIndex = invItems.indexWhere((item) => item == null);
+    // Default: place in first empty non-persistent slot.
+    final firstEmptySlotIndex = invItems.indexWhere((item) => item == null, 5);
     if (firstEmptySlotIndex == -1) return;
     invItems[firstEmptySlotIndex] = event.item;
     final newInventory = Inventory(items: invItems);
@@ -218,6 +225,62 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     if (saved != null) {
       emitter(InventoryState(inventory: saved));
     }
+  }
+
+  void _sortRange(
+      InventoryEvent$SortRange event, Emitter<InventoryState> emitter) {
+    final invItems = [...state.inventory.items];
+    if (event.startIndex < 0 ||
+        event.endIndex > invItems.length ||
+        event.startIndex >= event.endIndex) {
+      return;
+    }
+
+    final sublist = invItems.sublist(event.startIndex, event.endIndex);
+    sublist.sort((a, b) {
+      if (a == null && b == null) return 0;
+      if (a == null) return 1;
+      if (b == null) return -1;
+
+      int getRank(Item item) {
+        if (item is Scroll) return 1;
+        if (item is Weapon && item.enchantLevel > 0) return 2;
+        if (item is Armor && item.enchantLevel > 0) return 3;
+        if (item is Weapon && item.enchantLevel == 0) return 4;
+        if (item is Armor && item.enchantLevel == 0) return 5;
+        return 6;
+      }
+
+      int rankA = getRank(a);
+      int rankB = getRank(b);
+      if (rankA != rankB) return rankA.compareTo(rankB);
+
+      if (rankA == 2) {
+        return (b as Weapon).enchantLevel.compareTo((a as Weapon).enchantLevel);
+      }
+      if (rankA == 3) {
+        return (b as Armor).enchantLevel.compareTo((a as Armor).enchantLevel);
+      }
+      if (rankA == 4) {
+        return (b as Weapon).rarity.compareTo((a as Weapon).rarity);
+      }
+      if (rankA == 5) {
+        return (b as Armor).rarity.compareTo((a as Armor).rarity);
+      }
+      if (rankA == 1) {
+        return (a as Scroll)
+            .scrollType
+            .name
+            .compareTo((b as Scroll).scrollType.name);
+      }
+
+      return a.id.compareTo(b.id);
+    });
+
+    invItems.replaceRange(event.startIndex, event.endIndex, sublist);
+    final newInventory = Inventory(items: invItems);
+    emitter(InventoryState(inventory: newInventory));
+    _autoSave(newInventory);
   }
 
   void _reset(InventoryEvent$Reset event, Emitter<InventoryState> emitter) {

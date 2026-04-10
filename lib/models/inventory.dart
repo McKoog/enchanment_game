@@ -7,7 +7,7 @@ import 'package:enchantment_game/models/weapon.dart';
 class Inventory {
   Inventory({required this.items});
 
-  static const int defaultCapacity = 25;
+  static const int defaultCapacity = 145;
 
   List<Item?> items;
 
@@ -55,6 +55,10 @@ class Inventory {
           items.add(Scroll.fromJson(element));
         }
       }
+    }
+
+    while (items.length < defaultCapacity) {
+      items.add(null);
     }
 
     return Inventory(

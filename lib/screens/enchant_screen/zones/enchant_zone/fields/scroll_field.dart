@@ -98,56 +98,54 @@ class _ScrollFieldState extends State<ScrollField> {
               insertedItem = null;
             }
 
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _ScrollHeader(
-                          insertedItem: insertedItem,
-                          isEnchantSucceed:
-                              state is EnchantState$Result && state.isSuccess,
-                          sideSize: widget.sideSize,
-                          scrollName: widget.scroll.name),
-                      Expanded(
-                          child: _ScrollContent(
-                        sideSize: widget.sideSize,
-                        enchantState: state,
+            return SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _ScrollHeader(
                         insertedItem: insertedItem,
-                        scrollType: widget.scroll.scrollType,
-                        scrollDescription: widget.scroll.description,
-                        onSlotTap: () {
-                          if (insertedItem == null &&
-                              state is EnchantState$Idle) {
-                            final type =
-                                widget.scroll.scrollType == ScrollType.weapon
-                                    ? OverlayType.weapon
-                                    : OverlayType.armor;
-                            context.read<EquipOverlayBloc>().add(
-                                EquipOverlayEvent$Toggle(overlayType: type));
-                          }
-                        },
-                      )),
-                      _ScrollControls(
+                        isEnchantSucceed:
+                            state is EnchantState$Result && state.isSuccess,
                         sideSize: widget.sideSize,
-                        enchantState: state,
-                        onEnchant: () {
-                          if (state.insertedItem != null) {
-                            _enchantBloc.add(EnchantEvent$StartEnchanting(
-                                item: state.insertedItem!));
-                          }
-                        },
-                        onCancel: () =>
-                            itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
-                      ),
-                    ],
-                  ),
+                        scrollName: widget.scroll.name),
+                    Expanded(
+                        child: _ScrollContent(
+                      sideSize: widget.sideSize,
+                      enchantState: state,
+                      insertedItem: insertedItem,
+                      scrollType: widget.scroll.scrollType,
+                      scrollDescription: widget.scroll.description,
+                      onSlotTap: () {
+                        if (insertedItem == null &&
+                            state is EnchantState$Idle) {
+                          final type =
+                              widget.scroll.scrollType == ScrollType.weapon
+                                  ? OverlayType.weapon
+                                  : OverlayType.armor;
+                          context
+                              .read<EquipOverlayBloc>()
+                              .add(EquipOverlayEvent$Toggle(overlayType: type));
+                        }
+                      },
+                    )),
+                    _ScrollControls(
+                      sideSize: widget.sideSize,
+                      enchantState: state,
+                      onEnchant: () {
+                        if (state.insertedItem != null) {
+                          _enchantBloc.add(EnchantEvent$StartEnchanting(
+                              item: state.insertedItem!));
+                        }
+                      },
+                      onCancel: () =>
+                          itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           }),
     );

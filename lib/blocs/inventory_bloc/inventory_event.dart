@@ -54,4 +54,14 @@ class InventoryEvent$SplitScrollStack extends InventoryEvent {
   final int quantity;
 }
 
+class InventoryEvent$SortRange extends InventoryEvent {
+  InventoryEvent$SortRange({
+    required this.startIndex,
+    required this.endIndex,
+  });
+
+  final int startIndex;
+  final int endIndex;
+}
+
 class InventoryEvent$Reset extends InventoryEvent {}

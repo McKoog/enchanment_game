@@ -18,6 +18,7 @@ class InventorySlot extends StatelessWidget {
       this.item,
       this.canBeDragged = true,
       this.canBeDragTarget = true,
+      this.isPersistent = false,
       this.onTap});
 
   final int index;
@@ -25,6 +26,7 @@ class InventorySlot extends StatelessWidget {
 
   final bool canBeDragged;
   final bool canBeDragTarget;
+  final bool isPersistent;
   final VoidCallback? onTap;
 
   @override
@@ -56,8 +58,9 @@ class InventorySlot extends StatelessWidget {
                               ? AppColors.slotBackground.withValues(
                                   alpha: 0.5 - (0.06 * (enchantLevel % 16)))
                               : Colors.grey.shade900.withValues(alpha: 0.25),
-                      border: Border.fromBorderSide(
-                          BorderSide(color: AppColors.panelBorder, width: 2)),
+                      border: isPersistent
+                          ? Border.all(color: AppColors.success, width: 2)
+                          : Border.all(color: AppColors.panelBorder, width: 2),
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: enchantLevel == 0
                           ? null
@@ -73,7 +76,10 @@ class InventorySlot extends StatelessWidget {
                                           enchantLevel],
                                       spreadRadius: 0.3)
                                 ])
-                  : AppDecorations.inventorySlot,
+                  : (AppDecorations.inventorySlot as BoxDecoration).copyWith(
+                      border: isPersistent
+                          ? Border.all(color: AppColors.success, width: 2)
+                          : null),
               child: item != null
                   ? InventoryDragTarget(
                       inventoryIndex: index,

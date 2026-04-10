@@ -47,19 +47,20 @@ class EnchantScreen extends StatelessWidget {
             children: [
               Column(children: [
                 SizedBox(
-                  height: constraints.maxHeight / 2,
+                  height: (constraints.maxHeight / 2) - 35,
                   width: effectiveWidth,
                   child: EnchantZone(
-                      height: constraints.maxHeight / 2,
+                      height: (constraints.maxHeight / 2) - 35,
                       width: effectiveWidth,
                       maxHeight: constraints.maxHeight),
                 ),
                 Container(
-                  height: constraints.maxHeight / 2,
+                  height: (constraints.maxHeight / 2) + 35,
                   width: effectiveWidth,
                   clipBehavior: Clip.none,
                   child: InventoryZone(
-                      height: constraints.maxHeight / 2, width: effectiveWidth),
+                      height: (constraints.maxHeight / 2) + 35,
+                      width: effectiveWidth),
                 )
               ]),
               BlocBuilder<EquipOverlayBloc, EquipOverlayState>(
