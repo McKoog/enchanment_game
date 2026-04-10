@@ -29,7 +29,7 @@ class WeaponInfoField extends StatelessWidget {
             ),
             if (weapon.rarity > 0) ...[
               Text(
-                "Rarity: ${weapon.rarity.toStringAsFixed(1)}%",
+                "Rarity: ${weapon.rarity.toStringAsFixed(2)}%",
                 style: const TextStyle(
                   color: AppColors.accentYellow,
                   fontSize: 16,
@@ -39,28 +39,28 @@ class WeaponInfoField extends StatelessWidget {
               const SizedBox(height: 16),
             ],
             Text(
-              "Damage: ${weapon.lowerDamage.toStringAsFixed(1)}-${weapon.higherDamage.toStringAsFixed(1)}",
+              "Damage: ${weapon.lowerDamage.toStringAsFixed(2)}-${weapon.higherDamage.toStringAsFixed(2)}",
               style: AppTypography.titleSmallPrimary,
             ),
             const SizedBox(
               height: 16,
             ),
             Text(
-              "Attack Speed: ${weapon.attackSpeed}/s",
+              "Attack Speed: ${weapon.attackSpeed.toStringAsFixed(2)}/s",
               style: AppTypography.titleSmallPrimary,
             ),
             const SizedBox(
               height: 16,
             ),
             Text(
-              "Critical hit chance: ${weapon.critRate}%",
+              "Critical hit chance: ${weapon.critRate.toStringAsFixed(2)}%",
               style: AppTypography.titleSmallPrimary,
             ),
             const SizedBox(
               height: 16,
             ),
             Text(
-              "Critical hit power: ${weapon.critPower}%",
+              "Critical hit power: ${weapon.critPower.toStringAsFixed(2)}%",
               style: AppTypography.titleSmallPrimary,
             ),
             if (weapon.rarityEffects.isNotEmpty) ...[

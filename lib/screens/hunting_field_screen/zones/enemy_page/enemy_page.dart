@@ -283,17 +283,18 @@ class _EnemyPageState extends State<EnemyPage>
       final inventoryBloc = context.read<InventoryBloc>();
 
       for (final item in loot.items) {
+        final clonedItem = _cloneItem(item);
         if (item is GoldItem) {
           characterBloc.add(CharacterAddGold(item.amount));
         } else if (!inventoryBloc.state.inventory.isFull) {
           inventoryBloc.add(InventoryEvent$AddItem(item: item));
         }
-        _dropHistory.insert(0, item);
+        _dropHistory.insert(0, clonedItem);
         _listKey.currentState
             ?.insertItem(0, duration: const Duration(milliseconds: 300));
 
         if (!_showRecentLoot) {
-          _addDropNotification(item);
+          _addDropNotification(clonedItem);
         }
       }
     }
@@ -376,6 +377,13 @@ class _EnemyPageState extends State<EnemyPage>
         ),
       ),
     );
+  }
+
+  Item _cloneItem(Item item) {
+    if (item is Weapon) return Weapon.copyWith(item);
+    if (item is Armor) return Armor.copyWith(item);
+    if (item is Scroll) return Scroll.copyWith(item);
+    return item;
   }
 
   String _getItemName(Item item) {

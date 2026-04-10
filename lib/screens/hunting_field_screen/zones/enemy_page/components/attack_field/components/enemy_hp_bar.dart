@@ -50,7 +50,7 @@ class EnemyHpBar extends StatelessWidget {
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
-                      "${currentHP.toStringAsFixed(1)} / ${enemy.hp}",
+                      "${currentHP.toStringAsFixed(2)} / ${enemy.hp}",
                       style: AppTypography.titleMediumDark,
                     ),
                   )),

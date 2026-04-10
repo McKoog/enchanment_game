@@ -29,8 +29,7 @@ class _EquipZoneState extends State<EquipZone> {
     final effects = <Widget>[];
 
     // Build skills section
-    final learnedSkills =
-        character.learnedSkills.entries.where((e) => e.value > 0).toList();
+    final learnedSkills = character.learnedSkills.entries.where((e) => e.value > 0).toList();
     if (learnedSkills.isNotEmpty) {
       effects.add(
         const Padding(
@@ -48,13 +47,10 @@ class _EquipZoneState extends State<EquipZone> {
       );
 
       for (final skillEntry in learnedSkills) {
-        final skillType =
-            SkillType.values.firstWhere((e) => e.name == skillEntry.key);
+        final skillType = SkillType.values.firstWhere((e) => e.name == skillEntry.key);
         final level = skillEntry.value;
-        final description =
-            SkillService.getSkillDescription(skillType, level: level);
-        final skillName =
-            SkillService.allSkills.firstWhere((s) => s.type == skillType).name;
+        final description = SkillService.getSkillDescription(skillType, level: level);
+        final skillName = SkillService.allSkills.firstWhere((s) => s.type == skillType).name;
 
         effects.add(
           Padding(
@@ -93,8 +89,7 @@ class _EquipZoneState extends State<EquipZone> {
 
     if (setEffect != null) {
       final weapon = character.equippedWeapon ?? ItemRegistry.fist;
-      effects.addAll(setEffect.buildActiveEffectsList(
-          character.activeSetEnchantLevel, weapon));
+      effects.addAll(setEffect.buildActiveEffectsList(character.activeSetEnchantLevel, weapon));
     }
 
     final rarityEffectsWidgets = <Widget>[];
@@ -152,8 +147,7 @@ class _EquipZoneState extends State<EquipZone> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CharacterBloc, CharacterState>(
-        builder: (context, state) {
+    return BlocBuilder<CharacterBloc, CharacterState>(builder: (context, state) {
       final character = state.character;
 
       return Padding(
@@ -194,29 +188,21 @@ class _EquipZoneState extends State<EquipZone> {
                                   children: [
                                     _StatRow('Level', '${character.level}'),
                                     const SizedBox(height: 8),
-                                    _StatRow('Experience',
-                                        '${character.currentExp} / ${character.maxExp} exp'),
+                                    _StatRow('Experience', '${character.currentExp} / ${character.maxExp} exp'),
                                     const SizedBox(height: 8),
-                                    _StatRow('Attack Damage',
-                                        '${character.lowerDamage} - ${character.higherDamage}'),
+                                    _StatRow('Attack Damage', '${character.lowerDamage} - ${character.higherDamage}'),
                                     const SizedBox(height: 8),
-                                    _StatRow(
-                                        'Attack Speed',
-                                        character.attackSpeed
-                                            .toStringAsFixed(2)),
+                                    _StatRow('Attack Speed', character.attackSpeed.toStringAsFixed(2)),
                                     const SizedBox(height: 8),
-                                    _StatRow('Crit Chance',
-                                        '${character.critRate}%'),
+                                    _StatRow('Crit Chance', '${character.critRate}%'),
                                     const SizedBox(height: 8),
-                                    _StatRow('Crit Power',
-                                        '${character.critPower}%'),
+                                    _StatRow('Crit Power', '${character.critPower}%'),
                                     const SizedBox(height: 8),
                                     _StatRow('Defense', '${character.defense}'),
                                     const SizedBox(height: 8),
                                     _StatRow('Health', '${character.health}'),
                                     const SizedBox(height: 8),
-                                    _StatRow('HP Regen',
-                                        '${character.totalHpRegen} / s'),
+                                    _StatRow('HP Regen', '${character.totalHpRegen} / s'),
                                   ],
                                 ),
                               ),
@@ -260,8 +246,7 @@ class _EquipZoneState extends State<EquipZone> {
               Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 4.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -293,10 +278,8 @@ class _EquipZoneState extends State<EquipZone> {
                                 fit: BoxFit.scaleDown,
                                 child: EquipSlot(
                                   item: character.equippedHelmet,
-                                  bgIconPath:
-                                      'assets/icons/stock_equip/equip_helmet_icon.png',
-                                  isSelected:
-                                      _selectedSlot == SelectedSlot.helmet,
+                                  bgIconPath: 'assets/icons/stock_equip/equip_helmet_icon.png',
+                                  isSelected: _selectedSlot == SelectedSlot.helmet,
                                   onTap: () {
                                     setState(() {
                                       _selectedSlot = SelectedSlot.helmet;
@@ -310,10 +293,8 @@ class _EquipZoneState extends State<EquipZone> {
                                 fit: BoxFit.scaleDown,
                                 child: EquipSlot(
                                   item: character.equippedChestplate,
-                                  bgIconPath:
-                                      'assets/icons/stock_equip/equip_breastplate_icon.png',
-                                  isSelected:
-                                      _selectedSlot == SelectedSlot.chestplate,
+                                  bgIconPath: 'assets/icons/stock_equip/equip_breastplate_icon.png',
+                                  isSelected: _selectedSlot == SelectedSlot.chestplate,
                                   onTap: () {
                                     setState(() {
                                       _selectedSlot = SelectedSlot.chestplate;
@@ -327,10 +308,8 @@ class _EquipZoneState extends State<EquipZone> {
                                 fit: BoxFit.scaleDown,
                                 child: EquipSlot(
                                   item: character.equippedLeggings,
-                                  bgIconPath:
-                                      'assets/icons/stock_equip/equip_leggings_icon.png',
-                                  isSelected:
-                                      _selectedSlot == SelectedSlot.leggings,
+                                  bgIconPath: 'assets/icons/stock_equip/equip_leggings_icon.png',
+                                  isSelected: _selectedSlot == SelectedSlot.leggings,
                                   onTap: () {
                                     setState(() {
                                       _selectedSlot = SelectedSlot.leggings;
@@ -344,10 +323,8 @@ class _EquipZoneState extends State<EquipZone> {
                                 fit: BoxFit.scaleDown,
                                 child: EquipSlot(
                                   item: character.equippedBoots,
-                                  bgIconPath:
-                                      'assets/icons/stock_equip/equip_boots_icon.png',
-                                  isSelected:
-                                      _selectedSlot == SelectedSlot.boots,
+                                  bgIconPath: 'assets/icons/stock_equip/equip_boots_icon.png',
+                                  isSelected: _selectedSlot == SelectedSlot.boots,
                                   onTap: () {
                                     setState(() {
                                       _selectedSlot = SelectedSlot.boots;
@@ -360,12 +337,9 @@ class _EquipZoneState extends State<EquipZone> {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: EquipSlot(
-                                  item: character.equippedWeapon ??
-                                      ItemRegistry.fist,
-                                  bgIconPath:
-                                      'assets/icons/stock_equip/equip_weapon_icon.png',
-                                  isSelected:
-                                      _selectedSlot == SelectedSlot.weapon,
+                                  item: character.equippedWeapon ?? ItemRegistry.fist,
+                                  bgIconPath: 'assets/icons/stock_equip/equip_weapon_icon.png',
+                                  isSelected: _selectedSlot == SelectedSlot.weapon,
                                   onTap: () {
                                     setState(() {
                                       _selectedSlot = SelectedSlot.weapon;

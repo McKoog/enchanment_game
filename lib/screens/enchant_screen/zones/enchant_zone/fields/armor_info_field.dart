@@ -30,7 +30,7 @@ class ArmorInfoField extends StatelessWidget {
             ),
             if (armor.rarity > 0) ...[
               Text(
-                "Rarity: ${armor.rarity.toStringAsFixed(1)}%",
+                "Rarity: ${armor.rarity.toStringAsFixed(2)}%",
                 style: const TextStyle(
                   color: AppColors.accentYellow,
                   fontSize: 16,

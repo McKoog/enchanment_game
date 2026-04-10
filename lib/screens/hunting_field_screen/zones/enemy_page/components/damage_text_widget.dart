@@ -103,8 +103,8 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
                     widget.isBlock
                         ? 'Blocked'
                         : widget.isHeal
-                            ? '+ ${widget.damage.toStringAsFixed(1)}'
-                            : '- ${widget.damage.toStringAsFixed(1)}',
+                            ? '+ ${widget.damage.toStringAsFixed(2)}'
+                            : '- ${widget.damage.toStringAsFixed(2)}',
                     style: TextStyle(
                       color: widget.isBlock
                           ? Colors.grey
