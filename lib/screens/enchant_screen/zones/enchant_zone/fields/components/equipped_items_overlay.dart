@@ -3,6 +3,7 @@ import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc.dart';
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
@@ -170,7 +171,8 @@ class _OverlaySlot extends StatelessWidget {
 
           inventoryBloc.add(InventoryEvent$RemoveItem(item: draggedItem));
 
-          if (enchantBloc.state.insertedItem == draggedItem) {
+          if (enchantBloc.state.insertedItem == draggedItem &&
+              enchantBloc.state is! EnchantState$Result) {
             enchantBloc.add(EnchantEvent$ExtractItem());
           }
 

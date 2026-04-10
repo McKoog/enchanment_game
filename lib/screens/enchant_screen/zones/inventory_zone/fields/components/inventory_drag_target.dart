@@ -6,6 +6,7 @@ import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_state.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
@@ -110,7 +111,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
           final enchantBloc = context.read<EnchantBloc>();
 
           bool isFromEnchantSlot =
-              enchantBloc.state.insertedItem == draggedItem;
+              enchantBloc.state.insertedItem == draggedItem &&
+                  enchantBloc.state is! EnchantState$Result;
 
           if (toItem == null) {
             inventoryBloc.add(InventoryEvent$AddItemAt(
