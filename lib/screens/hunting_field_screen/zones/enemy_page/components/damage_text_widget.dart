@@ -9,6 +9,8 @@ class DamageTextData {
   final bool isHeal;
   final bool isBlock;
   final bool isCrit;
+  final bool isDefensiveStance;
+  final bool isBlockHeal;
 
   DamageTextData({
     required this.id,
@@ -18,6 +20,8 @@ class DamageTextData {
     this.isHeal = false,
     this.isBlock = false,
     this.isCrit = false,
+    this.isDefensiveStance = false,
+    this.isBlockHeal = false,
   });
 }
 
@@ -28,6 +32,8 @@ class DamageTextWidget extends StatefulWidget {
   final bool isHeal;
   final bool isBlock;
   final bool isCrit;
+  final bool isDefensiveStance;
+  final bool isBlockHeal;
   final double? flyDistance;
   final Duration? duration;
 
@@ -39,6 +45,8 @@ class DamageTextWidget extends StatefulWidget {
     this.isHeal = false,
     this.isBlock = false,
     this.isCrit = false,
+    this.isDefensiveStance = false,
+    this.isBlockHeal = false,
     this.flyDistance,
     this.duration,
   });
@@ -88,6 +96,105 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        Widget content;
+
+        if (widget.isBlock) {
+          content = Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('assets/icons/shield_icon.png',
+                  width: 24, height: 24, color: Colors.black),
+              const SizedBox(width: 4),
+              Text(
+                widget.damage.toStringAsFixed(2),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'PT Sans',
+                ),
+              ),
+            ],
+          );
+        } else if (widget.isBlockHeal) {
+          content = Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset('assets/icons/shield_icon.png',
+                  width: 24, height: 24, color: AppColors.success),
+              const SizedBox(width: 4),
+              Text(
+                '+ ${widget.damage.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  color: AppColors.success,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'PT Sans',
+                  shadows: [
+                    Shadow(
+                      color: AppColors.black,
+                      blurRadius: 4,
+                      offset: Offset(1, 1),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+        } else {
+          content = Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                widget.isHeal
+                    ? '+ ${widget.damage.toStringAsFixed(2)}'
+                    : '- ${widget.damage.toStringAsFixed(2)}',
+                style: TextStyle(
+                  color: widget.isHeal
+                      ? AppColors.success
+                      : widget.isDefensiveStance
+                          ? AppColors.accentYellow
+                          : AppColors.error,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'PT Sans',
+                  shadows: const [
+                    Shadow(
+                      color: AppColors.black,
+                      blurRadius: 4,
+                      offset: Offset(1, 1),
+                    )
+                  ],
+                ),
+              ),
+              if (widget.isCrit)
+                const Padding(
+                  padding: EdgeInsets.only(left: 4.0, bottom: 2.0),
+                  child: Text(
+                    'crit',
+                    style: TextStyle(
+                      color: Colors.redAccent,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'PT Sans',
+                      fontStyle: FontStyle.italic,
+                      shadows: [
+                        Shadow(
+                          color: AppColors.black,
+                          blurRadius: 4,
+                          offset: Offset(1, 1),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          );
+        }
+
         return Transform.translate(
           offset: _positionAnimation.value,
           child: Opacity(
@@ -97,53 +204,8 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    widget.isBlock
-                        ? 'Blocked'
-                        : widget.isHeal
-                            ? '+ ${widget.damage.toStringAsFixed(2)}'
-                            : '- ${widget.damage.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      color: widget.isBlock
-                          ? Colors.grey
-                          : widget.isHeal
-                              ? AppColors.success
-                              : AppColors.error,
-                      fontSize: widget.isBlock ? 24 : 28,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'PT Sans',
-                      shadows: const [
-                        Shadow(
-                          color: AppColors.black,
-                          blurRadius: 4,
-                          offset: Offset(1, 1),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (widget.isCrit)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0, bottom: 2.0),
-                      child: Text(
-                        'crit',
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'PT Sans',
-                          fontStyle: FontStyle.italic,
-                          shadows: const [
-                            Shadow(
-                              color: AppColors.black,
-                              blurRadius: 4,
-                              offset: Offset(1, 1),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                  content,
                 ],
               ),
             ),

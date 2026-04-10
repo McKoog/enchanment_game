@@ -160,33 +160,80 @@ class _EnemyPageState extends State<EnemyPage>
     final charState = characterBloc.state as CharacterLoaded;
     if (charState.character.currentHealth <= 0) return;
 
-    bool isBlocked = _random.nextDouble() < charState.character.blockChance;
-    double damageTaken = 0;
+    bool isDefensiveStance =
+        _isCombatActive && !_isWeaponOnEnemy && !_isWeaponDragging;
 
-    if (!isBlocked) {
-      double maxDamageBlocked = widget.enemy.attackDamage * 0.8;
-      double actualDamageBlocked = charState.character.defense.toDouble();
-
-      if (actualDamageBlocked > maxDamageBlocked) {
-        actualDamageBlocked = maxDamageBlocked;
-      }
-
-      damageTaken = widget.enemy.attackDamage - actualDamageBlocked;
-      if (damageTaken < 0) damageTaken = 0;
-
-      characterBloc.add(CharacterTakeDamage(widget.enemy.attackDamage));
+    double incomingDamage = widget.enemy.attackDamage;
+    if (isDefensiveStance) {
+      incomingDamage *= 0.8; // 20% reduction
     }
 
-    final id = UniqueKey().toString();
-    setState(() {
-      _playerDamageTexts.add(DamageTextData(
-        id: id,
-        damage: damageTaken,
-        randomX: 0,
-        randomY: _random.nextDouble() * 40 - 20,
-        isBlock: isBlocked,
-      ));
-    });
+    double maxDamageBlocked = incomingDamage * 0.8;
+    double actualDamageBlocked = charState.character.defense.toDouble();
+
+    if (actualDamageBlocked > maxDamageBlocked) {
+      actualDamageBlocked = maxDamageBlocked;
+    }
+
+    double potentialDamageTaken = incomingDamage - actualDamageBlocked;
+    if (potentialDamageTaken < 0) potentialDamageTaken = 0;
+
+    bool isBlocked = _random.nextDouble() < charState.character.blockChance;
+
+    if (!isBlocked && isDefensiveStance) {
+      isBlocked = _random.nextDouble() < 0.10; // 10% chance to block
+    }
+
+    if (!isBlocked) {
+      characterBloc.add(CharacterTakeDamage(incomingDamage));
+
+      final id = UniqueKey().toString();
+      setState(() {
+        _playerDamageTexts.add(DamageTextData(
+          id: id,
+          damage: potentialDamageTaken,
+          randomX: 0,
+          randomY: _random.nextDouble() * 40 - 20,
+          isBlock: false,
+          isDefensiveStance: isDefensiveStance,
+        ));
+      });
+    } else {
+      // Blocked
+      double healAmount = 0;
+      if (isDefensiveStance && _random.nextDouble() < 0.5) {
+        healAmount = potentialDamageTaken * 0.33;
+        if (healAmount > 0) {
+          characterBloc.add(CharacterHeal(healAmount.toInt()));
+        }
+      }
+
+      final id = UniqueKey().toString();
+      setState(() {
+        _playerDamageTexts.add(DamageTextData(
+          id: id,
+          damage: potentialDamageTaken, // Show blocked damage amount
+          randomX: 0,
+          randomY: _random.nextDouble() * 40 - 20,
+          isBlock: true,
+        ));
+      });
+
+      if (healAmount > 0) {
+        final healId = UniqueKey().toString();
+        final hpBarWidth = widget.width - 168;
+        setState(() {
+          _playerDamageTexts.add(DamageTextData(
+            id: healId,
+            damage: healAmount,
+            randomX: (_random.nextDouble() - 0.5) * hpBarWidth,
+            randomY: _random.nextDouble() * 40 - 20,
+            isHeal: true,
+            isBlockHeal: true,
+          ));
+        });
+      }
+    }
   }
 
   void _startPlayerAttack() {
@@ -752,6 +799,7 @@ class _EnemyPageState extends State<EnemyPage>
                             flyDistance:
                                 80.0, // exactly half of the previous 160
                             isHeal: true,
+                            isBlockHeal: dt.isBlockHeal,
                             onComplete: () =>
                                 _onPlayerDamageTextComplete(dt.id),
                           ),
@@ -770,6 +818,9 @@ class _EnemyPageState extends State<EnemyPage>
                                 16 +
                                 playerHpHeight, // Fly up to enemy HP bar height
                             isHeal: false,
+                            isBlock: dt.isBlock,
+                            isDefensiveStance: dt.isDefensiveStance,
+                            isBlockHeal: dt.isBlockHeal,
                             duration: const Duration(
                                 seconds:
                                     6), // 6 seconds (was 3, so increased by 2x)

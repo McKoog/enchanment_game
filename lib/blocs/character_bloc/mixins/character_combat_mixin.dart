@@ -92,7 +92,7 @@ mixin CharacterCombatMixin on Bloc<CharacterEvent, CharacterState> {
     if (state is! CharacterLoaded) return;
     final currentState = state as CharacterLoaded;
     final newCharacter = currentState.character.copyWith(
-      escapeCooldownEndTime: DateTime.now().add(const Duration(seconds: 5)),
+      escapeCooldownEndTime: DateTime.now().add(const Duration(seconds: 3)),
     );
     emitter(CharacterLoaded(newCharacter));
     SaveService.saveCharacter(newCharacter);
