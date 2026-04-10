@@ -45,15 +45,9 @@ class Character {
   final DateTime? deathCooldownEndTime;
 
   ArmorSetType get activeSetType {
-    if (equippedHelmet != null &&
-        equippedChestplate != null &&
-        equippedLeggings != null &&
-        equippedBoots != null) {
+    if (equippedHelmet != null && equippedChestplate != null && equippedLeggings != null && equippedBoots != null) {
       final setType = equippedHelmet!.setType;
-      if (setType != ArmorSetType.none &&
-          equippedChestplate!.setType == setType &&
-          equippedLeggings!.setType == setType &&
-          equippedBoots!.setType == setType) {
+      if (setType != ArmorSetType.none && equippedChestplate!.setType == setType && equippedLeggings!.setType == setType && equippedBoots!.setType == setType) {
         return setType;
       }
     }
@@ -62,10 +56,7 @@ class Character {
 
   int get activeSetEnchantLevel {
     if (activeSetType != ArmorSetType.none) {
-      return equippedHelmet!.enchantLevel +
-          equippedChestplate!.enchantLevel +
-          equippedLeggings!.enchantLevel +
-          equippedBoots!.enchantLevel;
+      return equippedHelmet!.enchantLevel + equippedChestplate!.enchantLevel + equippedLeggings!.enchantLevel + equippedBoots!.enchantLevel;
     }
     return 0;
   }
@@ -100,8 +91,7 @@ class Character {
     final setEffect = ArmorSetService.getEffect(activeSetType);
     final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     if (setEffect != null) {
-      speed *=
-          setEffect.getAttackSpeedMultiplier(activeSetEnchantLevel, weaponType);
+      speed *= setEffect.getAttackSpeedMultiplier(activeSetEnchantLevel, weaponType);
     }
     speed += SkillService.getAttackSpeedBonus(learnedSkills, weaponType);
 
@@ -115,18 +105,13 @@ class Character {
   }
 
   double get lowerDamage {
-    double damage =
-        equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
+    double damage = equippedWeapon?.lowerDamage ?? ItemRegistry.fist.lowerDamage;
     final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     final setEffect = ArmorSetService.getEffect(activeSetType);
     if (setEffect != null) {
-      damage +=
-          setEffect.getBonusLowerDamage(activeSetEnchantLevel, weaponType);
+      damage += setEffect.getBonusLowerDamage(activeSetEnchantLevel, weaponType);
     }
-    final bonusMultiplier = equippedWeapon != null
-        ? SkillService.getEnchantmentBonusDamageMultiplier(
-            learnedSkills, equippedWeapon!.enchantLevel)
-        : 0.0;
+    final bonusMultiplier = equippedWeapon != null ? SkillService.getEnchantmentBonusDamageMultiplier(learnedSkills, equippedWeapon!.enchantLevel) : 0.0;
     damage += damage * bonusMultiplier;
 
     // Rarity bonus
@@ -139,18 +124,13 @@ class Character {
   }
 
   double get higherDamage {
-    double damage =
-        equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
+    double damage = equippedWeapon?.higherDamage ?? ItemRegistry.fist.higherDamage;
     final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
     final setEffect = ArmorSetService.getEffect(activeSetType);
     if (setEffect != null) {
-      damage +=
-          setEffect.getBonusHigherDamage(activeSetEnchantLevel, weaponType);
+      damage += setEffect.getBonusHigherDamage(activeSetEnchantLevel, weaponType);
     }
-    final bonusMultiplier = equippedWeapon != null
-        ? SkillService.getEnchantmentBonusDamageMultiplier(
-            learnedSkills, equippedWeapon!.enchantLevel)
-        : 0.0;
+    final bonusMultiplier = equippedWeapon != null ? SkillService.getEnchantmentBonusDamageMultiplier(learnedSkills, equippedWeapon!.enchantLevel) : 0.0;
     damage += damage * bonusMultiplier;
 
     // Rarity bonus
@@ -172,14 +152,13 @@ class Character {
     final setEffect = ArmorSetService.getEffect(activeSetType);
     if (setEffect != null) {
       final weaponType = equippedWeapon?.weaponType ?? WeaponType.fist;
-      totalDefense +=
-          setEffect.getBonusDefense(activeSetEnchantLevel, weaponType);
+      totalDefense += setEffect.getBonusDefense(activeSetEnchantLevel, weaponType);
     }
 
     // Rarity bonus
     int rarityMult = getRarityEffectMultiplier(RarityEffect.bonusDefense);
     if (rarityMult > 0) {
-      totalDefense += (totalDefense * (rarityMult * 0.05)).round();
+      totalDefense += (totalDefense * (rarityMult * 0.20)).round();
     }
 
     return totalDefense;
@@ -211,7 +190,7 @@ class Character {
     // Rarity bonus
     int rarityMult = getRarityEffectMultiplier(RarityEffect.hpRegen);
     if (rarityMult > 0) {
-      regen += (regen * (rarityMult * 0.025)).round();
+      regen += (regen * (rarityMult * 0.10)).round();
     }
 
     return regen;
@@ -240,7 +219,7 @@ class Character {
     // Rarity bonus
     int rarityMult = getRarityEffectMultiplier(RarityEffect.critDamage);
     if (rarityMult > 0) {
-      power += rarityMult * 33; // +33% flat
+      power += rarityMult * 25; // +25% flat
     }
 
     return power;
@@ -311,26 +290,17 @@ class Character {
       currentExp: currentExp ?? this.currentExp,
       gold: gold ?? this.gold,
       skillPoints: skillPoints ?? this.skillPoints,
-      equippedWeapon:
-          clearWeapon ? null : (equippedWeapon ?? this.equippedWeapon),
-      equippedHelmet:
-          clearHelmet ? null : (equippedHelmet ?? this.equippedHelmet),
-      equippedChestplate: clearChestplate
-          ? null
-          : (equippedChestplate ?? this.equippedChestplate),
-      equippedLeggings:
-          clearLeggings ? null : (equippedLeggings ?? this.equippedLeggings),
+      equippedWeapon: clearWeapon ? null : (equippedWeapon ?? this.equippedWeapon),
+      equippedHelmet: clearHelmet ? null : (equippedHelmet ?? this.equippedHelmet),
+      equippedChestplate: clearChestplate ? null : (equippedChestplate ?? this.equippedChestplate),
+      equippedLeggings: clearLeggings ? null : (equippedLeggings ?? this.equippedLeggings),
       equippedBoots: clearBoots ? null : (equippedBoots ?? this.equippedBoots),
       baseHealth: baseHealth ?? this.baseHealth,
       hpRegen: hpRegen ?? this.hpRegen,
       currentHealth: currentHealth ?? this.currentHealth,
       learnedSkills: learnedSkills ?? this.learnedSkills,
-      escapeCooldownEndTime: clearEscapeCooldown
-          ? null
-          : (escapeCooldownEndTime ?? this.escapeCooldownEndTime),
-      deathCooldownEndTime: clearDeathCooldown
-          ? null
-          : (deathCooldownEndTime ?? this.deathCooldownEndTime),
+      escapeCooldownEndTime: clearEscapeCooldown ? null : (escapeCooldownEndTime ?? this.escapeCooldownEndTime),
+      deathCooldownEndTime: clearDeathCooldown ? null : (deathCooldownEndTime ?? this.deathCooldownEndTime),
     );
   }
 
@@ -360,33 +330,17 @@ class Character {
       currentExp: json['currentExp'] ?? 0,
       gold: json['gold'] ?? 0,
       skillPoints: json['skillPoints'] ?? 0,
-      equippedWeapon: json['equippedWeapon'] != null
-          ? Weapon.fromJson(json['equippedWeapon'])
-          : null,
-      equippedHelmet: json['equippedHelmet'] != null
-          ? Armor.fromJson(json['equippedHelmet'])
-          : null,
-      equippedChestplate: json['equippedChestplate'] != null
-          ? Armor.fromJson(json['equippedChestplate'])
-          : null,
-      equippedLeggings: json['equippedLeggings'] != null
-          ? Armor.fromJson(json['equippedLeggings'])
-          : null,
-      equippedBoots: json['equippedBoots'] != null
-          ? Armor.fromJson(json['equippedBoots'])
-          : null,
+      equippedWeapon: json['equippedWeapon'] != null ? Weapon.fromJson(json['equippedWeapon']) : null,
+      equippedHelmet: json['equippedHelmet'] != null ? Armor.fromJson(json['equippedHelmet']) : null,
+      equippedChestplate: json['equippedChestplate'] != null ? Armor.fromJson(json['equippedChestplate']) : null,
+      equippedLeggings: json['equippedLeggings'] != null ? Armor.fromJson(json['equippedLeggings']) : null,
+      equippedBoots: json['equippedBoots'] != null ? Armor.fromJson(json['equippedBoots']) : null,
       baseHealth: json['baseHealth'] ?? 100,
       hpRegen: json['hpRegen'] ?? 1,
       currentHealth: json['currentHealth'],
-      learnedSkills: json['learnedSkills'] != null
-          ? Map<String, int>.from(json['learnedSkills'])
-          : const {},
-      escapeCooldownEndTime: json['escapeCooldownEndTime'] != null
-          ? DateTime.parse(json['escapeCooldownEndTime'])
-          : null,
-      deathCooldownEndTime: json['deathCooldownEndTime'] != null
-          ? DateTime.parse(json['deathCooldownEndTime'])
-          : null,
+      learnedSkills: json['learnedSkills'] != null ? Map<String, int>.from(json['learnedSkills']) : const {},
+      escapeCooldownEndTime: json['escapeCooldownEndTime'] != null ? DateTime.parse(json['escapeCooldownEndTime']) : null,
+      deathCooldownEndTime: json['deathCooldownEndTime'] != null ? DateTime.parse(json['deathCooldownEndTime']) : null,
     );
   }
 }

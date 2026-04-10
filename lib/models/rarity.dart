@@ -77,11 +77,11 @@ extension RarityEffectExtension on RarityEffect {
       case RarityEffect.attackSpeed:
         return '+ ${5 * multiplier}% attack speed';
       case RarityEffect.bonusDefense:
-        return '+ ${5 * multiplier}% defense';
+        return '+ ${20 * multiplier}% defense';
       case RarityEffect.critChance:
         return '+ ${5 * multiplier}% crit chance';
       case RarityEffect.critDamage:
-        return '+ ${33 * multiplier}% crit damage';
+        return '+ ${25 * multiplier}% crit damage';
       case RarityEffect.dropChance:
         return '+ ${1 * multiplier}% item drop chance';
       case RarityEffect.blockChance:
@@ -91,7 +91,7 @@ extension RarityEffectExtension on RarityEffect {
       case RarityEffect.maxHp:
         return '+ ${2.5 * multiplier}% max hp';
       case RarityEffect.hpRegen:
-        return '+ ${2.5 * multiplier}% hp regen';
+        return '+ ${10 * multiplier}% hp regen';
     }
   }
 }
