@@ -45,7 +45,7 @@ class ItemRegistry {
       critPower: 150,
       attackSpeed: 1.0,
       enchantLevel: 0,
-      sellPrice: 100,
+      sellPrice: 50,
     ),
     WeaponType.bow: Weapon(
       id: 'template',
@@ -59,7 +59,7 @@ class ItemRegistry {
       critPower: 120,
       attackSpeed: 1.25,
       enchantLevel: 0,
-      sellPrice: 100,
+      sellPrice: 60,
     ),
     WeaponType.dagger: Weapon(
       id: 'template',
@@ -73,7 +73,7 @@ class ItemRegistry {
       critPower: 200,
       attackSpeed: 0.5,
       enchantLevel: 0,
-      sellPrice: 75,
+      sellPrice: 60,
     ),
   };
 
@@ -87,7 +87,7 @@ class ItemRegistry {
       name: 'Weapon Enchant Scroll',
       description: "Increase power of the weapon, but be careful, it's not guaranteed",
       scrollType: ScrollType.weapon,
-      sellPrice: 50, // half of buy price (100)
+      sellPrice: 25,
       buyPrice: 100,
     ),
     ScrollType.armor: Scroll(
@@ -97,7 +97,7 @@ class ItemRegistry {
       name: 'Armor Enchant Scroll',
       description: "Increase defense of the armor, but be careful, it's not guaranteed",
       scrollType: ScrollType.armor,
-      sellPrice: 25, // half of buy price (50)
+      sellPrice: 10,
       buyPrice: 50,
     ),
   };
@@ -113,7 +113,7 @@ class ItemRegistry {
       armorType: ArmorType.helmet,
       defense: 1,
       enchantLevel: 0,
-      sellPrice: 25,
+      sellPrice: 18,
       setType: ArmorSetType.leather,
     ),
     ArmorType.chestplate: Armor(
@@ -124,7 +124,7 @@ class ItemRegistry {
       armorType: ArmorType.chestplate,
       defense: 1,
       enchantLevel: 0,
-      sellPrice: 25,
+      sellPrice: 20,
       setType: ArmorSetType.leather,
     ),
     ArmorType.leggings: Armor(
@@ -135,7 +135,7 @@ class ItemRegistry {
       armorType: ArmorType.leggings,
       defense: 1,
       enchantLevel: 0,
-      sellPrice: 25,
+      sellPrice: 18,
       setType: ArmorSetType.leather,
     ),
     ArmorType.boots: Armor(
@@ -146,7 +146,7 @@ class ItemRegistry {
       armorType: ArmorType.boots,
       defense: 1,
       enchantLevel: 0,
-      sellPrice: 25,
+      sellPrice: 18,
       setType: ArmorSetType.leather,
     ),
   };

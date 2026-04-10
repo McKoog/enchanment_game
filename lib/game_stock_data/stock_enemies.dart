@@ -34,12 +34,14 @@ final greyWolf = Enemy(
   dropList: [
     DropItem(chance: 80, itemType: ItemType.gold, minQuantity: 5, maxQuantity: 10),
     DropItem(chance: 10, itemType: ItemType.scroll, scrollType: ScrollType.armor),
+    DropItem(chance: 7, itemType: ItemType.weapon, weaponType: WeaponType.sword),
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.helmet),
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.chestplate),
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.leggings),
     DropItem(chance: 5, itemType: ItemType.armor, armorType: ArmorType.boots),
     DropItem(chance: 5, itemType: ItemType.scroll, scrollType: ScrollType.weapon),
-    DropItem(chance: 7, itemType: ItemType.weapon, weaponType: WeaponType.sword),
+    DropItem(chance: 4, itemType: ItemType.weapon, weaponType: WeaponType.dagger),
+    DropItem(chance: 4, itemType: ItemType.weapon, weaponType: WeaponType.bow),
   ],
 );
 
@@ -85,6 +87,7 @@ final goblin = Enemy(
     DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.chestplate),
     DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.leggings),
     DropItem(chance: 15, itemType: ItemType.armor, armorType: ArmorType.boots),
+    DropItem(chance: 15, itemType: ItemType.weapon, weaponType: WeaponType.bow),
   ],
 );
 

@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HuntingFieldsMenu extends StatefulWidget {
-  const HuntingFieldsMenu({super.key, required this.constraints, required this.width});
+  const HuntingFieldsMenu(
+      {super.key, required this.constraints, required this.width});
 
   final BoxConstraints constraints;
   final double width;
@@ -65,8 +66,11 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
   Widget build(BuildContext context) {
     final characterState = context.watch<CharacterBloc>().state;
     final deathTime = characterState.character.deathCooldownEndTime;
-    final isDeathCooldownActive = deathTime != null && DateTime.now().isBefore(deathTime);
-    final remainingDeathSeconds = isDeathCooldownActive ? deathTime.difference(DateTime.now()).inSeconds + 1 : 0;
+    final isDeathCooldownActive =
+        deathTime != null && DateTime.now().isBefore(deathTime);
+    final remainingDeathSeconds = isDeathCooldownActive
+        ? deathTime.difference(DateTime.now()).inSeconds + 1
+        : 0;
 
     return Container(
       width: widget.width,
@@ -94,7 +98,8 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
             ...enemies.map((enemy) {
               final alignment = enemyPositions[enemy] ?? Alignment.center;
               final isSelected = selectedEnemy == enemy;
-              final circleSize = (widget.width * 0.3).clamp(80.0, 140.0); // Responsive circle size
+              final circleSize = (widget.width * 0.3)
+                  .clamp(80.0, 140.0); // Responsive circle size
 
               return Align(
                 alignment: alignment,
@@ -117,7 +122,9 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                             shape: BoxShape.circle,
                             color: Colors.transparent,
                             border: Border.all(
-                              color: isSelected ? AppColors.accentYellow : AppColors.panelBorder,
+                              color: isSelected
+                                  ? AppColors.accentYellow
+                                  : AppColors.panelBorder,
                               width: 2,
                             ),
                             boxShadow: [
@@ -135,8 +142,12 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                                 enemy.image,
                                 fit: BoxFit.contain,
                                 gaplessPlayback: true,
-                                color: isDeathCooldownActive ? AppColors.overlayMedium : null,
-                                colorBlendMode: isDeathCooldownActive ? BlendMode.darken : null,
+                                color: isDeathCooldownActive
+                                    ? AppColors.overlayMedium
+                                    : null,
+                                colorBlendMode: isDeathCooldownActive
+                                    ? BlendMode.darken
+                                    : null,
                               ),
                             ),
                           ),
@@ -163,13 +174,18 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
             if (selectedEnemy != null && !isDeathCooldownActive)
               Builder(
                 builder: (context) {
-                  final alignment = enemyPositions[selectedEnemy] ?? Alignment.center;
+                  final alignment =
+                      enemyPositions[selectedEnemy] ?? Alignment.center;
                   final isTopHalf = alignment.y < 0;
 
                   return CompositedTransformFollower(
                     link: _layerLinks[selectedEnemy!]!,
-                    targetAnchor: isTopHalf ? Alignment.bottomCenter : Alignment.topCenter,
-                    followerAnchor: isTopHalf ? Alignment.topCenter : Alignment.bottomCenter,
+                    targetAnchor: isTopHalf
+                        ? Alignment.bottomCenter
+                        : Alignment.topCenter,
+                    followerAnchor: isTopHalf
+                        ? Alignment.topCenter
+                        : Alignment.bottomCenter,
                     offset: Offset(0, isTopHalf ? 10 : -10),
                     child: GestureDetector(
                       onTap: () {}, // Prevent closing when tapping the popup
@@ -179,7 +195,8 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.overlayLight,
-                          border: Border.all(color: AppColors.accentYellow, width: 2),
+                          border: Border.all(
+                              color: AppColors.accentYellow, width: 2),
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
@@ -203,7 +220,10 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'HP: ${selectedEnemy!.hp}\nATK: ${selectedEnemy!.attack}\nSPD: ${selectedEnemy!.attackSpeed}/s',
+                              'HP: ${selectedEnemy!.hp}\n'
+                              'ATK: ${selectedEnemy!.minAttack.toStringAsFixed(1)} - ${selectedEnemy!.maxAttack.toStringAsFixed(1)}\n'
+                              'SPD: ${selectedEnemy!.attackSpeed}/s\n'
+                              'CRIT: ${(selectedEnemy!.critChance * 100).toInt()}% (${(selectedEnemy!.critPower * 100).toInt()}% DMG)',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Colors.white,
@@ -225,7 +245,8 @@ class _HuntingFieldsMenuState extends State<HuntingFieldsMenu> {
                               ),
                               onPressed: () {
                                 final bloc = context.read<HuntingFieldsBloc>();
-                                bloc.add(HuntingFieldEvent$SelectEnemy(enemy: selectedEnemy!));
+                                bloc.add(HuntingFieldEvent$SelectEnemy(
+                                    enemy: selectedEnemy!));
                                 bloc.add(HuntingFieldEvent$StartHunting());
                               },
                               child: const Text(

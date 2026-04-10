@@ -104,15 +104,22 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/icons/shield_icon.png',
-                  width: 24, height: 24, color: Colors.black),
+                  width: 24, height: 24, color: AppColors.accentYellow),
               const SizedBox(width: 4),
               Text(
                 widget.damage.toStringAsFixed(2),
                 style: const TextStyle(
-                  color: Colors.black,
+                  color: AppColors.accentYellow,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'PT Sans',
+                  shadows: [
+                    Shadow(
+                      color: AppColors.black,
+                      blurRadius: 4,
+                      offset: Offset(1, 1),
+                    )
+                  ],
                 ),
               ),
             ],

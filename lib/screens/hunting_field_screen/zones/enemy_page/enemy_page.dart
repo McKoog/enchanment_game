@@ -163,7 +163,17 @@ class _EnemyPageState extends State<EnemyPage>
     bool isDefensiveStance =
         _isCombatActive && !_isWeaponOnEnemy && !_isWeaponDragging;
 
-    double incomingDamage = widget.enemy.attackDamage;
+    // Calculate base damage range and critical hit
+    double minDamage = widget.enemy.minAttack;
+    double maxDamage = widget.enemy.maxAttack;
+    double incomingDamage =
+        minDamage + _random.nextDouble() * (maxDamage - minDamage);
+
+    bool isCrit = _random.nextDouble() < widget.enemy.critChance;
+    if (isCrit) {
+      incomingDamage *= widget.enemy.critPower;
+    }
+
     if (isDefensiveStance) {
       incomingDamage *= 0.8; // 20% reduction
     }
@@ -195,6 +205,7 @@ class _EnemyPageState extends State<EnemyPage>
           randomX: 0,
           randomY: _random.nextDouble() * 40 - 20,
           isBlock: false,
+          isCrit: isCrit,
           isDefensiveStance: isDefensiveStance,
         ));
       });
@@ -821,6 +832,7 @@ class _EnemyPageState extends State<EnemyPage>
                             isBlock: dt.isBlock,
                             isDefensiveStance: dt.isDefensiveStance,
                             isBlockHeal: dt.isBlockHeal,
+                            isCrit: dt.isCrit,
                             duration: const Duration(
                                 seconds:
                                     6), // 6 seconds (was 3, so increased by 2x)

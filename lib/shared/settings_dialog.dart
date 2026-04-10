@@ -1,13 +1,12 @@
-import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
-import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
-import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
-import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
 import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_bloc.dart';
 import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_event.dart';
 import 'package:enchantment_game/blocs/visual_settings_bloc/visual_settings_state.dart';
 import 'package:enchantment_game/services/save_service.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
+import 'package:enchantment_game/shared/shared_blocs_provider.dart';
+import 'package:enchantment_game/shared/game_header.dart';
+import 'package:enchantment_game/shared/adaptive/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -216,10 +215,21 @@ class SettingsDialog extends StatelessWidget {
               onPressed: () async {
                 await SaveService.clearSave();
                 if (context.mounted) {
-                  context.read<CharacterBloc>().add(CharacterReset());
-                  context.read<InventoryBloc>().add(InventoryEvent$Reset());
-                  Navigator.of(ctx).pop(); // close confirmation
-                  Navigator.of(context).pop(); // close settings
+                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => Scaffold(
+                        body: SharedBlocsProvider(
+                          child: GameHeader(
+                            child: ColoredBox(
+                              color: AppColors.overlayLight,
+                              child: const ResponsiveLayout(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    (route) => false,
+                  );
                 }
               },
               child:
