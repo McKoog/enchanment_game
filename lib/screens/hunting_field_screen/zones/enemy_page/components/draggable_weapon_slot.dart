@@ -39,7 +39,7 @@ class DraggableWeaponSlot extends StatelessWidget {
     final characterAttackSpeed = context.read<CharacterBloc>().state.character.attackSpeed;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onHorizontalDragUpdate: (details) {
+      onVerticalDragUpdate: (details) {
         if (details.primaryDelta != null) {
           if (details.primaryDelta! < -2 && !isExpanded) {
             onExpand();
@@ -50,7 +50,8 @@ class DraggableWeaponSlot extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.only(left: 0, top: 0, bottom: 0),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Animated Arrows
             AnimatedBuilder(
@@ -60,71 +61,75 @@ class DraggableWeaponSlot extends StatelessWidget {
                 final escapeTime = charState.character.escapeCooldownEndTime;
                 final isAllowedToEscape = (escapeTime != null && DateTime.now().isAfter(escapeTime) || escapeTime == null);
 
-                return Transform.translate(
-                  offset: Offset(isExpanded ? (pulseController.value * -5) : (-pulseController.value * 5), 0),
-                  child: Column(
-                    children: List<Widget>.generate(3, (index) {
-                      return Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.overlayDark,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Icon(
-                              isExpanded
-                                  ? isDragging || !isAllowedToEscape
-                                      ? Icons.close
-                                      : Icons.arrow_forward_rounded
-                                  : Icons.arrow_back_rounded,
-                              size: 24,
-                              color: AppColors.error,
-                            ),
-                          ),
-                          if (!isDragging && isAllowedToEscape)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.overlayDark,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Transform.rotate(
-                                angle: index == 1
-                                    ? isExpanded
-                                        ? math.pi * -0.5
-                                        : math.pi * 0.5
-                                    : 0,
-                                child: Icon(
-                                  (index == 1)
-                                      ? Icons.back_hand_outlined
-                                      : isExpanded
-                                          ? Icons.arrow_forward_rounded
-                                          : Icons.arrow_back_rounded,
-                                  size: 24,
-                                  color: AppColors.error,
-                                ),
-                              ),
-                            ),
-                          if (!isDragging && isAllowedToEscape)
+                return Opacity(
+                  opacity: isExpanded ? 0.75 : 1,
+                  child: Transform.translate(
+                    offset: Offset(0, isExpanded ? (pulseController.value * -5) : (-pulseController.value * 10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List<Widget>.generate(3, (index) {
+                        return Column(
+                          children: [
                             Container(
                               decoration: BoxDecoration(
                                 color: AppColors.overlayDark,
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Icon(
-                                isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
+                                isExpanded
+                                    ? isDragging || !isAllowedToEscape
+                                        ? Icons.close
+                                        : Icons.arrow_downward_rounded
+                                    : Icons.arrow_upward_rounded,
                                 size: 24,
                                 color: AppColors.error,
                               ),
                             ),
-                        ],
-                      );
-                    }),
+                            if (!isDragging && isAllowedToEscape)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.overlayDark,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Transform.rotate(
+                                  angle: index == 1
+                                      ? isExpanded
+                                          ? 0.0
+                                          : math.pi
+                                      : 0,
+                                  child: Icon(
+                                    (index == 1)
+                                        ? Icons.back_hand_outlined
+                                        : isExpanded
+                                            ? Icons.arrow_downward_rounded
+                                            : Icons.arrow_upward_rounded,
+                                    size: 24,
+                                    color: AppColors.error,
+                                  ),
+                                ),
+                              ),
+                            if (!isDragging && isAllowedToEscape)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.overlayDark,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Icon(
+                                  isExpanded ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                                  size: 24,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                          ],
+                        );
+                      }),
+                    ),
                   ),
                 );
               },
             ),
 
-            if (!isExpanded) const SizedBox(width: 8),
+            if (!isExpanded) const SizedBox(height: 8),
 
             // The actual slot
             Stack(
@@ -199,14 +204,30 @@ class DraggableWeaponSlot extends StatelessWidget {
                       ),
                     ),
                     childWhenDragging: const SizedBox(width: 80, height: 80),
-                    // Empty slot
-                    child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: WeaponField(
-                        weapon: weapon,
-                        showBackground: false,
-                      ),
+                    // Weapon in slot with pulse and rotation animation
+                    child: AnimatedBuilder(
+                      animation: pulseController,
+                      builder: (context, child) {
+                        // Create a subtle scale animation (1.0 to 1.2)
+                        final scale = 1.0 + (pulseController.value * 0.20);
+                        // Create a subtle rotation animation (-5 degrees to 5 degrees)
+                        final rotation = math.sin(pulseController.value * math.pi) * 0.1; // roughly 5 degrees in radians
+
+                        return Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.identity()
+                            ..scale(scale, scale)
+                            ..rotateZ(rotation),
+                          child: SizedBox(
+                            width: 80,
+                            height: 80,
+                            child: WeaponField(
+                              weapon: weapon,
+                              showBackground: false,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
 

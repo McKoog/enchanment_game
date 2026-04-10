@@ -28,7 +28,6 @@ import 'components/attack_field/components/enemy_hp_bar.dart';
 import 'components/damage_text_widget.dart';
 import 'components/draggable_weapon_slot.dart';
 import 'components/enemy_field.dart';
-import 'components/enemy_header.dart';
 import 'components/player_hp_bar.dart';
 import 'components/recent_loot_list.dart';
 
@@ -51,9 +50,14 @@ class EnemyPage extends StatefulWidget {
 class _EnemyPageState extends State<EnemyPage>
     with SingleTickerProviderStateMixin {
   bool _showDropList = false;
+  bool _showRecentLoot = false;
   late double _enemyCurrentHP;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final List<Item> _dropHistory = [];
+
+  final GlobalKey<AnimatedListState> _notificationListKey =
+      GlobalKey<AnimatedListState>();
+  final List<Item> _notificationItems = [];
 
   final List<DamageTextData> _enemyDamageTexts = [];
   final List<DamageTextData> _playerDamageTexts = [];
@@ -251,11 +255,14 @@ class _EnemyPageState extends State<EnemyPage>
         characterBloc.add(CharacterHeal(heal));
 
         final healId = UniqueKey().toString();
+        final hpBarWidth = widget.width - 168;
         setState(() {
           _playerDamageTexts.add(DamageTextData(
             id: healId,
             damage: heal.toDouble(),
-            randomX: _random.nextDouble() * 40 - 20,
+            // Calculate random offset to cover the entire width of the HP bar
+            // from -hpBarWidth/2 to hpBarWidth/2
+            randomX: (_random.nextDouble() - 0.5) * hpBarWidth,
             randomY: 0,
             isHeal: true,
           ));
@@ -284,8 +291,91 @@ class _EnemyPageState extends State<EnemyPage>
         _dropHistory.insert(0, item);
         _listKey.currentState
             ?.insertItem(0, duration: const Duration(milliseconds: 300));
+
+        if (!_showRecentLoot) {
+          _addDropNotification(item);
+        }
       }
     }
+  }
+
+  void _addDropNotification(Item item) {
+    if (_notificationItems.length >= 5) {
+      final removedItem = _notificationItems.removeLast();
+      _notificationListKey.currentState?.removeItem(
+        _notificationItems.length,
+        (context, animation) =>
+            _buildNotificationItem(removedItem, animation, true),
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+
+    _notificationItems.insert(0, item);
+    _notificationListKey.currentState
+        ?.insertItem(0, duration: const Duration(milliseconds: 500));
+
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted && _notificationItems.contains(item)) {
+        final index = _notificationItems.indexOf(item);
+        final removedItem = _notificationItems.removeAt(index);
+        _notificationListKey.currentState?.removeItem(
+          index,
+          (context, animation) =>
+              _buildNotificationItem(removedItem, animation, true),
+          duration: const Duration(milliseconds: 500),
+        );
+      }
+    });
+  }
+
+  Widget _buildNotificationItem(
+      Item item, Animation<double> animation, bool isRemoving) {
+    final slideInTween =
+        Tween<Offset>(begin: const Offset(-1.5, 0), end: Offset.zero);
+    final slideOutTween =
+        Tween<Offset>(begin: const Offset(1.5, 0), end: Offset.zero);
+
+    return SlideTransition(
+      position: animation.drive(
+        (isRemoving ? slideOutTween : slideInTween)
+            .chain(CurveTween(curve: Curves.easeOut)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.overlayDark,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                  color: AppColors.accentYellow.withValues(alpha: 0.5)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  item.image,
+                  width: 32,
+                  height: 32,
+                  gaplessPlayback: true,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    _getItemName(item),
+                    style: AppTypography.bodySmallPrimary,
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   String _getItemName(Item item) {
@@ -307,6 +397,12 @@ class _EnemyPageState extends State<EnemyPage>
   void _onShowDropListToggle() {
     setState(() {
       _showDropList = !_showDropList;
+    });
+  }
+
+  void _onShowRecentLootToggle() {
+    setState(() {
+      _showRecentLoot = !_showRecentLoot;
     });
   }
 
@@ -421,13 +517,14 @@ class _EnemyPageState extends State<EnemyPage>
               state.character.currentHealth - _previousPlayerHealth;
           if (healAmount > 0 && _previousPlayerHealth != -1) {
             final id = UniqueKey().toString();
+            final hpBarWidth = widget.width - 168;
             setState(() {
               _playerDamageTexts.add(DamageTextData(
                 id: id,
                 damage: healAmount.toDouble(),
-                randomX: _isWeaponSlotExpanded
-                    ? (_random.nextDouble() * 40 - 20)
-                    : 0,
+                // Calculate random offset to cover the entire width of the HP bar
+                // from -hpBarWidth/2 to hpBarWidth/2
+                randomX: (_random.nextDouble() - 0.5) * hpBarWidth,
                 randomY: _random.nextDouble() * 40 - 20,
                 isHeal: true,
               ));
@@ -440,6 +537,10 @@ class _EnemyPageState extends State<EnemyPage>
         builder: (context, state) {
           if (state is! CharacterLoaded) return const SizedBox();
           final character = state.character;
+
+          final escapeTime = character.escapeCooldownEndTime;
+          final canEscape =
+              escapeTime == null || DateTime.now().isAfter(escapeTime);
 
           if (_previousPlayerHealth == -1) {
             _previousPlayerHealth = character.currentHealth;
@@ -463,122 +564,159 @@ class _EnemyPageState extends State<EnemyPage>
                 final enemyHpHeight = availableHeight * 0.05;
                 final enemyFieldHeight = availableHeight * 0.4;
 
+                final totalHeightFromBottom = 16 +
+                    playerHpHeight +
+                    16 +
+                    enemyFieldHeight +
+                    8 +
+                    enemyHpHeight;
+                final maxAreaHeight = totalHeightFromBottom - 4;
+
                 return Stack(
                   children: [
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: headerHeight,
-                          child: EnemyHeader(
-                            width: widget.width,
-                            enemy: widget.enemy,
-                            heightFactor: headerHeight,
-                            onTitleTap: _onShowDropListToggle,
+                    SizedBox(
+                      width: widget.width,
+                      child: Column(
+                        children: [
+                          const Expanded(
+                            child: SizedBox(),
                           ),
-                        ),
-                        SizedBox(
-                          height: playerHpHeight,
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            alignment: Alignment.center,
-                            children: [
-                              PlayerHpBar(
-                                width: widget.width,
-                                currentHP: character.currentHealth,
-                                maxHP: character.health,
-                                heightFactor: playerHpHeight,
-                              ),
-                              ..._playerDamageTexts.map((dt) {
-                                return Positioned(
-                                  key: ValueKey(dt.id),
-                                  left: 50,
-                                  child: Transform.translate(
-                                    offset: Offset(dt.randomX, dt.randomY),
-                                    child: DamageTextWidget(
-                                      damage: dt.damage,
-                                      flyUp: false,
-                                      isHeal: dt.isHeal,
-                                      onComplete: () =>
-                                          _onPlayerDamageTextComplete(dt.id),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            height: enemyHpHeight,
+                            child: EnemyHpBar(
+                              width: widget.width - 168,
+                              enemy: widget.enemy,
+                              widthOfOneHP:
+                                  (widget.width - 168) / widget.enemy.hp,
+                              currentHP: _enemyCurrentHP,
+                              heightFactor: enemyHpHeight,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          DragTarget<String>(
+                            onWillAcceptWithDetails: (details) {
+                              if (details.data == 'weapon') {
+                                _startPlayerAttack();
+                                return true;
+                              }
+                              return false;
+                            },
+                            onAcceptWithDetails: (_) => _onWeaponDragAccept(),
+                            onLeave: (_) => _stopPlayerAttack(),
+                            builder: (context, candidateData, rejectedData) {
+                              return SizedBox(
+                                height: enemyFieldHeight,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    EnemyField(
+                                      key: _enemyFieldKey,
+                                      width: widget.width,
+                                      assetImageLink: widget.enemy.image,
+                                      availableHeight: enemyFieldHeight,
                                     ),
+                                    ..._enemyDamageTexts.map((dt) {
+                                      return Positioned(
+                                        key: ValueKey(dt.id),
+                                        child: Transform.translate(
+                                          offset:
+                                              Offset(dt.randomX, dt.randomY),
+                                          child: DamageTextWidget(
+                                            damage: dt.damage,
+                                            flyUp: true,
+                                            isCrit: dt.isCrit,
+                                            onComplete: () =>
+                                                _onEnemyDamageTextComplete(
+                                                    dt.id),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            height: playerHpHeight,
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.center,
+                              children: [
+                                PlayerHpBar(
+                                  width: widget.width - 168,
+                                  currentHP: character.currentHealth,
+                                  maxHP: character.health,
+                                  heightFactor: playerHpHeight,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
+
+                    // Weapon Animated Area
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      right: 4,
+                      width: 80,
+                      bottom: _isWeaponSlotExpanded ? 4 : -88,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        width: 80,
+                        height: _isWeaponSlotExpanded
+                            ? 234.0
+                            : 80.0, // 80(slot) + 24(arrows) + 12(spacing) + 64(icon) = 180
+                        decoration: BoxDecoration(
+                          color: AppColors.overlayMedium,
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(10)),
+                        ),
+                        child: AnimatedOpacity(
+                          opacity: _isWeaponSlotExpanded ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 250),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                bottom:
+                                    160, // Just above the arrows (80 slot + 24 arrows)
+                                left: 0,
+                                right: 0,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 250),
+                                  child: Image.asset(
+                                    _isWeaponDragging
+                                        ? 'assets/icons/swords.png'
+                                        : 'assets/icons/shield_icon.png',
+                                    key: ValueKey(_isWeaponDragging),
+                                    width: 64,
+                                    height: 64,
+                                    color: _isWeaponDragging
+                                        ? AppColors.error.withValues(alpha: 0.5)
+                                        : AppColors.accentYellow
+                                            .withValues(alpha: 0.5),
                                   ),
-                                );
-                              }),
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        Expanded(
-                          child: RecentLootList(
-                            listKey: _listKey,
-                            dropHistory: _dropHistory,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: enemyHpHeight,
-                          child: EnemyHpBar(
-                            width: widget.width,
-                            enemy: widget.enemy,
-                            widthOfOneHP:
-                                (widget.width - 200) / widget.enemy.hp,
-                            currentHP: _enemyCurrentHP,
-                            heightFactor: enemyHpHeight,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        DragTarget<String>(
-                          onWillAcceptWithDetails: (details) {
-                            if (details.data == 'weapon') {
-                              _startPlayerAttack();
-                              return true;
-                            }
-                            return false;
-                          },
-                          onAcceptWithDetails: (_) => _onWeaponDragAccept(),
-                          onLeave: (_) => _stopPlayerAttack(),
-                          builder: (context, candidateData, rejectedData) {
-                            return SizedBox(
-                              height: enemyFieldHeight,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  EnemyField(
-                                    key: _enemyFieldKey,
-                                    width: widget.width,
-                                    assetImageLink: widget.enemy.image,
-                                    availableHeight: enemyFieldHeight,
-                                  ),
-                                  ..._enemyDamageTexts.map((dt) {
-                                    return Positioned(
-                                      key: ValueKey(dt.id),
-                                      child: Transform.translate(
-                                        offset: Offset(dt.randomX, dt.randomY),
-                                        child: DamageTextWidget(
-                                          damage: dt.damage,
-                                          flyUp: true,
-                                          isCrit: dt.isCrit,
-                                          onComplete: () =>
-                                              _onEnemyDamageTextComplete(dt.id),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                      ],
+                      ),
                     ),
 
                     // Weapon Slot
                     AnimatedPositioned(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
-                      right: _isWeaponSlotExpanded ? 4 : -88,
-                      bottom: enemyFieldHeight - enemyHpHeight * 2,
+                      right: 4,
+                      width: 80,
+                      bottom: _isWeaponSlotExpanded ? 4 : -88,
                       child: DraggableWeaponSlot(
                         isExpanded: _isWeaponSlotExpanded,
                         isDragging: _isWeaponDragging,
@@ -592,10 +730,167 @@ class _EnemyPageState extends State<EnemyPage>
                       ),
                     ),
 
+                    // Player Damage/Heal Texts
+                    ..._playerDamageTexts.map((dt) {
+                      final isHeal = dt.isHeal;
+
+                      if (isHeal) {
+                        // Heal: Starts above player HP bar, random horizontal position across the bar
+                        final hpBarWidth = widget.width - 168;
+                        // Calculate offset only once per text id to prevent random jumping on rebuilds
+                        final randomXOffset = dt.randomX;
+
+                        return Positioned(
+                          key: ValueKey(dt.id),
+                          left: widget.width / 2 +
+                              randomXOffset -
+                              40, // 40 is half of widget width
+                          bottom: 16.0 +
+                              playerHpHeight, // right above HP bar without extra offset
+                          width: 80,
+                          child: DamageTextWidget(
+                            damage: dt.damage,
+                            flyUp: true,
+                            flyDistance:
+                                80.0, // exactly half of the previous 160
+                            isHeal: true,
+                            onComplete: () =>
+                                _onPlayerDamageTextComplete(dt.id),
+                          ),
+                        );
+                      } else {
+                        // Damage: Starts left of player HP bar (left bottom corner)
+                        return Positioned(
+                          key: ValueKey(dt.id),
+                          left: 4,
+                          bottom: 0,
+                          width: 80,
+                          child: DamageTextWidget(
+                            damage: dt.damage,
+                            flyUp: true,
+                            flyDistance: enemyFieldHeight +
+                                16 +
+                                playerHpHeight, // Fly up to enemy HP bar height
+                            isHeal: false,
+                            duration: const Duration(
+                                seconds:
+                                    6), // 6 seconds (was 3, so increased by 2x)
+                            onComplete: () =>
+                                _onPlayerDamageTextComplete(dt.id),
+                          ),
+                        );
+                      }
+                    }),
+
+                    // Floating Buttons
+                    Positioned(
+                      top: 16,
+                      right: _dropHistory.isNotEmpty
+                          ? 76
+                          : 16, // to the left of recent loot button if it's visible
+                      child: InkWell(
+                        onTap: _onShowDropListToggle,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.panelBackground,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.accentYellow),
+                          ),
+                          child: const Icon(Icons.format_list_bulleted,
+                              color: AppColors.accentYellow, size: 28),
+                        ),
+                      ),
+                    ),
+                    if (canEscape)
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: InkWell(
+                          onTap: () {
+                            context
+                                .read<HuntingFieldsBloc>()
+                                .add(HuntingFieldEvent$StopHunting());
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.panelBackground,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.accentYellow),
+                            ),
+                            child: Icon(
+                              Icons.close,
+                              size: 28,
+                              color: AppColors.accentYellow,
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (_dropHistory.isNotEmpty)
+                      Positioned(
+                        top: 16, // moved to top right
+                        right: 16,
+                        child: InkWell(
+                          onTap: _onShowRecentLootToggle,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: AppColors.panelBackground,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.accentYellow),
+                            ),
+                            child: const Icon(Icons.inventory_2_outlined,
+                                color: AppColors.accentYellow, size: 28),
+                          ),
+                        ),
+                      ),
+
+                    // Recent Loot Slide-in Overlay
+                    Positioned(
+                      top: 76,
+                      left: 16,
+                      right: 0,
+                      bottom: enemyFieldHeight +
+                          enemyHpHeight +
+                          playerHpHeight +
+                          48, // Above enemy HP
+                      child: AnimatedSlide(
+                        offset:
+                            _showRecentLoot ? Offset.zero : const Offset(1, 0),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                        child: RecentLootList(
+                          listKey: _listKey,
+                          dropHistory: _dropHistory,
+                        ),
+                      ),
+                    ),
+
+                    // Notification Overlay
+                    if (!_showRecentLoot)
+                      Positioned(
+                        top: 72,
+                        left: 16,
+                        right: 0,
+                        bottom: enemyHpHeight +
+                            enemyFieldHeight +
+                            playerHpHeight +
+                            48, // Above enemy HP bar
+                        child: AnimatedList(
+                          key: _notificationListKey,
+                          initialItemCount: _notificationItems.length,
+                          itemBuilder: (context, index, animation) {
+                            return _buildNotificationItem(
+                                _notificationItems[index], animation, false);
+                          },
+                        ),
+                      ),
+
                     // Drop List Overlay
                     if (_showDropList)
                       Positioned(
-                        top: headerHeight,
+                        top: 76, // below the top buttons
                         left: 16,
                         right: 16,
                         child: Material(

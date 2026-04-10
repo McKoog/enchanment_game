@@ -30,7 +30,7 @@ class EnemyHpBar extends StatelessWidget {
 
     return SizedBox(
       height: heightFactor,
-      width: width - 60,
+      width: width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -45,7 +45,7 @@ class EnemyHpBar extends StatelessWidget {
               Container(
                   alignment: Alignment.center,
                   height: barHeight,
-                  width: widthOfOneHP * enemy.hp,
+                  width: width,
                   decoration: AppDecorations.enemyHpBar,
                   child: FittedBox(
                     fit: BoxFit.scaleDown,

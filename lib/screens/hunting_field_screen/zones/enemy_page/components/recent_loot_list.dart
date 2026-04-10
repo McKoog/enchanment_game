@@ -20,10 +20,14 @@ class RecentLootList extends StatelessWidget {
   String _getItemName(Item item) {
     if (item is GoldItem) return '${item.amount} Gold';
     if (item is Weapon) {
-      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
+      return item.enchantLevel > 0
+          ? "${item.displayName} +${item.enchantLevel}"
+          : item.displayName;
     }
     if (item is Armor) {
-      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
+      return item.enchantLevel > 0
+          ? "${item.displayName} +${item.enchantLevel}"
+          : item.displayName;
     }
     if (item is Scroll) return item.name;
     return 'Unknown Item';
@@ -34,40 +38,54 @@ class RecentLootList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'Recent Loot:',
-          style: AppTypography.bodySmallHighlight,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
         Expanded(
           child: Container(
-            color: AppColors.overlayMedium,
+            color: Colors.transparent,
             child: AnimatedList(
               key: listKey,
               initialItemCount: dropHistory.length,
-              padding: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 100),
+              padding:
+                  const EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 16),
               itemBuilder: (context, index, animation) {
                 return SlideTransition(
-                  position: animation.drive(Tween(begin: const Offset(1, 0), end: Offset.zero).chain(CurveTween(curve: Curves.easeOut))),
+                  position: animation.drive(
+                      Tween(begin: const Offset(1, 0), end: Offset.zero)
+                          .chain(CurveTween(curve: Curves.easeOut))),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          dropHistory[index].image,
-                          width: 40,
-                          height: 40,
-                          gaplessPlayback: true,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppColors.overlayDark,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                              color: AppColors.accentYellow
+                                  .withValues(alpha: 0.5)),
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          _getItemName(dropHistory[index]),
-                          style: AppTypography.bodySmallPrimary,
-                          overflow: TextOverflow.ellipsis,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              dropHistory[index].image,
+                              width: 32,
+                              height: 32,
+                              gaplessPlayback: true,
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                _getItemName(dropHistory[index]),
+                                style: AppTypography.bodySmallPrimary,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 );

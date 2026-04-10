@@ -28,6 +28,8 @@ class DamageTextWidget extends StatefulWidget {
   final bool isHeal;
   final bool isBlock;
   final bool isCrit;
+  final double? flyDistance;
+  final Duration? duration;
 
   const DamageTextWidget({
     super.key,
@@ -37,6 +39,8 @@ class DamageTextWidget extends StatefulWidget {
     this.isHeal = false,
     this.isBlock = false,
     this.isCrit = false,
+    this.flyDistance,
+    this.duration,
   });
 
   @override
@@ -54,14 +58,16 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: widget.duration ?? const Duration(milliseconds: 2000),
     );
     _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
     _positionAnimation = Tween<Offset>(
       begin: Offset.zero,
-      end: widget.flyUp ? const Offset(0, -100) : const Offset(-100, 0),
+      end: widget.flyUp
+          ? Offset(0, -(widget.flyDistance ?? 100.0))
+          : Offset(0, (widget.flyDistance ?? 100.0)),
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
@@ -86,56 +92,60 @@ class _DamageTextWidgetState extends State<DamageTextWidget>
           offset: _positionAnimation.value,
           child: Opacity(
             opacity: _opacityAnimation.value,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  widget.isBlock
-                      ? 'Blocked'
-                      : widget.isHeal
-                          ? '+ ${widget.damage.toStringAsFixed(1)}'
-                          : '- ${widget.damage.toStringAsFixed(1)}',
-                  style: TextStyle(
-                    color: widget.isBlock
-                        ? Colors.grey
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    widget.isBlock
+                        ? 'Blocked'
                         : widget.isHeal
-                            ? AppColors.success
-                            : AppColors.error,
-                    fontSize: widget.isBlock ? 24 : 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'PT Sans',
-                    shadows: const [
-                      Shadow(
-                        color: AppColors.black,
-                        blurRadius: 4,
-                        offset: Offset(1, 1),
-                      )
-                    ],
-                  ),
-                ),
-                if (widget.isCrit)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0, bottom: 2.0),
-                    child: Text(
-                      'crit',
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'PT Sans',
-                        fontStyle: FontStyle.italic,
-                        shadows: const [
-                          Shadow(
-                            color: AppColors.black,
-                            blurRadius: 4,
-                            offset: Offset(1, 1),
-                          )
-                        ],
-                      ),
+                            ? '+ ${widget.damage.toStringAsFixed(1)}'
+                            : '- ${widget.damage.toStringAsFixed(1)}',
+                    style: TextStyle(
+                      color: widget.isBlock
+                          ? Colors.grey
+                          : widget.isHeal
+                              ? AppColors.success
+                              : AppColors.error,
+                      fontSize: widget.isBlock ? 24 : 28,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'PT Sans',
+                      shadows: const [
+                        Shadow(
+                          color: AppColors.black,
+                          blurRadius: 4,
+                          offset: Offset(1, 1),
+                        )
+                      ],
                     ),
                   ),
-              ],
+                  if (widget.isCrit)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, bottom: 2.0),
+                      child: Text(
+                        'crit',
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'PT Sans',
+                          fontStyle: FontStyle.italic,
+                          shadows: const [
+                            Shadow(
+                              color: AppColors.black,
+                              blurRadius: 4,
+                              offset: Offset(1, 1),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );
