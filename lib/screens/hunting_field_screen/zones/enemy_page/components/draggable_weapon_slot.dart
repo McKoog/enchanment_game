@@ -1,11 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
 import 'package:enchantment_game/models/weapon.dart';
-import 'package:enchantment_game/screens/hunting_field_screen/zones/enemy_page/components/attack_field/components/weapon_field.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:enchantment_game/theme/enchanted_weapons_glow_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'attack_field/components/weapon_field.dart';
 
 class DraggableWeaponSlot extends StatelessWidget {
   final bool isExpanded;
@@ -55,34 +58,63 @@ class DraggableWeaponSlot extends StatelessWidget {
               builder: (context, child) {
                 final charState = context.watch<CharacterBloc>().state;
                 final escapeTime = charState.character.escapeCooldownEndTime;
-                final isAllowedToEscape = (escapeTime != null && DateTime.now().isAfter(escapeTime));
+                final isAllowedToEscape = (escapeTime != null && DateTime.now().isAfter(escapeTime) || escapeTime == null);
 
                 return Transform.translate(
-                  offset: Offset(isExpanded ? (pulseController.value * -5) : (-pulseController.value * 10), 0),
+                  offset: Offset(isExpanded ? (pulseController.value * -5) : (-pulseController.value * 5), 0),
                   child: Column(
                     children: List<Widget>.generate(3, (index) {
                       return Row(
                         children: [
-                          Icon(
-                            isExpanded
-                                ? isDragging || !isAllowedToEscape
-                                    ? Icons.close
-                                    : Icons.arrow_forward_rounded
-                                : Icons.arrow_back_rounded,
-                            size: 24,
-                            color: AppColors.error,
-                          ),
-                          if (!isDragging && isAllowedToEscape)
-                            Icon(
-                              isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.overlayDark,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              isExpanded
+                                  ? isDragging || !isAllowedToEscape
+                                      ? Icons.close
+                                      : Icons.arrow_forward_rounded
+                                  : Icons.arrow_back_rounded,
                               size: 24,
                               color: AppColors.error,
                             ),
+                          ),
                           if (!isDragging && isAllowedToEscape)
-                            Icon(
-                              isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
-                              size: 24,
-                              color: AppColors.error,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.overlayDark,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Transform.rotate(
+                                angle: index == 1
+                                    ? isExpanded
+                                        ? math.pi * -0.5
+                                        : math.pi * 0.5
+                                    : 0,
+                                child: Icon(
+                                  (index == 1)
+                                      ? Icons.back_hand_outlined
+                                      : isExpanded
+                                          ? Icons.arrow_forward_rounded
+                                          : Icons.arrow_back_rounded,
+                                  size: 24,
+                                  color: AppColors.error,
+                                ),
+                              ),
+                            ),
+                          if (!isDragging && isAllowedToEscape)
+                            Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.overlayDark,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Icon(
+                                isExpanded ? Icons.arrow_forward_rounded : Icons.arrow_back_rounded,
+                                size: 24,
+                                color: AppColors.error,
+                              ),
                             ),
                         ],
                       );
@@ -91,19 +123,6 @@ class DraggableWeaponSlot extends StatelessWidget {
                 );
               },
             ),
-            // Silhouette when collapsed
-            if (!isExpanded)
-              Container(
-                decoration: BoxDecoration(color: AppColors.overlayMedium, borderRadius: BorderRadius.circular(15)),
-                child: ColorFiltered(
-                  colorFilter: const ColorFilter.mode(AppColors.error, BlendMode.srcIn),
-                  child: SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image.asset('assets/icons/slot_slider_icon.png', gaplessPlayback: true, fit: BoxFit.contain),
-                  ),
-                ),
-              ),
 
             if (!isExpanded) const SizedBox(width: 8),
 
@@ -116,7 +135,7 @@ class DraggableWeaponSlot extends StatelessWidget {
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
-                    color: AppColors.panelBackground,
+                    color: AppColors.overlayVeryDark,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Center(
@@ -127,7 +146,7 @@ class DraggableWeaponSlot extends StatelessWidget {
                   ),
                 ),
 
-                // Yellow cooldown fill (red here technically)
+                // Red cooldown fill
                 if (isDragging && attackCooldownProgress > 0)
                   Positioned(
                     bottom: 0,
