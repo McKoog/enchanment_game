@@ -567,18 +567,9 @@ class _EnemyPageState extends State<EnemyPage>
               builder: (context, constraints) {
                 final availableHeight = constraints.maxHeight;
 
-                final headerHeight = availableHeight * 0.10;
                 final playerHpHeight = availableHeight * 0.05;
                 final enemyHpHeight = availableHeight * 0.05;
                 final enemyFieldHeight = availableHeight * 0.4;
-
-                final totalHeightFromBottom = 16 +
-                    playerHpHeight +
-                    16 +
-                    enemyFieldHeight +
-                    8 +
-                    enemyHpHeight;
-                final maxAreaHeight = totalHeightFromBottom - 4;
 
                 return Stack(
                   children: [
@@ -744,7 +735,6 @@ class _EnemyPageState extends State<EnemyPage>
 
                       if (isHeal) {
                         // Heal: Starts above player HP bar, random horizontal position across the bar
-                        final hpBarWidth = widget.width - 168;
                         // Calculate offset only once per text id to prevent random jumping on rebuilds
                         final randomXOffset = dt.randomX;
 

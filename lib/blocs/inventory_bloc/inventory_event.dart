@@ -8,6 +8,13 @@ class InventoryEvent$AddItem extends InventoryEvent {
   final Item item;
 }
 
+class InventoryEvent$AddItemAt extends InventoryEvent {
+  InventoryEvent$AddItemAt({required this.item, required this.index});
+
+  final Item item;
+  final int index;
+}
+
 class InventoryEvent$RemoveItem extends InventoryEvent {
   InventoryEvent$RemoveItem({required this.item});
 

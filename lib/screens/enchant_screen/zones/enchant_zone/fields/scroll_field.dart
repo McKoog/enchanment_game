@@ -15,6 +15,9 @@ import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/field
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_enchant_slot.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/enchant_zone/fields/components/scroll_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_bloc.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_event.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ScrollField extends StatefulWidget {
@@ -22,9 +25,11 @@ class ScrollField extends StatefulWidget {
       {super.key,
       required this.sideSize,
       required this.scroll,
-      required this.inventoryIndex});
+      required this.inventoryIndex,
+      this.maxHeight});
 
   final double sideSize;
+  final double? maxHeight;
   final Scroll scroll;
   final int inventoryIndex;
 
@@ -43,8 +48,13 @@ class _ScrollFieldState extends State<ScrollField> {
 
   @override
   void dispose() {
-    if (_enchantBloc.state is EnchantState$EnchantmentInProgress) {
-      _enchantBloc.add(EnchantEvent$CancelEnchanting());
+    if (!_enchantBloc.isClosed) {
+      if (_enchantBloc.state is EnchantState$EnchantmentInProgress) {
+        _enchantBloc.add(EnchantEvent$CancelEnchanting());
+      }
+      if (_enchantBloc.state.insertedItem != null) {
+        _enchantBloc.add(EnchantEvent$ExtractItem());
+      }
     }
     super.dispose();
   }
@@ -56,8 +66,12 @@ class _ScrollFieldState extends State<ScrollField> {
 
     return BlocListener<EnchantBloc, EnchantState>(
       listenWhen: (oldState, newState) {
-        return oldState is EnchantState$EnchantmentInProgress &&
-            newState is EnchantState$Result;
+        final finishedEnchant =
+            oldState is EnchantState$EnchantmentInProgress &&
+                newState is EnchantState$Result;
+        final insertedItem =
+            oldState.insertedItem == null && newState.insertedItem != null;
+        return finishedEnchant || insertedItem;
       },
       listener: (context, state) {
         if (state is EnchantState$Result) {
@@ -72,6 +86,8 @@ class _ScrollFieldState extends State<ScrollField> {
           itemInfoBloc.add(ItemInfoEvent$MarkScrollEnchantFinished(
               inventoryIndex: widget.inventoryIndex));
         }
+
+        context.read<EquipOverlayBloc>().add(EquipOverlayEvent$Hide());
       },
       child: BlocBuilder<EnchantBloc, EnchantState>(
           bloc: _enchantBloc,
@@ -82,39 +98,56 @@ class _ScrollFieldState extends State<ScrollField> {
               insertedItem = null;
             }
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _ScrollHeader(
-                      insertedItem: insertedItem,
-                      isEnchantSucceed:
-                          state is EnchantState$Result && state.isSuccess,
-                      sideSize: widget.sideSize,
-                      scrollName: widget.scroll.name),
-                  Expanded(
-                      child: _ScrollContent(
-                    sideSize: widget.sideSize,
-                    enchantState: state,
-                    insertedItem: insertedItem,
-                    scrollType: widget.scroll.scrollType,
-                    scrollDescription: widget.scroll.description,
-                  )),
-                  _ScrollControls(
-                    sideSize: widget.sideSize,
-                    enchantState: state,
-                    onEnchant: () {
-                      if (state.insertedItem != null) {
-                        _enchantBloc.add(EnchantEvent$StartEnchanting(
-                            item: state.insertedItem!));
-                      }
-                    },
-                    onCancel: () => itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _ScrollHeader(
+                          insertedItem: insertedItem,
+                          isEnchantSucceed:
+                              state is EnchantState$Result && state.isSuccess,
+                          sideSize: widget.sideSize,
+                          scrollName: widget.scroll.name),
+                      Expanded(
+                          child: _ScrollContent(
+                        sideSize: widget.sideSize,
+                        enchantState: state,
+                        insertedItem: insertedItem,
+                        scrollType: widget.scroll.scrollType,
+                        scrollDescription: widget.scroll.description,
+                        onSlotTap: () {
+                          if (insertedItem == null &&
+                              state is EnchantState$Idle) {
+                            final type =
+                                widget.scroll.scrollType == ScrollType.weapon
+                                    ? OverlayType.weapon
+                                    : OverlayType.armor;
+                            context.read<EquipOverlayBloc>().add(
+                                EquipOverlayEvent$Toggle(overlayType: type));
+                          }
+                        },
+                      )),
+                      _ScrollControls(
+                        sideSize: widget.sideSize,
+                        enchantState: state,
+                        onEnchant: () {
+                          if (state.insertedItem != null) {
+                            _enchantBloc.add(EnchantEvent$StartEnchanting(
+                                item: state.insertedItem!));
+                          }
+                        },
+                        onCancel: () =>
+                            itemInfoBloc.add(ItemInfoEvent$CloseInfo()),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }),
     );
@@ -171,6 +204,7 @@ class _ScrollContent extends StatelessWidget {
     required this.enchantState,
     required this.scrollType,
     required this.scrollDescription,
+    this.onSlotTap,
   });
 
   final double sideSize;
@@ -178,6 +212,7 @@ class _ScrollContent extends StatelessWidget {
   final Item? insertedItem;
   final ScrollType scrollType;
   final String scrollDescription;
+  final VoidCallback? onSlotTap;
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +233,7 @@ class _ScrollContent extends StatelessWidget {
           scrollType: scrollType,
           currentEnchantState: enchantState,
           sideSize: sideSize,
+          onTap: onSlotTap,
         ),
         insertedItem == null && enchantState is EnchantState$Idle
             ? SizedBox(

@@ -35,7 +35,7 @@ class EnchantConfig {
   /// Stat bonuses granted per enchantment level, keyed by weapon type.
   static const Map<WeaponType, EnchantBonus> bonusByWeaponType = {
     WeaponType.sword: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
-    WeaponType.bow: EnchantBonus(higherDamageBonus: 3),
+    WeaponType.bow: EnchantBonus(higherDamageBonus: 4),
     WeaponType.dagger: EnchantBonus(lowerDamageBonus: 1, higherDamageBonus: 2),
     WeaponType.fist: EnchantBonus(),
   };

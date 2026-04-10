@@ -28,8 +28,8 @@ class ItemRegistry {
       lowerDamage: 1.0,
       higherDamage: 2.0,
       critRate: 5,
-      critPower: 150,
-      attackSpeed: 1.0,
+      critPower: 110,
+      attackSpeed: 0.25,
       enchantLevel: 0,
       sellPrice: 0,
     ),
@@ -54,10 +54,10 @@ class ItemRegistry {
       name: 'Long Bow',
       weaponType: WeaponType.bow,
       lowerDamage: 1.0,
-      higherDamage: 7.0,
+      higherDamage: 10.0,
       critRate: 15,
-      critPower: 150,
-      attackSpeed: 1.5,
+      critPower: 120,
+      attackSpeed: 1.25,
       enchantLevel: 0,
       sellPrice: 100,
     ),
@@ -67,8 +67,8 @@ class ItemRegistry {
       image: 'assets/icons/weapons/dagger.png',
       name: 'Dagger',
       weaponType: WeaponType.dagger,
-      lowerDamage: 3.0,
-      higherDamage: 4.0,
+      lowerDamage: 1.0,
+      higherDamage: 3.0,
       critRate: 25,
       critPower: 200,
       attackSpeed: 0.5,
@@ -85,8 +85,7 @@ class ItemRegistry {
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_weapon.png',
       name: 'Weapon Enchant Scroll',
-      description:
-          "Increase power of the weapon, but be careful, it's not guaranteed",
+      description: "Increase power of the weapon, but be careful, it's not guaranteed",
       scrollType: ScrollType.weapon,
       sellPrice: 50, // half of buy price (100)
       buyPrice: 100,
@@ -96,8 +95,7 @@ class ItemRegistry {
       type: ItemType.scroll,
       image: 'assets/icons/other_items/enchant_scroll_armor.png',
       name: 'Armor Enchant Scroll',
-      description:
-          "Increase defense of the armor, but be careful, it's not guaranteed",
+      description: "Increase defense of the armor, but be careful, it's not guaranteed",
       scrollType: ScrollType.armor,
       sellPrice: 25, // half of buy price (50)
       buyPrice: 50,
@@ -168,8 +166,7 @@ class ItemRegistry {
   static Weapon get fist => _weaponTemplates[WeaponType.fist]!;
 
   /// Create a new weapon instance with a unique id.
-  static Weapon createWeapon(WeaponType weaponType,
-      {bool generateRarity = true}) {
+  static Weapon createWeapon(WeaponType weaponType, {bool generateRarity = true}) {
     final template = _weaponTemplates[weaponType];
     if (template == null) {
       throw ArgumentError('No weapon template for type: $weaponType');
@@ -210,23 +207,17 @@ class ItemRegistry {
   /// Convenience factory — creates an [Item] based on its type.
   ///
   /// Replaces the old `getNewStockItem` function.
-  static Item createItem(ItemType type,
-      {WeaponType? weaponType,
-      ArmorType? armorType,
-      ScrollType? scrollType,
-      bool generateRarity = true}) {
+  static Item createItem(ItemType type, {WeaponType? weaponType, ArmorType? armorType, ScrollType? scrollType, bool generateRarity = true}) {
     if (type == ItemType.scroll) {
       return createScroll(scrollType ?? ScrollType.weapon);
     }
     if (type == ItemType.armor) {
-      return createArmor(armorType ?? ArmorType.chestplate,
-          generateRarity: generateRarity);
+      return createArmor(armorType ?? ArmorType.chestplate, generateRarity: generateRarity);
     }
     if (type == ItemType.gold) {
       return createGold(1);
     }
-    return createWeapon(weaponType ?? WeaponType.sword,
-        generateRarity: generateRarity);
+    return createWeapon(weaponType ?? WeaponType.sword, generateRarity: generateRarity);
   }
 
   static GoldItem createGold(int amount) {

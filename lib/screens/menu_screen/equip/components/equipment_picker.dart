@@ -74,16 +74,21 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
         final allItems = inventoryBloc.state.inventory.items;
         for (final item in allItems) {
           if (item == null) continue;
-          if (widget.selectedSlot == SelectedSlot.weapon && item.type == ItemType.weapon) {
+          if (widget.selectedSlot == SelectedSlot.weapon &&
+              item.type == ItemType.weapon) {
             availableItems.add(item);
           } else if (item.type == ItemType.armor && item is Armor) {
-            if (widget.selectedSlot == SelectedSlot.helmet && item.armorType == ArmorType.helmet) {
+            if (widget.selectedSlot == SelectedSlot.helmet &&
+                item.armorType == ArmorType.helmet) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.chestplate && item.armorType == ArmorType.chestplate) {
+            } else if (widget.selectedSlot == SelectedSlot.chestplate &&
+                item.armorType == ArmorType.chestplate) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.leggings && item.armorType == ArmorType.leggings) {
+            } else if (widget.selectedSlot == SelectedSlot.leggings &&
+                item.armorType == ArmorType.leggings) {
               availableItems.add(item);
-            } else if (widget.selectedSlot == SelectedSlot.boots && item.armorType == ArmorType.boots) {
+            } else if (widget.selectedSlot == SelectedSlot.boots &&
+                item.armorType == ArmorType.boots) {
               availableItems.add(item);
             }
           }
@@ -102,7 +107,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
           return a.id.compareTo(b.id);
         });
 
-        initialIndex = availableItems.indexWhere((i) => i?.id == currentlyEquipped!.id);
+        initialIndex =
+            availableItems.indexWhere((i) => i?.id == currentlyEquipped!.id);
         if (initialIndex == -1) initialIndex = 0;
       }
     }
@@ -130,27 +136,28 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
     // Filter items based on selected slot
     List<Item?> availableItems = [];
 
-    // The first option is always "EMPTY" or "fist" for weapons
-    if (widget.selectedSlot == SelectedSlot.weapon) {
-      availableItems.add(ItemRegistry.fist);
-    } else {
-      availableItems.add(null);
-    }
+    // The first option is always "EMPTY"
+    availableItems.add(null);
 
     final allItems = inventoryBloc.state.inventory.items;
     for (final item in allItems) {
       if (item == null) continue;
 
-      if (widget.selectedSlot == SelectedSlot.weapon && item.type == ItemType.weapon) {
+      if (widget.selectedSlot == SelectedSlot.weapon &&
+          item.type == ItemType.weapon) {
         availableItems.add(item);
       } else if (item.type == ItemType.armor && item is Armor) {
-        if (widget.selectedSlot == SelectedSlot.helmet && item.armorType == ArmorType.helmet) {
+        if (widget.selectedSlot == SelectedSlot.helmet &&
+            item.armorType == ArmorType.helmet) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.chestplate && item.armorType == ArmorType.chestplate) {
+        } else if (widget.selectedSlot == SelectedSlot.chestplate &&
+            item.armorType == ArmorType.chestplate) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.leggings && item.armorType == ArmorType.leggings) {
+        } else if (widget.selectedSlot == SelectedSlot.leggings &&
+            item.armorType == ArmorType.leggings) {
           availableItems.add(item);
-        } else if (widget.selectedSlot == SelectedSlot.boots && item.armorType == ArmorType.boots) {
+        } else if (widget.selectedSlot == SelectedSlot.boots &&
+            item.armorType == ArmorType.boots) {
           availableItems.add(item);
         }
       }
@@ -177,7 +184,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
         break;
     }
 
-    if (currentlyEquipped != null && !availableItems.any((i) => i?.id == currentlyEquipped?.id)) {
+    if (currentlyEquipped != null &&
+        !availableItems.any((i) => i?.id == currentlyEquipped?.id)) {
       availableItems.add(currentlyEquipped);
     }
 
@@ -215,10 +223,12 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
                     equippedNow = characterBloc.state.character.equippedHelmet;
                     break;
                   case SelectedSlot.chestplate:
-                    equippedNow = characterBloc.state.character.equippedChestplate;
+                    equippedNow =
+                        characterBloc.state.character.equippedChestplate;
                     break;
                   case SelectedSlot.leggings:
-                    equippedNow = characterBloc.state.character.equippedLeggings;
+                    equippedNow =
+                        characterBloc.state.character.equippedLeggings;
                     break;
                   case SelectedSlot.boots:
                     equippedNow = characterBloc.state.character.equippedBoots;
@@ -229,13 +239,17 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
 
                 if (equippedNow?.id == itemToEquip?.id) return;
 
-                if (equippedNow != null && equippedNow.id != 'fist' && equippedNow.id != 'template') {
+                if (equippedNow != null &&
+                    equippedNow.id != 'fist' &&
+                    equippedNow.id != 'template') {
                   inventoryBloc.add(InventoryEvent$AddItem(item: equippedNow));
                 }
 
                 if (itemToEquip != null) {
-                  if (itemToEquip.id != 'fist' && itemToEquip.id != 'template') {
-                    inventoryBloc.add(InventoryEvent$RemoveItem(item: itemToEquip));
+                  if (itemToEquip.id != 'fist' &&
+                      itemToEquip.id != 'template') {
+                    inventoryBloc
+                        .add(InventoryEvent$RemoveItem(item: itemToEquip));
                   }
 
                   if (itemToEquip is Weapon) {
@@ -249,13 +263,16 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
                       characterBloc.add(CharacterUnequipWeapon());
                       break;
                     case SelectedSlot.helmet:
-                      characterBloc.add(CharacterUnequipArmor(ArmorType.helmet));
+                      characterBloc
+                          .add(CharacterUnequipArmor(ArmorType.helmet));
                       break;
                     case SelectedSlot.chestplate:
-                      characterBloc.add(CharacterUnequipArmor(ArmorType.chestplate));
+                      characterBloc
+                          .add(CharacterUnequipArmor(ArmorType.chestplate));
                       break;
                     case SelectedSlot.leggings:
-                      characterBloc.add(CharacterUnequipArmor(ArmorType.leggings));
+                      characterBloc
+                          .add(CharacterUnequipArmor(ArmorType.leggings));
                       break;
                     case SelectedSlot.boots:
                       characterBloc.add(CharacterUnequipArmor(ArmorType.boots));
@@ -304,7 +321,9 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
             ),
             Positioned(
               left: equipZoneOffset.dx + 8,
-              right: MediaQuery.of(context).size.width - (equipZoneOffset.dx + equipZoneSize.width) + 8,
+              right: MediaQuery.of(context).size.width -
+                  (equipZoneOffset.dx + equipZoneSize.width) +
+                  8,
               top: equipZoneOffset.dy + 8,
               bottom: MediaQuery.of(context).size.height - pickerOffset.dy + 8,
               child: Material(
@@ -320,7 +339,8 @@ class _EquipmentPickerState extends State<EquipmentPicker> {
                             padding: const EdgeInsets.all(32.0),
                             child: Opacity(
                               opacity: 0.1,
-                              child: Image.asset(item.image, fit: BoxFit.contain),
+                              child:
+                                  Image.asset(item.image, fit: BoxFit.contain),
                             ),
                           ),
                         ),

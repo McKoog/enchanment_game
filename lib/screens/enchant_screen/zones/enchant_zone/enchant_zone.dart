@@ -1,4 +1,3 @@
-import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_bloc.dart';
 import 'package:enchantment_game/blocs/item_info_bloc/item_info_state.dart';
 import 'package:enchantment_game/models/armor.dart';
@@ -13,10 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnchantZone extends StatelessWidget {
-  const EnchantZone({super.key, required this.height, required this.width});
+  const EnchantZone(
+      {super.key, required this.height, required this.width, this.maxHeight});
 
   final double height;
   final double width;
+  final double? maxHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -26,36 +27,41 @@ class EnchantZone extends StatelessWidget {
           return SizedBox(
             height: height,
             width: width,
-            child: state is ItemInfoState$Showed
-                ? Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      key: ValueKey(state.viewToken),
-                      padding: const EdgeInsets.all(8.0),
-                      child: InfoBackground(
-                        sideSize: height,
-                        backgroundItem: state.item,
-                        child: state.item is Scroll
-                            ? BlocProvider(
-                                create: (context) => EnchantBloc(),
-                                child: ScrollField(
+            child: Stack(
+              children: [
+                state is ItemInfoState$Showed
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          key: ValueKey(state.viewToken),
+                          padding: const EdgeInsets.all(8.0),
+                          child: InfoBackground(
+                            sideSize: height,
+                            fullWidth: state.item is! Scroll,
+                            backgroundItem: state.item,
+                            child: state.item is Scroll
+                                ? ScrollField(
                                     sideSize: height,
                                     scroll: state.item as Scroll,
-                                    inventoryIndex: state.inventoryIndex))
-                            : state.item is Weapon
-                                ? WeaponInfoField(
-                                    sideSize: height,
-                                    weapon: state.item as Weapon)
-                                : ArmorInfoField(
-                                    sideSize: height,
-                                    armor: state.item as Armor),
+                                    inventoryIndex: state.inventoryIndex,
+                                    maxHeight: maxHeight,
+                                  )
+                                : state.item is Weapon
+                                    ? WeaponInfoField(
+                                        sideSize: height,
+                                        weapon: state.item as Weapon)
+                                    : ArmorInfoField(
+                                        sideSize: height,
+                                        armor: state.item as Armor),
+                          ),
+                        ),
+                      )
+                    : const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: EnchantStatsEffectsView(),
                       ),
-                    ),
-                  )
-                : const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: EnchantStatsEffectsView(),
-                  ),
+              ],
+            ),
           );
         });
   }

@@ -17,13 +17,15 @@ class InventorySlot extends StatelessWidget {
       required this.index,
       this.item,
       this.canBeDragged = true,
-      this.canBeDragTarget = true});
+      this.canBeDragTarget = true,
+      this.onTap});
 
   final int index;
   final Item? item;
 
   final bool canBeDragged;
   final bool canBeDragTarget;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -37,101 +39,108 @@ class InventorySlot extends StatelessWidget {
     if (weapon != null) enchantLevel = weapon.enchantLevel;
     if (armor != null) enchantLevel = armor.enchantLevel;
 
-    return Stack(
-      alignment: Alignment.center,
-      fit: StackFit.expand,
-      children: [
-        Container(
-            padding: const EdgeInsets.all(5),
-            decoration: (weapon != null || armor != null)
-                ? BoxDecoration(
-                    color: enchantLevel < 16
-                        ? AppColors.slotBackground
-                            .withValues(alpha: 1 - (0.0666 * enchantLevel))
-                        : enchantLevel < 21
-                            ? AppColors.slotBackground.withValues(
-                                alpha: 0.5 - (0.06 * (enchantLevel % 16)))
-                            : Colors.grey.shade900.withValues(alpha: 0.25),
-                    border: Border.fromBorderSide(BorderSide(
-                        color: AppColors.panelBorder, width: 2)),
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: enchantLevel == 0
-                        ? null
-                        : enchantLevel > 20
-                            ? [
-                                BoxShadow(
-                                    color: enchantedWeaponsGlowColors[21],
-                                    spreadRadius: 0.3)
-                              ]
-                            : [
-                                BoxShadow(
-                                    color: enchantedWeaponsGlowColors[
-                                        enchantLevel],
-                                    spreadRadius: 0.3)
-                              ])
-                : AppDecorations.inventorySlot,
-            child: item != null
-                ? InventoryDragTarget(
-                    inventoryIndex: index,
-                    canBeDragTarget: canBeDragTarget,
-                    child: InventoryDraggableItem(
-                      item: item!,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        fit: StackFit.expand,
+        children: [
+          Container(
+              padding: const EdgeInsets.all(5),
+              decoration: (weapon != null || armor != null)
+                  ? BoxDecoration(
+                      color: enchantLevel < 16
+                          ? AppColors.slotBackground
+                              .withValues(alpha: 1 - (0.0666 * enchantLevel))
+                          : enchantLevel < 21
+                              ? AppColors.slotBackground.withValues(
+                                  alpha: 0.5 - (0.06 * (enchantLevel % 16)))
+                              : Colors.grey.shade900.withValues(alpha: 0.25),
+                      border: Border.fromBorderSide(
+                          BorderSide(color: AppColors.panelBorder, width: 2)),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: enchantLevel == 0
+                          ? null
+                          : enchantLevel > 20
+                              ? [
+                                  BoxShadow(
+                                      color: enchantedWeaponsGlowColors[21],
+                                      spreadRadius: 0.3)
+                                ]
+                              : [
+                                  BoxShadow(
+                                      color: enchantedWeaponsGlowColors[
+                                          enchantLevel],
+                                      spreadRadius: 0.3)
+                                ])
+                  : AppDecorations.inventorySlot,
+              child: item != null
+                  ? InventoryDragTarget(
                       inventoryIndex: index,
-                      isDraggable: canBeDragged,
-                    ),
-                  )
-                : InventoryDragTarget(
-                    inventoryIndex: index,
-                    canBeDragTarget: canBeDragTarget,
-                  )),
-        // TODO: добавить проверку видимости зачарования
-        if ((weapon != null || armor != null) /*&& enchantVisible*/)
-          Positioned(
-              right: 8,
-              bottom: 8,
-              child: Text(
-                enchantLevel > 0 ? "+$enchantLevel" : "",
-                style: AppTypography.attributeLabel.copyWith(fontSize: 10, color: AppColors.accentYellow),
-              )),
-        if (scroll != null)
-          Positioned(
-              left: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.overlayMedium,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.overlayLight)),
-                ),
+                      canBeDragTarget: canBeDragTarget,
+                      child: InventoryDraggableItem(
+                        item: item!,
+                        inventoryIndex: index,
+                        isDraggable: canBeDragged,
+                      ),
+                    )
+                  : InventoryDragTarget(
+                      inventoryIndex: index,
+                      canBeDragTarget: canBeDragTarget,
+                    )),
+          // TODO: добавить проверку видимости зачарования
+          if ((weapon != null || armor != null) /*&& enchantVisible*/)
+            Positioned(
+                right: 8,
+                bottom: 8,
                 child: Text(
-                  scroll.scrollType == ScrollType.weapon ? "W" : "A",
-                  style: AppTypography.attributeLabel.copyWith(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.accentYellow,
+                  enchantLevel > 0 ? "+$enchantLevel" : "",
+                  style: AppTypography.attributeLabel
+                      .copyWith(fontSize: 10, color: AppColors.accentYellow),
+                )),
+          if (scroll != null)
+            Positioned(
+                left: 0,
+                bottom: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.overlayMedium,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.fromBorderSide(
+                        BorderSide(color: AppColors.overlayLight)),
                   ),
-                ),
-              )),
-        if (scroll != null && scroll.quantity > 1)
-          Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.overlayMedium,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.overlayLight)),
-                ),
-                child: Text(
-                  "${scroll.quantity}",
-                  style: AppTypography.attributeLabel.copyWith(fontSize: 10, color: AppColors.accentYellow),
-                ),
-              ))
-      ],
+                  child: Text(
+                    scroll.scrollType == ScrollType.weapon ? "W" : "A",
+                    style: AppTypography.attributeLabel.copyWith(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.accentYellow,
+                    ),
+                  ),
+                )),
+          if (scroll != null && scroll.quantity > 1)
+            Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.overlayMedium,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.fromBorderSide(
+                        BorderSide(color: AppColors.overlayLight)),
+                  ),
+                  child: Text(
+                    "${scroll.quantity}",
+                    style: AppTypography.attributeLabel
+                        .copyWith(fontSize: 10, color: AppColors.accentYellow),
+                  ),
+                ))
+        ],
+      ),
     );
   }
 }

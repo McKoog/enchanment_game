@@ -36,7 +36,8 @@ class DraggableWeaponSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final characterAttackSpeed = context.read<CharacterBloc>().state.character.attackSpeed;
+    final characterAttackSpeed =
+        context.read<CharacterBloc>().state.character.attackSpeed;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onVerticalDragUpdate: (details) {
@@ -59,12 +60,18 @@ class DraggableWeaponSlot extends StatelessWidget {
               builder: (context, child) {
                 final charState = context.watch<CharacterBloc>().state;
                 final escapeTime = charState.character.escapeCooldownEndTime;
-                final isAllowedToEscape = (escapeTime != null && DateTime.now().isAfter(escapeTime) || escapeTime == null);
+                final isAllowedToEscape =
+                    (escapeTime != null && DateTime.now().isAfter(escapeTime) ||
+                        escapeTime == null);
 
                 return Opacity(
                   opacity: isExpanded ? 0.75 : 1,
                   child: Transform.translate(
-                    offset: Offset(0, isExpanded ? (pulseController.value * -5) : (-pulseController.value * 10)),
+                    offset: Offset(
+                        0,
+                        isExpanded
+                            ? (pulseController.value * -5)
+                            : (-pulseController.value * 10)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List<Widget>.generate(3, (index) {
@@ -115,7 +122,9 @@ class DraggableWeaponSlot extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Icon(
-                                  isExpanded ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                                  isExpanded
+                                      ? Icons.arrow_downward_rounded
+                                      : Icons.arrow_upward_rounded,
                                   size: 24,
                                   color: AppColors.error,
                                 ),
@@ -145,7 +154,9 @@ class DraggableWeaponSlot extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      (isDragging && attackCooldownProgress > 0) ? '$characterAttackSpeed/sec' : '',
+                      (isDragging && attackCooldownProgress > 0)
+                          ? '$characterAttackSpeed/sec'
+                          : '',
                       style: AppTypography.bodySmallHighlight,
                     ),
                   ),
@@ -188,9 +199,13 @@ class DraggableWeaponSlot extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: weapon.enchantLevel > 20 ? enchantedWeaponsGlowColors[21] : enchantedWeaponsGlowColors[weapon.enchantLevel],
+                                    color: weapon.enchantLevel > 20
+                                        ? enchantedWeaponsGlowColors[21]
+                                        : enchantedWeaponsGlowColors[
+                                            weapon.enchantLevel],
                                     blurRadius: weapon.enchantLevel * 2,
-                                    spreadRadius: weapon.enchantLevel.toDouble(),
+                                    spreadRadius:
+                                        weapon.enchantLevel.toDouble(),
                                   )
                                 ],
                               ),
@@ -198,7 +213,8 @@ class DraggableWeaponSlot extends StatelessWidget {
                           SizedBox(
                             width: 80,
                             height: 80,
-                            child: Image.asset(weapon.image, gaplessPlayback: true, fit: BoxFit.contain),
+                            child: Image.asset(weapon.image,
+                                gaplessPlayback: true, fit: BoxFit.contain),
                           ),
                         ],
                       ),
@@ -211,12 +227,13 @@ class DraggableWeaponSlot extends StatelessWidget {
                         // Create a subtle scale animation (1.0 to 1.2)
                         final scale = 1.0 + (pulseController.value * 0.20);
                         // Create a subtle rotation animation (-5 degrees to 5 degrees)
-                        final rotation = math.sin(pulseController.value * math.pi) * 0.1; // roughly 5 degrees in radians
+                        final rotation =
+                            math.sin(pulseController.value * math.pi) *
+                                0.1; // roughly 5 degrees in radians
 
                         return Transform(
                           alignment: Alignment.center,
-                          transform: Matrix4.identity()
-                            ..scale(scale, scale)
+                          transform: Matrix4.diagonal3Values(scale, scale, 1.0)
                             ..rotateZ(rotation),
                           child: SizedBox(
                             width: 80,
@@ -236,8 +253,10 @@ class DraggableWeaponSlot extends StatelessWidget {
                   Builder(builder: (context) {
                     final state = context.watch<CharacterBloc>().state;
                     final escapeTime = state.character.escapeCooldownEndTime;
-                    if (escapeTime != null && DateTime.now().isBefore(escapeTime)) {
-                      final diff = escapeTime.difference(DateTime.now()).inSeconds + 1;
+                    if (escapeTime != null &&
+                        DateTime.now().isBefore(escapeTime)) {
+                      final diff =
+                          escapeTime.difference(DateTime.now()).inSeconds + 1;
                       return IgnorePointer(
                         child: Text(
                           '$diff',

@@ -2,6 +2,9 @@ import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_state.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_bloc.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_event.dart';
+import 'package:enchantment_game/blocs/equip_overlay_bloc/equip_overlay_state.dart';
 import 'package:enchantment_game/screens/enchant_screen/zones/inventory_zone/fields/components/inventory_slot.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +39,17 @@ class InventoryField extends StatelessWidget {
                                 mainAxisSpacing: 5,
                                 crossAxisSpacing: 5),
                         itemBuilder: (BuildContext context, int index) {
+                          final item = state.inventory.items[index];
                           return InventorySlot(
                             index: index,
-                            item: state.inventory.items[index],
+                            item: item,
+                            onTap: () {
+                              if (item == null) {
+                                context.read<EquipOverlayBloc>().add(
+                                    EquipOverlayEvent$Toggle(
+                                        overlayType: OverlayType.all));
+                              }
+                            },
                           );
                         });
                   });

@@ -12,6 +12,7 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       : super(InventoryState(inventory: initialInventory ?? stockInventory)) {
     on<InventoryEvent>((event, emitter) => switch (event) {
           InventoryEvent$AddItem() => _addItem(event, emitter),
+          InventoryEvent$AddItemAt() => _addItemAt(event, emitter),
           InventoryEvent$RemoveItem() => _removeItem(event, emitter),
           InventoryEvent$SwapItems() => _swapItems(event, emitter),
           InventoryEvent$RefreshInventory() =>
@@ -73,6 +74,16 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     final firstEmptySlotIndex = invItems.indexWhere((item) => item == null);
     if (firstEmptySlotIndex == -1) return;
     invItems[firstEmptySlotIndex] = event.item;
+    final newInventory = Inventory(items: invItems);
+    emitter(InventoryState(inventory: newInventory));
+    _autoSave(newInventory);
+  }
+
+  void _addItemAt(
+      InventoryEvent$AddItemAt event, Emitter<InventoryState> emitter) {
+    final invItems = [...state.inventory.items];
+    if (event.index < 0 || event.index >= invItems.length) return;
+    invItems[event.index] = event.item;
     final newInventory = Inventory(items: invItems);
     emitter(InventoryState(inventory: newInventory));
     _autoSave(newInventory);

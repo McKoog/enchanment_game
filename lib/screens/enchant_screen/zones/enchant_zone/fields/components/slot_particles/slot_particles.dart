@@ -70,7 +70,7 @@ class _SlotParticlesState extends State<SlotParticles>
           setState(() {
             shouldResetParticles = false;
             for (var particle in _particles) {
-              particle.orbit = particle.originalOrbit;
+              particle.resetToInitialState();
             }
           });
         }
@@ -117,6 +117,9 @@ class _SlotParticlesState extends State<SlotParticles>
             case EnchantState$Idle idle:
               if (idle.insertedItem != null) {
                 _isIdling = true;
+              } else {
+                _isIdling = null;
+                shouldResetParticles = true;
               }
               break;
             case EnchantState$Result():

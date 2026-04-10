@@ -10,9 +10,10 @@ class InventoryZone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
         height: height,
         width: width,
+        clipBehavior: Clip.none,
         child: Center(
             child: Padding(
           padding: const EdgeInsets.all(8.0),

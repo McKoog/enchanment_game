@@ -94,4 +94,14 @@ class Particle {
     color = idleColors[random.nextInt(idleColors.length)];
     size = randomDouble * 0.6 + 0.4;
   }
+
+  void resetToInitialState() {
+    _isExploding = true;
+    _stopUpdating = false;
+    orbit = originalOrbit;
+    theta = random.nextDouble() * _fullCircleRadians;
+    opacity = random.nextDouble() * 0.9 + 0.1;
+    color = idleColors[random.nextInt(idleColors.length)];
+    size = random.nextDouble() * 0.6 + 0.4;
+  }
 }

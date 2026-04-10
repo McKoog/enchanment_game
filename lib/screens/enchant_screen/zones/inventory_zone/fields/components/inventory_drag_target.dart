@@ -4,10 +4,16 @@ import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_bloc
 import 'package:enchantment_game/blocs/draggable_items_bloc/draggable_items_state.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_bloc.dart';
 import 'package:enchantment_game/blocs/inventory_bloc/inventory_event.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_bloc.dart';
+import 'package:enchantment_game/blocs/enchant_bloc/enchant_event.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/scroll.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
+import 'package:enchantment_game/blocs/character_bloc/character_bloc.dart';
+import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
+import 'package:enchantment_game/models/armor.dart';
+import 'package:enchantment_game/models/weapon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -95,6 +101,71 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
 
           inventoryBloc.add(InventoryEvent$SwapItems(
               fromIndex: fromIndex, toIndex: widget.inventoryIndex));
+        } else {
+          final draggedItem = details.data;
+          final invItems = inventoryBloc.state.inventory.items;
+          final toItem = invItems[widget.inventoryIndex];
+
+          final characterBloc = context.read<CharacterBloc>();
+          final enchantBloc = context.read<EnchantBloc>();
+
+          bool isFromEnchantSlot =
+              enchantBloc.state.insertedItem == draggedItem;
+
+          if (toItem == null) {
+            inventoryBloc.add(InventoryEvent$AddItemAt(
+                item: draggedItem, index: widget.inventoryIndex));
+
+            if (isFromEnchantSlot) {
+              enchantBloc.add(EnchantEvent$ExtractItem());
+            } else {
+              if (draggedItem is Weapon) {
+                characterBloc.add(CharacterUnequipWeapon());
+              } else if (draggedItem is Armor) {
+                characterBloc.add(CharacterUnequipArmor(draggedItem.armorType));
+              }
+            }
+          } else {
+            // Drop on occupied slot
+            bool isSameArmorType = true;
+            if (draggedItem is Armor && toItem is Armor) {
+              isSameArmorType = draggedItem.armorType == toItem.armorType;
+            }
+
+            if (toItem.type == draggedItem.type && isSameArmorType) {
+              if (isFromEnchantSlot) {
+                enchantBloc.add(EnchantEvent$ExtractItem());
+                enchantBloc.add(EnchantEvent$InsertItem(item: toItem));
+              } else {
+                if (draggedItem is Weapon) {
+                  characterBloc.add(CharacterEquipWeapon(toItem as Weapon));
+                } else if (draggedItem is Armor) {
+                  characterBloc
+                      .add(CharacterUnequipArmor(draggedItem.armorType));
+                  characterBloc.add(CharacterEquipArmor(toItem as Armor));
+                }
+              }
+              inventoryBloc.add(InventoryEvent$RemoveItem(item: toItem));
+              inventoryBloc.add(InventoryEvent$AddItemAt(
+                  item: draggedItem, index: widget.inventoryIndex));
+            } else {
+              // Different type, so just put dragged in this slot, and the old item in the first empty slot.
+              inventoryBloc.add(InventoryEvent$RemoveItem(item: toItem));
+              inventoryBloc.add(InventoryEvent$AddItemAt(
+                  item: draggedItem, index: widget.inventoryIndex));
+              inventoryBloc.add(InventoryEvent$AddItem(item: toItem));
+              if (isFromEnchantSlot) {
+                enchantBloc.add(EnchantEvent$ExtractItem());
+              } else {
+                if (draggedItem is Weapon) {
+                  characterBloc.add(CharacterUnequipWeapon());
+                } else if (draggedItem is Armor) {
+                  characterBloc
+                      .add(CharacterUnequipArmor(draggedItem.armorType));
+                }
+              }
+            }
+          }
         }
       }, builder: (BuildContext context, List<Item?> candidateData,
           List<dynamic> rejectedData) {
@@ -158,9 +229,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                       decoration: BoxDecoration(
                         color: AppColors.overlayVeryDark,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                            color: AppColors.panelBorder,
-                            width: 1),
+                        border:
+                            Border.all(color: AppColors.panelBorder, width: 1),
                       ),
                       child: Row(
                         children: [
@@ -170,7 +240,8 @@ class _InventoryDragTargetState extends State<InventoryDragTarget> {
                             children: [
                               Text(
                                 '$selected/$maxQuantity',
-                                style: AppTypography.attributeLabel.copyWith(color: AppColors.white),
+                                style: AppTypography.attributeLabel
+                                    .copyWith(color: AppColors.white),
                               ),
                               SizedBox(
                                 height: 22,

@@ -19,6 +19,7 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
           EnchantEvent$StartEnchanting() => _startEnchanting(event, emitter),
           EnchantEvent$FinishEnchanting() => _finishEnchanting(event, emitter),
           EnchantEvent$CancelEnchanting() => _cancelEnchanting(event, emitter),
+          EnchantEvent$ExtractItem() => _extractItem(event, emitter),
         });
   }
 
@@ -62,8 +63,7 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
       emitter(EnchantState$Result(
           insertedItem: _enchantItem(item), isSuccess: true));
     } else {
-      emitter(
-          EnchantState$Result(insertedItem: item, isSuccess: false));
+      emitter(EnchantState$Result(insertedItem: item, isSuccess: false));
     }
   }
 
@@ -73,6 +73,14 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     _timer?.cancel();
     _timer = null;
     emitter(EnchantState$Idle(insertedItem: state.insertedItem));
+  }
+
+  void _extractItem(
+      EnchantEvent$ExtractItem event, Emitter<EnchantState> emitter) {
+    _runToken += 1;
+    _timer?.cancel();
+    _timer = null;
+    emitter(EnchantState$Idle(insertedItem: null));
   }
 
   @override
@@ -97,7 +105,7 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
     } else if (item is Armor) {
       final bonus = EnchantConfig.bonusByArmorType[item.armorType] ??
           const EnchantBonusArmor();
-      
+
       item.enchantLevel += 1;
       item.defense += bonus.defenseBonus;
       return item;

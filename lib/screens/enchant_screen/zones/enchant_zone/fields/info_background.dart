@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class InfoBackground extends StatelessWidget {
-  const InfoBackground({super.key, required this.sideSize, this.backgroundItem, required this.child});
+  const InfoBackground(
+      {super.key,
+      required this.sideSize,
+      this.fullWidth = false,
+      this.backgroundItem,
+      required this.child});
 
   final double sideSize;
+  final bool fullWidth;
   final Widget child;
   final Item? backgroundItem;
 
@@ -16,7 +22,7 @@ class InfoBackground extends StatelessWidget {
     return SizedBox(
         //decoration: enchantFieldDecoration,
         height: sideSize - 24,
-        width: sideSize - 24,
+        width: fullWidth ? double.infinity : sideSize - 24,
         child: Stack(
           alignment: Alignment.center,
           fit: StackFit.expand,

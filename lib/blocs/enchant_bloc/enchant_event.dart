@@ -22,3 +22,5 @@ class EnchantEvent$FinishEnchanting extends EnchantEvent {
 }
 
 class EnchantEvent$CancelEnchanting extends EnchantEvent {}
+
+class EnchantEvent$ExtractItem extends EnchantEvent {}
