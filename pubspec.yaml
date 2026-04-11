@@ -2,7 +2,7 @@ name: enchantment_game
 description: "Enchantment game"
 publish_to: 'none'
 
-version: 0.0.9+1
+version: 0.1.0+1
 environment:
   sdk: "^3.4.0"
   flutter: ">=3.24.0"
@@ -24,6 +24,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
 
@@ -65,3 +66,20 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  image_path: "assets/icons/other_items/enchant_scroll_weapon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icons/other_items/enchant_scroll_weapon.png"
+    background_color: "#0175C2"
+    theme_color: "#0175C2"
+  windows:
+    generate: true
+    image_path: "assets/icons/other_items/enchant_scroll_weapon.png"
+  macos:
+    generate: true
+    image_path: "assets/icons/other_items/enchant_scroll_weapon.png"

@@ -20,6 +20,11 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
 
+  <!-- Cache control to force the browser to always check for a new version of index.html -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -33,6 +38,13 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Add cache-busting timestamp to flutter_bootstrap.js to always fetch the latest version
+    var version = new Date().getTime();
+    var script = document.createElement("script");
+    script.src = "flutter_bootstrap.js?v=" + version;
+    script.async = true;
+    document.body.appendChild(script);
+  </script>
 </body>
 </html>
