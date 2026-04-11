@@ -6,6 +6,7 @@ import 'package:enchantment_game/game_stock_data/enchant_config.dart';
 import 'package:enchantment_game/models/item.dart';
 import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/models/armor.dart';
+import 'package:enchantment_game/services/sound_service.dart';
 import 'package:enchantment_game/utils/game_random.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -60,9 +61,11 @@ class EnchantBloc extends Bloc<EnchantEvent, EnchantState> {
 
     final successChance = EnchantConfig.getSuccessChance(enchantLevel);
     if (GameRandom.chance(successChance)) {
+      SoundService().playEnchantSuccessSound();
       emitter(EnchantState$Result(
           insertedItem: _enchantItem(item), isSuccess: true));
     } else {
+      SoundService().playEnchantFailSound();
       emitter(EnchantState$Result(insertedItem: item, isSuccess: false));
     }
   }

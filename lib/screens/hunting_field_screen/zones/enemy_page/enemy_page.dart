@@ -19,6 +19,7 @@ import 'package:enchantment_game/models/weapon.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
 import 'package:enchantment_game/services/combat_service.dart';
 import 'package:enchantment_game/services/loot_service.dart';
+import 'package:enchantment_game/services/sound_service.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -47,23 +48,20 @@ class EnemyPage extends StatefulWidget {
   State<EnemyPage> createState() => _EnemyPageState();
 }
 
-class _EnemyPageState extends State<EnemyPage>
-    with SingleTickerProviderStateMixin {
+class _EnemyPageState extends State<EnemyPage> with SingleTickerProviderStateMixin {
   bool _showDropList = false;
   bool _showRecentLoot = false;
   late double _enemyCurrentHP;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final List<Item> _dropHistory = [];
 
-  final GlobalKey<AnimatedListState> _notificationListKey =
-      GlobalKey<AnimatedListState>();
+  final GlobalKey<AnimatedListState> _notificationListKey = GlobalKey<AnimatedListState>();
   final List<Item> _notificationItems = [];
 
   final List<DamageTextData> _enemyDamageTexts = [];
   final List<DamageTextData> _playerDamageTexts = [];
   final Random _random = Random();
-  final GlobalKey<EnemyFieldState> _enemyFieldKey =
-      GlobalKey<EnemyFieldState>();
+  final GlobalKey<EnemyFieldState> _enemyFieldKey = GlobalKey<EnemyFieldState>();
 
   bool _isWeaponSlotExpanded = false;
   bool _isCombatActive = false;
@@ -107,6 +105,10 @@ class _EnemyPageState extends State<EnemyPage>
             healAmount = 1 * restLevel;
           }
 
+          if (char.currentHealth > 0 && char.currentHealth < char.health) {
+            SoundService().playHealSound();
+          }
+
           if (healAmount > 0) {
             characterBloc.add(CharacterHeal(healAmount));
           }
@@ -139,8 +141,7 @@ class _EnemyPageState extends State<EnemyPage>
     if (_isCombatActive) return;
     _isCombatActive = true;
     final intervalMs = (widget.enemy.attackSpeed * 1000).toInt();
-    _enemyAttackTimer =
-        Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
+    _enemyAttackTimer = Timer.periodic(Duration(milliseconds: intervalMs), (timer) {
       _enemyAttack();
     });
   }
@@ -160,14 +161,12 @@ class _EnemyPageState extends State<EnemyPage>
     final charState = characterBloc.state as CharacterLoaded;
     if (charState.character.currentHealth <= 0) return;
 
-    bool isDefensiveStance =
-        _isCombatActive && !_isWeaponOnEnemy && !_isWeaponDragging;
+    bool isDefensiveStance = _isCombatActive && !_isWeaponOnEnemy && !_isWeaponDragging;
 
     // Calculate base damage range and critical hit
     double minDamage = widget.enemy.minAttack;
     double maxDamage = widget.enemy.maxAttack;
-    double incomingDamage =
-        minDamage + _random.nextDouble() * (maxDamage - minDamage);
+    double incomingDamage = minDamage + _random.nextDouble() * (maxDamage - minDamage);
 
     bool isCrit = _random.nextDouble() < widget.enemy.critChance;
     if (isCrit) {
@@ -197,6 +196,12 @@ class _EnemyPageState extends State<EnemyPage>
     if (!isBlocked) {
       characterBloc.add(CharacterTakeDamage(incomingDamage));
 
+      if (isCrit) {
+        SoundService().playEnemyCriticalHitSound();
+      } else {
+        SoundService().playEnemyAttackSound();
+      }
+
       final id = UniqueKey().toString();
       setState(() {
         _playerDamageTexts.add(DamageTextData(
@@ -214,9 +219,13 @@ class _EnemyPageState extends State<EnemyPage>
       double healAmount = 0;
       if (isDefensiveStance && _random.nextDouble() < 0.5) {
         healAmount = potentialDamageTaken * 0.33;
-        if (healAmount > 0) {
+        if (healAmount.toInt() > 0) {
           characterBloc.add(CharacterHeal(healAmount.toInt()));
         }
+      }
+
+      if (healAmount.toInt() == 0) {
+        SoundService().playBlockedDamageSound();
       }
 
       final id = UniqueKey().toString();
@@ -271,8 +280,7 @@ class _EnemyPageState extends State<EnemyPage>
     _performSingleAttack();
 
     final setEffect = ArmorSetService.getEffect(character.activeSetType);
-    if (setEffect != null &&
-        setEffect.hasDoubleAttackChance(widget.weapon.weaponType)) {
+    if (setEffect != null && setEffect.hasDoubleAttackChance(widget.weapon.weaponType)) {
       final chance = setEffect.getDoubleAttackChance(widget.weapon.weaponType);
       if (_random.nextDouble() < chance) {
         Future.delayed(const Duration(milliseconds: 150), () {
@@ -290,6 +298,12 @@ class _EnemyPageState extends State<EnemyPage>
     final character = (characterBloc.state as CharacterLoaded).character;
 
     final result = CombatService.calculateDamage(character);
+
+    if (result.isCrit) {
+      SoundService().playCriticalHitSound();
+    } else {
+      SoundService().playPlayerAttackSound();
+    }
 
     // Trigger shake animation on attack
     _enemyFieldKey.currentState?.shake();
@@ -332,12 +346,10 @@ class _EnemyPageState extends State<EnemyPage>
       _enemyCurrentHP = widget.enemy.hp.toDouble();
 
       if (widget.enemy.expReward > 0 || widget.enemy.spReward > 0) {
-        characterBloc.add(CharacterAddExp(widget.enemy.expReward,
-            spAmount: widget.enemy.spReward));
+        characterBloc.add(CharacterAddExp(widget.enemy.expReward, spAmount: widget.enemy.spReward));
       }
 
-      final loot = LootService.generateLoot(widget.enemy,
-          dropChanceBonus: character.dropChanceBonus);
+      final loot = LootService.generateLoot(widget.enemy, dropChanceBonus: character.dropChanceBonus);
       final inventoryBloc = context.read<InventoryBloc>();
 
       for (final item in loot.items) {
@@ -348,8 +360,7 @@ class _EnemyPageState extends State<EnemyPage>
           inventoryBloc.add(InventoryEvent$AddItem(item: item));
         }
         _dropHistory.insert(0, clonedItem);
-        _listKey.currentState
-            ?.insertItem(0, duration: const Duration(milliseconds: 300));
+        _listKey.currentState?.insertItem(0, duration: const Duration(milliseconds: 300));
 
         if (!_showRecentLoot) {
           _addDropNotification(clonedItem);
@@ -363,15 +374,13 @@ class _EnemyPageState extends State<EnemyPage>
       final removedItem = _notificationItems.removeLast();
       _notificationListKey.currentState?.removeItem(
         _notificationItems.length,
-        (context, animation) =>
-            _buildNotificationItem(removedItem, animation, true),
+        (context, animation) => _buildNotificationItem(removedItem, animation, true),
         duration: const Duration(milliseconds: 300),
       );
     }
 
     _notificationItems.insert(0, item);
-    _notificationListKey.currentState
-        ?.insertItem(0, duration: const Duration(milliseconds: 500));
+    _notificationListKey.currentState?.insertItem(0, duration: const Duration(milliseconds: 500));
 
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted && _notificationItems.contains(item)) {
@@ -379,25 +388,20 @@ class _EnemyPageState extends State<EnemyPage>
         final removedItem = _notificationItems.removeAt(index);
         _notificationListKey.currentState?.removeItem(
           index,
-          (context, animation) =>
-              _buildNotificationItem(removedItem, animation, true),
+          (context, animation) => _buildNotificationItem(removedItem, animation, true),
           duration: const Duration(milliseconds: 500),
         );
       }
     });
   }
 
-  Widget _buildNotificationItem(
-      Item item, Animation<double> animation, bool isRemoving) {
-    final slideInTween =
-        Tween<Offset>(begin: const Offset(-1.5, 0), end: Offset.zero);
-    final slideOutTween =
-        Tween<Offset>(begin: const Offset(1.5, 0), end: Offset.zero);
+  Widget _buildNotificationItem(Item item, Animation<double> animation, bool isRemoving) {
+    final slideInTween = Tween<Offset>(begin: const Offset(-1.5, 0), end: Offset.zero);
+    final slideOutTween = Tween<Offset>(begin: const Offset(1.5, 0), end: Offset.zero);
 
     return SlideTransition(
       position: animation.drive(
-        (isRemoving ? slideOutTween : slideInTween)
-            .chain(CurveTween(curve: Curves.easeOut)),
+        (isRemoving ? slideOutTween : slideInTween).chain(CurveTween(curve: Curves.easeOut)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -408,8 +412,7 @@ class _EnemyPageState extends State<EnemyPage>
             decoration: BoxDecoration(
               color: AppColors.overlayDark,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                  color: AppColors.accentYellow.withValues(alpha: 0.5)),
+              border: Border.all(color: AppColors.accentYellow.withValues(alpha: 0.5)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -447,14 +450,10 @@ class _EnemyPageState extends State<EnemyPage>
   String _getItemName(Item item) {
     if (item is GoldItem) return '${item.amount} Gold';
     if (item is Weapon) {
-      return item.enchantLevel > 0
-          ? "${item.displayName} +${item.enchantLevel}"
-          : item.displayName;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Armor) {
-      return item.enchantLevel > 0
-          ? "${item.displayName} +${item.enchantLevel}"
-          : item.displayName;
+      return item.enchantLevel > 0 ? "${item.displayName} +${item.enchantLevel}" : item.displayName;
     }
     if (item is Scroll) return item.name;
     return 'Unknown Item';
@@ -478,8 +477,7 @@ class _EnemyPageState extends State<EnemyPage>
     });
     _scheduleCombatStart();
     _playerAttackTimer?.cancel();
-    _playerAttackTimer =
-        Timer.periodic(const Duration(milliseconds: 16), (timer) {
+    _playerAttackTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
       if (!mounted || !_isWeaponSlotExpanded) {
         timer.cancel();
         return;
@@ -515,8 +513,7 @@ class _EnemyPageState extends State<EnemyPage>
   }
 
   void _onWeaponSlotCollapsed() {
-    final escapeTime =
-        context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
+    final escapeTime = context.read<CharacterBloc>().state.character.escapeCooldownEndTime;
     if (escapeTime == null || DateTime.now().isAfter(escapeTime)) {
       setState(() {
         _isWeaponSlotExpanded = false;
@@ -572,15 +569,13 @@ class _EnemyPageState extends State<EnemyPage>
     return BlocListener<CharacterBloc, CharacterState>(
       listenWhen: (previous, current) {
         if (previous is CharacterLoaded && current is CharacterLoaded) {
-          return current.character.currentHealth !=
-              previous.character.currentHealth;
+          return current.character.currentHealth != previous.character.currentHealth;
         }
         return false;
       },
       listener: (context, state) {
         if (state is CharacterLoaded) {
-          final healAmount =
-              state.character.currentHealth - _previousPlayerHealth;
+          final healAmount = state.character.currentHealth - _previousPlayerHealth;
           if (healAmount > 0 && _previousPlayerHealth != -1) {
             final id = UniqueKey().toString();
             final hpBarWidth = widget.width - 168;
@@ -605,8 +600,7 @@ class _EnemyPageState extends State<EnemyPage>
           final character = state.character;
 
           final escapeTime = character.escapeCooldownEndTime;
-          final canEscape =
-              escapeTime == null || DateTime.now().isAfter(escapeTime);
+          final canEscape = escapeTime == null || DateTime.now().isAfter(escapeTime);
 
           if (_previousPlayerHealth == -1) {
             _previousPlayerHealth = character.currentHealth;
@@ -615,10 +609,7 @@ class _EnemyPageState extends State<EnemyPage>
           return Container(
             decoration: const BoxDecoration(
               color: AppColors.panelBackground,
-              image: DecorationImage(
-                  image: AssetImage(
-                      'assets/background/forest_enemy_background.png'),
-                  fit: BoxFit.cover),
+              image: DecorationImage(image: AssetImage('assets/background/forest_enemy_background.png'), fit: BoxFit.cover),
             ),
             width: widget.width,
             child: LayoutBuilder(
@@ -644,8 +635,7 @@ class _EnemyPageState extends State<EnemyPage>
                             child: EnemyHpBar(
                               width: widget.width - 168,
                               enemy: widget.enemy,
-                              widthOfOneHP:
-                                  (widget.width - 168) / widget.enemy.hp,
+                              widthOfOneHP: (widget.width - 168) / widget.enemy.hp,
                               currentHP: _enemyCurrentHP,
                               heightFactor: enemyHpHeight,
                             ),
@@ -677,15 +667,12 @@ class _EnemyPageState extends State<EnemyPage>
                                       return Positioned(
                                         key: ValueKey(dt.id),
                                         child: Transform.translate(
-                                          offset:
-                                              Offset(dt.randomX, dt.randomY),
+                                          offset: Offset(dt.randomX, dt.randomY),
                                           child: DamageTextWidget(
                                             damage: dt.damage,
                                             flyUp: true,
                                             isCrit: dt.isCrit,
-                                            onComplete: () =>
-                                                _onEnemyDamageTextComplete(
-                                                    dt.id),
+                                            onComplete: () => _onEnemyDamageTextComplete(dt.id),
                                           ),
                                         ),
                                       );
@@ -727,13 +714,10 @@ class _EnemyPageState extends State<EnemyPage>
                         duration: const Duration(milliseconds: 250),
                         curve: Curves.easeInOut,
                         width: 80,
-                        height: _isWeaponSlotExpanded
-                            ? 234.0
-                            : 80.0, // 80(slot) + 24(arrows) + 12(spacing) + 64(icon) = 180
+                        height: _isWeaponSlotExpanded ? 234.0 : 80.0, // 80(slot) + 24(arrows) + 12(spacing) + 64(icon) = 180
                         decoration: BoxDecoration(
                           color: AppColors.overlayMedium,
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(10)),
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                         ),
                         child: AnimatedOpacity(
                           opacity: _isWeaponSlotExpanded ? 1.0 : 0.0,
@@ -741,23 +725,17 @@ class _EnemyPageState extends State<EnemyPage>
                           child: Stack(
                             children: [
                               Positioned(
-                                bottom:
-                                    160, // Just above the arrows (80 slot + 24 arrows)
+                                bottom: 160, // Just above the arrows (80 slot + 24 arrows)
                                 left: 0,
                                 right: 0,
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 250),
                                   child: Image.asset(
-                                    _isWeaponDragging
-                                        ? 'assets/icons/swords.png'
-                                        : 'assets/icons/shield_icon.png',
+                                    _isWeaponDragging ? 'assets/icons/swords.png' : 'assets/icons/shield_icon.png',
                                     key: ValueKey(_isWeaponDragging),
                                     width: 64,
                                     height: 64,
-                                    color: _isWeaponDragging
-                                        ? AppColors.error.withValues(alpha: 0.5)
-                                        : AppColors.accentYellow
-                                            .withValues(alpha: 0.5),
+                                    color: _isWeaponDragging ? AppColors.error.withValues(alpha: 0.5) : AppColors.accentYellow.withValues(alpha: 0.5),
                                   ),
                                 ),
                               ),
@@ -798,21 +776,16 @@ class _EnemyPageState extends State<EnemyPage>
 
                         return Positioned(
                           key: ValueKey(dt.id),
-                          left: widget.width / 2 +
-                              randomXOffset -
-                              40, // 40 is half of widget width
-                          bottom: 16.0 +
-                              playerHpHeight, // right above HP bar without extra offset
+                          left: widget.width / 2 + randomXOffset - 40, // 40 is half of widget width
+                          bottom: 16.0 + playerHpHeight, // right above HP bar without extra offset
                           width: 80,
                           child: DamageTextWidget(
                             damage: dt.damage,
                             flyUp: true,
-                            flyDistance:
-                                80.0, // exactly half of the previous 160
+                            flyDistance: 80.0, // exactly half of the previous 160
                             isHeal: true,
                             isBlockHeal: dt.isBlockHeal,
-                            onComplete: () =>
-                                _onPlayerDamageTextComplete(dt.id),
+                            onComplete: () => _onPlayerDamageTextComplete(dt.id),
                           ),
                         );
                       } else {
@@ -825,19 +798,14 @@ class _EnemyPageState extends State<EnemyPage>
                           child: DamageTextWidget(
                             damage: dt.damage,
                             flyUp: true,
-                            flyDistance: enemyFieldHeight +
-                                16 +
-                                playerHpHeight, // Fly up to enemy HP bar height
+                            flyDistance: enemyFieldHeight + 16 + playerHpHeight, // Fly up to enemy HP bar height
                             isHeal: false,
                             isBlock: dt.isBlock,
                             isDefensiveStance: dt.isDefensiveStance,
                             isBlockHeal: dt.isBlockHeal,
                             isCrit: dt.isCrit,
-                            duration: const Duration(
-                                seconds:
-                                    6), // 6 seconds (was 3, so increased by 2x)
-                            onComplete: () =>
-                                _onPlayerDamageTextComplete(dt.id),
+                            duration: const Duration(seconds: 6), // 6 seconds (was 3, so increased by 2x)
+                            onComplete: () => _onPlayerDamageTextComplete(dt.id),
                           ),
                         );
                       }
@@ -846,9 +814,7 @@ class _EnemyPageState extends State<EnemyPage>
                     // Floating Buttons
                     Positioned(
                       top: 16,
-                      right: _dropHistory.isNotEmpty
-                          ? 76
-                          : 16, // to the left of recent loot button if it's visible
+                      right: _dropHistory.isNotEmpty ? 76 : 16, // to the left of recent loot button if it's visible
                       child: InkWell(
                         onTap: _onShowDropListToggle,
                         child: Container(
@@ -858,8 +824,7 @@ class _EnemyPageState extends State<EnemyPage>
                             shape: BoxShape.circle,
                             border: Border.all(color: AppColors.accentYellow),
                           ),
-                          child: const Icon(Icons.format_list_bulleted,
-                              color: AppColors.accentYellow, size: 28),
+                          child: const Icon(Icons.format_list_bulleted, color: AppColors.accentYellow, size: 28),
                         ),
                       ),
                     ),
@@ -869,9 +834,7 @@ class _EnemyPageState extends State<EnemyPage>
                         left: 16,
                         child: InkWell(
                           onTap: () {
-                            context
-                                .read<HuntingFieldsBloc>()
-                                .add(HuntingFieldEvent$StopHunting());
+                            context.read<HuntingFieldsBloc>().add(HuntingFieldEvent$StopHunting());
                           },
                           child: Container(
                             padding: const EdgeInsets.all(8),
@@ -901,8 +864,7 @@ class _EnemyPageState extends State<EnemyPage>
                               shape: BoxShape.circle,
                               border: Border.all(color: AppColors.accentYellow),
                             ),
-                            child: const Icon(Icons.inventory_2_outlined,
-                                color: AppColors.accentYellow, size: 28),
+                            child: const Icon(Icons.inventory_2_outlined, color: AppColors.accentYellow, size: 28),
                           ),
                         ),
                       ),
@@ -912,13 +874,9 @@ class _EnemyPageState extends State<EnemyPage>
                       top: 76,
                       left: 16,
                       right: 0,
-                      bottom: enemyFieldHeight +
-                          enemyHpHeight +
-                          playerHpHeight +
-                          48, // Above enemy HP
+                      bottom: enemyFieldHeight + enemyHpHeight + playerHpHeight + 48, // Above enemy HP
                       child: AnimatedSlide(
-                        offset:
-                            _showRecentLoot ? Offset.zero : const Offset(1, 0),
+                        offset: _showRecentLoot ? Offset.zero : const Offset(1, 0),
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOut,
                         child: RecentLootList(
@@ -934,16 +892,12 @@ class _EnemyPageState extends State<EnemyPage>
                         top: 72,
                         left: 16,
                         right: 0,
-                        bottom: enemyHpHeight +
-                            enemyFieldHeight +
-                            playerHpHeight +
-                            48, // Above enemy HP bar
+                        bottom: enemyHpHeight + enemyFieldHeight + playerHpHeight + 48, // Above enemy HP bar
                         child: AnimatedList(
                           key: _notificationListKey,
                           initialItemCount: _notificationItems.length,
                           itemBuilder: (context, index, animation) {
-                            return _buildNotificationItem(
-                                _notificationItems[index], animation, false);
+                            return _buildNotificationItem(_notificationItems[index], animation, false);
                           },
                         ),
                       ),
@@ -975,20 +929,13 @@ class _EnemyPageState extends State<EnemyPage>
                                 );
                                 String titleText = _getItemName(item);
                                 if (item is GoldItem) {
-                                  titleText = drop.minQuantity ==
-                                          drop.maxQuantity
-                                      ? '${drop.minQuantity} Gold'
-                                      : '${drop.minQuantity}-${drop.maxQuantity} Gold';
+                                  titleText =
+                                      drop.minQuantity == drop.maxQuantity ? '${drop.minQuantity} Gold' : '${drop.minQuantity}-${drop.maxQuantity} Gold';
                                 }
                                 return ListTile(
-                                  leading: Image.asset(item.image,
-                                      width: 40,
-                                      height: 40,
-                                      gaplessPlayback: true),
-                                  title: Text(titleText,
-                                      style: AppTypography.bodyMediumPrimary),
-                                  trailing: Text('${drop.chance}%',
-                                      style: AppTypography.bodyLargeHighlight),
+                                  leading: Image.asset(item.image, width: 40, height: 40, gaplessPlayback: true),
+                                  title: Text(titleText, style: AppTypography.bodyMediumPrimary),
+                                  trailing: Text('${drop.chance}%', style: AppTypography.bodyLargeHighlight),
                                 );
                               }).toList(),
                             ),
@@ -1007,8 +954,7 @@ class _EnemyPageState extends State<EnemyPage>
                               children: [
                                 Text(
                                   'YOU ARE DEAD',
-                                  style:
-                                      AppTypography.titleLargePrimary.copyWith(
+                                  style: AppTypography.titleLargePrimary.copyWith(
                                     color: AppColors.error,
                                     fontSize: 48,
                                     fontWeight: FontWeight.bold,
@@ -1025,8 +971,7 @@ class _EnemyPageState extends State<EnemyPage>
                                 Text(
                                   'You lost:\n-25% exp\n-50% gold\n-25 SP\n\nHunting is now unavailable for 15 seconds.',
                                   textAlign: TextAlign.center,
-                                  style:
-                                      AppTypography.titleMediumPrimary.copyWith(
+                                  style: AppTypography.titleMediumPrimary.copyWith(
                                     color: AppColors.enemyHp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1036,20 +981,15 @@ class _EnemyPageState extends State<EnemyPage>
                                   onPressed: _onRebornPressed,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.success,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 40, vertical: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
-                                      side: BorderSide(
-                                          color: AppColors.primaryText
-                                              .withValues(alpha: 0.24),
-                                          width: 2),
+                                      side: BorderSide(color: AppColors.primaryText.withValues(alpha: 0.24), width: 2),
                                     ),
                                   ),
                                   child: Text(
                                     'REBORN',
-                                    style: AppTypography.titleLargePrimary
-                                        .copyWith(
+                                    style: AppTypography.titleLargePrimary.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),

@@ -53,6 +53,8 @@ class SettingsDialog extends StatelessWidget {
               const SizedBox(height: 24),
               _buildVisualGroup(context),
               const SizedBox(height: 24),
+              _buildAudioGroup(context),
+              const SizedBox(height: 24),
               _buildGameGroup(context),
             ],
           ),
@@ -118,6 +120,65 @@ class SettingsDialog extends StatelessWidget {
                     onChanged: (val) {
                       context.read<VisualSettingsBloc>().add(
                           VisualSettingsEvent$ChangeCount(count: val.toInt()));
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAudioGroup(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Audio', style: AppTypography.titleMediumPrimary),
+        const SizedBox(height: 12),
+        BlocBuilder<VisualSettingsBloc, VisualSettingsState>(
+          builder: (context, state) {
+            return Material(
+              color: Colors.transparent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSettingRow(
+                    name: 'Music Volume',
+                    description: 'Adjust the volume of the background music',
+                    trailing: null,
+                  ),
+                  Slider(
+                    value: state.musicVolume,
+                    min: 0.0,
+                    max: 1.0,
+                    divisions: 20,
+                    activeColor: AppColors.accentYellow,
+                    inactiveColor: AppColors.panelBorder,
+                    label: '${(state.musicVolume * 100).round()}%',
+                    onChanged: (val) {
+                      context.read<VisualSettingsBloc>().add(
+                          VisualSettingsEvent$ChangeMusicVolume(volume: val));
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSettingRow(
+                    name: 'Sound Volume',
+                    description: 'Adjust the volume of the sound effects',
+                    trailing: null,
+                  ),
+                  Slider(
+                    value: state.soundVolume,
+                    min: 0.0,
+                    max: 1.0,
+                    divisions: 20,
+                    activeColor: AppColors.accentYellow,
+                    inactiveColor: AppColors.panelBorder,
+                    label: '${(state.soundVolume * 100).round()}%',
+                    onChanged: (val) {
+                      context.read<VisualSettingsBloc>().add(
+                          VisualSettingsEvent$ChangeSoundVolume(volume: val));
                     },
                   ),
                 ],

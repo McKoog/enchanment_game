@@ -17,3 +17,15 @@ class VisualSettingsEvent$ChangeShowNavigationArrows extends VisualSettingsEvent
 
   final bool showNavigationArrows;
 }
+
+class VisualSettingsEvent$ChangeMusicVolume extends VisualSettingsEvent {
+  VisualSettingsEvent$ChangeMusicVolume({required this.volume});
+
+  final double volume;
+}
+
+class VisualSettingsEvent$ChangeSoundVolume extends VisualSettingsEvent {
+  VisualSettingsEvent$ChangeSoundVolume({required this.volume});
+
+  final double volume;
+}

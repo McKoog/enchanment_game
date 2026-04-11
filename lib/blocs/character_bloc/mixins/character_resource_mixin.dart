@@ -2,6 +2,7 @@ import 'package:enchantment_game/blocs/character_bloc/character_event.dart';
 import 'package:enchantment_game/blocs/character_bloc/character_state.dart';
 import 'package:enchantment_game/services/leveling_service.dart';
 import 'package:enchantment_game/services/save_service.dart';
+import 'package:enchantment_game/services/sound_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 mixin CharacterResourceMixin on Bloc<CharacterEvent, CharacterState> {
@@ -13,11 +14,17 @@ mixin CharacterResourceMixin on Bloc<CharacterEvent, CharacterState> {
     int newLevel = currentState.character.level;
     int newSkillPoints = currentState.character.skillPoints + event.spAmount;
 
+    bool leveledUp = false;
     // Level up logic handled using the separated LevelingService
     while (newExp >= LevelingService.getMaxExpForLevel(newLevel)) {
       newExp -= LevelingService.getMaxExpForLevel(newLevel);
       newLevel++;
       newSkillPoints++; // Give 1 skill point per level up
+      leveledUp = true;
+    }
+
+    if (leveledUp) {
+      SoundService().playLevelUpSound();
     }
 
     final newCharacter = currentState.character.copyWith(
