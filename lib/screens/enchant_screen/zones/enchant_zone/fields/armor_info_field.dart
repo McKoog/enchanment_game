@@ -1,6 +1,7 @@
 import 'package:enchantment_game/models/armor.dart';
 import 'package:enchantment_game/models/rarity.dart';
 import 'package:enchantment_game/services/armor_set_service.dart';
+import 'package:enchantment_game/game_stock_data/enchant_config.dart';
 import 'package:enchantment_game/theme/app_colors.dart';
 import 'package:enchantment_game/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,10 @@ class ArmorInfoField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bonus = EnchantConfig.bonusByArmorType[armor.armorType] ??
+        const EnchantBonusArmor();
+    final defenseBonus = bonus.defenseBonus * armor.enchantLevel;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -39,9 +44,18 @@ class ArmorInfoField extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            Text(
-              "Defense: ${armor.defense}",
-              style: AppTypography.titleSmallPrimary,
+            Text.rich(
+              TextSpan(
+                style: AppTypography.titleSmallPrimary,
+                children: [
+                  TextSpan(text: "Defense: ${armor.defense}"),
+                  if (defenseBonus > 0)
+                    TextSpan(
+                      text: " (+ $defenseBonus)",
+                      style: const TextStyle(color: AppColors.accentYellow),
+                    ),
+                ],
+              ),
             ),
             if (armor.rarityEffects.isNotEmpty) ...[
               const SizedBox(height: 24),

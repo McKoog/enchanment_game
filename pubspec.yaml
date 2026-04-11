@@ -2,7 +2,7 @@ name: enchantment_game
 description: "Enchantment game"
 publish_to: 'none'
 
-version: 0.0.7+1
+version: 0.0.9+1
 environment:
   sdk: "^3.4.0"
   flutter: ">=3.24.0"
